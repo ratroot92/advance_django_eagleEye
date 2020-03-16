@@ -1,0 +1,82 @@
+
+<!DOCTYPE html>
+
+<html lang="en-us">
+    {% load static %}
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    
+    <title>Log in | Django site admin</title>
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/base.css">
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/login.css">
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/static/admin/css/responsive.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <meta name="robots" content="NONE,NOARCHIVE">
+  
+    <style>
+        .login .form-row #id_email,
+        .login .form-row #id_password,
+        .register .form-row #id_username,
+        .register .form-row #id_password1,
+        .register .form-row #id_password2    {
+            clear: both;
+            padding: 8px;
+            width: 100%;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        body{
+            
+                
+           
+        }
+
+
+    </style>
+
+
+</head>
+
+
+<body class=" login" data-admin-utc-offset="0" style="background: url({% static 'images/1.jpg' %}) no-repeat center center fixed;
+-webkit-background-size: cover;
+-moz-background-size: cover;
+-o-background-size: cover;
+background-size: cover;">
+
+
+    <!-- Container -->
+    <div id="container">
+
+
+        <!-- Header -->
+        <div id="header">
+            <div id="branding">
+
+                <h1 id="site-name"><a href="/admin/" class="font-weight-bold " style="font-size:25px">User {{title}}</a></h1>
+
+            </div>
+
+
+        </div>
+      
+
+
+        {% block content %} {% endblock %}
+
+        <div id="footer"></div>
+    </div>
+   
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</body>
+
+</html>

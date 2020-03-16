@@ -1,0 +1,56 @@
+ {% extends './layouts/base.html'%} {%block content%}
+<!-- Content -->
+
+<div id="content" class="colM">
+    <div id="content-main">
+        <form action="/register/" method="post" class="register" id="register-form">
+             {% csrf_token%}
+         
+
+            <div class="form-row">
+                <div >
+                {% if form.username.errors %}
+                 {{form.username.errors}} 
+                 {% endif %}
+                </div>
+                <div class="w-100">
+                 {{form.username.label_tag}}
+                  {{form.username}}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div >
+                {% if form.password1.errors %}
+                 {{form.password1.errors}}
+                  {% endif %}
+                </div>
+                  <div class="w-100">
+                  {{form.password1.label_tag}}
+                   {{form.password1}}
+                </div>
+            </div>
+            
+
+            <div class="form-row">
+                <div >
+                {% if form.password2.errors %}
+                 {{form.password2.errors}}
+                 {% endif %} 
+                </div>
+                 <div class="w-100" >
+                 {{form.password2.label_tag}} 
+                 {{form.password2}}
+                </div>
+            </div>
+            <div class="w-100 text-center"> <input type="submit" class="btn mt-5" value="Register now" /></div>
+        </form>
+        <a href="/login" class=" float-right font-weight-bold text-warning mt-3 mb-0">Click here to login  </a>
+    </div>
+
+
+    <br class="clear">
+</div>
+<!-- END Content -->
+
+{%endblock%}
