@@ -1,0 +1,92 @@
+# scrap twitter user followers
+import json
+import twint
+import nest_asyncio
+
+
+nest_asyncio.apply()
+c = twint.Config()
+c.Username = "maliksblr92"
+c.User_full = True
+c.Store_object = True
+twint.run.Followers(c)
+user_lists = twint.output.users_list
+
+
+
+id=[]
+name=[]
+username=[]
+bio=[]
+location=[]
+url=[]
+join_date=[]
+join_time=[]
+tweets=[]
+following=[]
+followers=[]
+avatar=[]
+private=[]
+verified=[]
+likes=[]
+media=[]
+
+
+
+for user in user_lists:
+    id.append(user.id)
+    name.append(user.name)
+    username.append(user.username)
+    bio.append(user.bio)
+    location.append(user.location)
+    url.append(user.url)
+    join_date.append(user.join_date)
+    join_time.append(user.join_time)
+    tweets.append(user.tweets)
+    following.append(user.following)
+    followers.append(user.followers)
+    avatar.append(user.avatar)
+    private.append(user.is_private )
+    verified.append(user.is_verified)
+    likes.append(user.likes)
+    media.append(user.media_count)
+    
+dic = []
+print(len(id))
+print(len(name))
+print(name)
+for item in zip(id, name,username,bio,location,url,join_date,join_time,tweets,following,followers,avatar,private,verified,likes,media):
+    
+        dic.append({
+            'id':item[0],
+            'name':item[1],
+            'username':item[2],
+            'bio':item[3],
+            'location':item[4],
+            'url':item[5],
+            'join_date':item[6],
+            'join_time':item[7],
+            'tweets':item[8],
+            'following':item[9],
+            'followers':item[10],
+            'avatar':item[11],
+            'private':item[12],
+            'verified':item[13],
+            'likes':item[14],
+            'media':item[15],
+           
+            
+            })
+
+print(dic)
+
+
+
+
+
+
+
+in djnago 
+
+
+

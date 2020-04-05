@@ -9,7 +9,5 @@ urlpatterns = [
     path('home/',views.home,name='home'),
     path('logout/',views.logout,name='logout'),
     path('twitterTrendsByCountry/',views.twitterTrendsByCountry,name='twitterTrendsByCountry'),
-    
-    
-    
+    path('twitterTrendsWorldWide/',views.twitterTrendsWorldWide,name='twitterTrendsWorldWide'),
 ]

@@ -21,4 +21,5 @@ urlpatterns = [
     path('',include('auth.urls')),
     path('admin/', admin.site.urls),
     path('dashboard', include("dashboard.urls")), 
+    path('twitter', include("twitter.urls")), 
 ]

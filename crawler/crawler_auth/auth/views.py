@@ -6,11 +6,14 @@ from django.contrib.auth  import authenticate,login as authorize,logout as deaut
 from bs4 import BeautifulSoup
 import requests
 import json
+import twint
+import nest_asyncio
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.db import models
-from django_countries.fields import CountryField
-
+# from django_countries.fields import CountryField
+import subprocess 
+import asyncio
 
 
 def login(request):
@@ -49,7 +52,8 @@ def register(request):
 def home(request):
     if(request.user.is_authenticated):
         trends=twitterTrends()
-        return render(request,'home.html',{'trends':trends})
+        world_trends=twitterTrendsWorldwide()
+        return render(request,'home.html',{'trends':trends,'world_trends':world_trends})
     return redirect('/login')
 
 def logout(request):
@@ -66,6 +70,38 @@ def logout(request):
           
 def twitterTrends():
     url='https://trends24.in/pakistan/';
+    page = requests.get(url);
+    status_code=page.status_code;
+    dic={};
+    hashtag_name=[];
+    hashtag_href=[];
+    hashtag_count=[];
+    if(status_code==200):
+        data=BeautifulSoup(page.text,'lxml')
+        new=data.find('ol',class_="trend-card__list");
+        li=data.find_all('li')
+        for i in li:
+            hashtag_name.append(i.a.text)
+            hashtag_href.append(i.a.attrs['href'])
+            if(i.find('span')):
+                hashtag_count.append(i.span.text)
+            else:
+                hashtag_count.append("count unavalible")
+        
+          
+            
+    dic = []
+    for item in zip(hashtag_name, hashtag_count, hashtag_href):
+    
+        dic.append({
+            'name':item[0],
+            'count':item[1],
+            'href':item[2]})
+        
+    return dic
+
+def twitterTrendsWorldwide():
+    url='https://trends24.in/';
     page = requests.get(url);
     status_code=page.status_code;
     dic={};
@@ -121,20 +157,46 @@ def twitterTrendsByCountry(request):
    
     dic = []
     for i in range(len(hashtag_name)):
-                 dic.append({i:
+                 dic.append(
                 {"name":hashtag_name[i],
                 "count":hashtag_count[i],
                 "href":hashtag_href[i]
-                }})
-    # for item in zip(hashtag_name, hashtag_count, hashtag_href):
+                })
     
-    #     dic.append({
-    #         'name':item[0],
-    #         'count':item[1],
-    #         'href':item[2]})
-        
-    # res = json.dumps(dic)
-    # return HttpResponse(res,mimetype="application/json")
-    return HttpResponse(dic)
+    return JsonResponse(dic,safe=False)
 
+def  twitterTrendsWorldWide(request):
+    url='https://trends24.in/';
+    page = requests.get(url);
+    status_code=page.status_code;
+    dic={};
+    hashtag_name=[];
+    hashtag_href=[];
+    hashtag_count=[];
+    if(status_code==200):
+        data=BeautifulSoup(page.text,'lxml')
+        new=data.find('ol',class_="trend-card__list");
+        li=data.find_all('li')
+        for i in li:
+            hashtag_name.append(i.a.text)
+            hashtag_href.append(i.a.attrs['href'])
+            if(i.find('span')):
+                hashtag_count.append(i.span.text)
+            else:
+                hashtag_count.append("count unavalible")
+        
+          
+   
+    dic = []
+    for i in range(len(hashtag_name)):
+                 dic.append(
+                {"name":hashtag_name[i],
+                "count":hashtag_count[i],
+                "href":hashtag_href[i]
+                })
+    
+    return JsonResponse(dic,safe=False)
+
+#Twitter Index
+   
  

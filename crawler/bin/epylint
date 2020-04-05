@@ -1,0 +1,10 @@
+#!/bin/sh
+'''exec' "/media/hadooop/FE921BE8921BA3E5/ahmed data/official repo osint screens/templating/bin/python3.6" "$0" "$@"
+' '''
+# -*- coding: utf-8 -*-
+import re
+import sys
+from pylint import run_epylint
+if __name__ == '__main__':
+    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
+    sys.exit(run_epylint())

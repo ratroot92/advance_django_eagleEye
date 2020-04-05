@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -39,8 +40,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'django_countries',
+    'twitter',
+    'django_celery_results',
+    'djcelery',
+    
+    # 'djcelery',
+    # 'kombu.transport.django',
     
 ]
+
+
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -85,9 +95,11 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'd_auth',
-        'USER': 'root',
-        'PASSWORD': 'asd',
+        'NAME': 'eagle_eye',
+            # 'NAME': 'd_auth',
+        'USER': 'admin',
+        # 'PASSWORD': 'asd',  
+        'PASSWORD': 'password',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
@@ -134,3 +146,27 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+
+
+BROKER_URL = 'amqp://localhost'
+CELERY_RESULT_BACKEND = 'amqp://localhost'
+# Celery Data Format
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+# CELERY_ACCEPT_CONTENT=['json']
+# CELERY_TASK_SERAILIZER='json'
+
+# celery setting.
+CELERY_CACHE_BACKEND = 'default'
+
+# django setting.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'my_cache_table',
+    }
+}
+CELERY_IMPORTS = ['twitter.tasks']

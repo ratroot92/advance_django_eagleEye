@@ -23,6 +23,38 @@
   <link href="{% static '/assets/css/black-dashboard.css' %}" rel="stylesheet" type="text/css" />
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="{% static '/assets/demo/demo.css'%}" rel="stylesheet" type="text/css" />
+<!-- leaf let map js  -->
+<link rel="stylesheet" href="{% static '/dashboard/css/leaflet.css'%}"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/>
+<!-- leaflet map js  -->
+  <style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px grey; 
+      border-radius: 10px;
+    }
+     
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: red; 
+      border-radius: 10px;
+    }
+    
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #b30000; 
+    }
+    .custom_center{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+    }
+    </style>
 </head>
 
 <body class="">
@@ -50,7 +82,7 @@
           <li>
             <a href="./icons.html">
               <i class="tim-icons icon-atom"></i>
-              <p>Icons</p>
+              <p><a href="/twitter/index/" class="text-white nav-link"style="font-size:12px">Twitter Engine</a></p>
             </a>
           </li>
           <li>
@@ -267,8 +299,8 @@
           <div class="col-lg-6 col-md-12">
             <div class="card card-tasks">
               <div class="card-header ">
-                <h6 class="title d-inline">Tasks(5)</h6>
-                <p class="card-category d-inline">today</p>
+                <h6 class="title d-inline"><span id="country_name" class="text-warning">Pakistan</span>  Top Trends  </h6>
+               
                 <div class="dropdown">
                   <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
                     <i class="tim-icons icon-settings-gear-63"></i>
@@ -281,29 +313,38 @@
                 </div>
 
                 <!--  -->
-                <form action="">
-                  <select class="form-control " name="select_trends_by_country" id="select_trends_by_country">
-                    <option value="india">India</option>
-                    <option value="pakistan">paksitan</option>
-                  </select>
-                </form>
+                <div class="row">
+                  <div class="col-md-6"><form action="">
+                    <select class="form-control border border-warning " name="select_trends_by_country" id="select_trends_by_country">
+                      <option class="text-dark" value="pakistan">Select Country</option>
+                      <option class="text-dark" value="india">India</option>
+                      <option class="text-dark" value="pakistan">paksitan</option>
+                    </select></div>
+                 
+                  <div class="col-md-6 text-center ">
+                    <button type="button" class="btn btn-sm btn-warning "  data-toggle="modal" data-target="#selectCountryGlobe"style="font-size:12px;">Select From Map</button>
+                    
+                  </div>
+                 
+                </div>
+               
               </div>
               <div class="card-body ">
-                <div class="table-full-width table-responsive"id="twitter_table">
+                <div class="table-full-width table-responsive" id="twitter_table" >
                   <table class="table">
                     <thead>
                       <tr>
-                        <th  class="text-warning font-weight-bold">SR</th>
-                     <th  class="text-warning font-weight-bold">HashTag Name </th>
-                     <th lass="text-warning font-weight-bold">HashTag Count  </th>
+                        <th  style="width:20%;" class="text-warning font-weight-bold">SR</th>
+                     <th  style="width:40%;" class="text-warning font-weight-bold">HashTag Name </th>
+                     <th style="width:40%;" class="text-warning font-weight-bold">HashTag Count  </th>
                      </tr>
                     </thead>
-                    <tbody id="twitter_table_body">
+                    <tbody id="twitter_table_body_1">
                      {% for i in trends %}
                       <tr>
                         <td class="text-white font-weight-bold">{{ forloop.counter }}</td>
-                        <td><a href="{{i.href}}" class="text-white font-weight-bold">{{i.name}}</a></td>
-                        <td><a href="{{i.href}}" class="text-white font-weight-bold">{{i.count}}</a></td>
+                        <td><a href="{{i.href}}" class="text-success font-weight-bold">{{i.name}}</a></td>
+                        <td><a href="{{i.href}}" class="text-success font-weight-bold">{{i.count}}</a></td>
                      
 
                       </tr>
@@ -316,136 +357,107 @@
             </div>
           </div>
           <div class="col-lg-6 col-md-12">
-            <div class="card ">
+            <div class="card card-tasks ">
               <div class="card-header">
-                <h4 class="card-title"> Simple Table</h4>
+                <h6 class="title d-inline"><span  class="text-warning">World-Wide</span>  Top Trends  </h6>
+               
+                <div class="dropdown">
+                  <button type="button" class="btn btn-link dropdown-toggle btn-icon" data-toggle="dropdown">
+                    <i class="tim-icons icon-settings-gear-63"></i>
+                  </button>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuLink">
+                    <a class="dropdown-item" href="#pablo">Action</a>
+                    <a class="dropdown-item" href="#pablo">Another action</a>
+                    <a class="dropdown-item" href="#pablo">Something else</a>
+                  </div>
+                </div>
+
+                <!--  -->
+                <div class="row">
+                  <div class="col-md-6">
+                    <select class="form-control border border-warning " name="select_trends_by_country" id="select_trends_by_country">
+                      <option class="text-dark" value="pakistan">Select Source</option>
+                      <option class="text-dark" value="trends24.in">www.trends24.in/</option>
+                      <option class="text-dark" value="pakistan">paksitan</option>
+                    </select></div>
+                
+                  <div class="col-md-6 text-center ">
+                    <button type="button" id="resfreshWordwideTrends_btn" class="btn btn-sm btn-warning " style="font-size:12px;">Refresh Source</button>
+                    
+                  </div>
+                </div>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table tablesorter " id="">
-                    <thead class=" text-primary">
+                <div class="table-full-width table-responsive">
+               
+                  <table class="table">
+                    <thead>
                       <tr>
-                        <th>
-                          Name
-                        </th>
-                        <th>
-                          Country
-                        </th>
-                        <th>
-                          City
-                        </th>
-                        <th class="text-center">
-                          Salary
-                        </th>
-                      </tr>
+                        <th  style="width:20%;" class="text-warning font-weight-bold">SR</th>
+                     <th  style="width:40%;" class="text-warning font-weight-bold">HashTag Name </th>
+                     <th style="width:40%;" class="text-warning font-weight-bold">HashTag Count  </th>
+                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="twitter_table_body_2">
+                     {% for i in world_trends %}
                       <tr>
-                        <td>
-                          Dakota Rice
-                        </td>
-                        <td>
-                          Niger
-                        </td>
-                        <td>
-                          Oud-Turnhout
-                        </td>
-                        <td class="text-center">
-                          $36,738
-                        </td>
+                        <td class="text-success font-weight-bold">{{ forloop.counter }}</td>
+                        <td><a href="{{i.href}}" class="text-success font-weight-bold">{{i.name}}</a></td>
+                        <td><a href="{{i.href}}" class="text-success font-weight-bold">{{i.count}}</a></td>
+                     
+
                       </tr>
-                      <tr>
-                        <td>
-                          Minerva Hooper
-                        </td>
-                        <td>
-                          Curaçao
-                        </td>
-                        <td>
-                          Sinaai-Waas
-                        </td>
-                        <td class="text-center">
-                          $23,789
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Sage Rodriguez
-                        </td>
-                        <td>
-                          Netherlands
-                        </td>
-                        <td>
-                          Baileux
-                        </td>
-                        <td class="text-center">
-                          $56,142
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Philip Chaney
-                        </td>
-                        <td>
-                          Korea, South
-                        </td>
-                        <td>
-                          Overland Park
-                        </td>
-                        <td class="text-center">
-                          $38,735
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Doris Greene
-                        </td>
-                        <td>
-                          Malawi
-                        </td>
-                        <td>
-                          Feldkirchen in Kärnten
-                        </td>
-                        <td class="text-center">
-                          $63,542
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Mason Porter
-                        </td>
-                        <td>
-                          Chile
-                        </td>
-                        <td>
-                          Gloucester
-                        </td>
-                        <td class="text-center">
-                          $78,615
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Jon Porter
-                        </td>
-                        <td>
-                          Portugal
-                        </td>
-                        <td>
-                          Gloucester
-                        </td>
-                        <td class="text-center">
-                          $98,615
-                        </td>
-                      </tr>
+                     {% endfor %}
                     </tbody>
+
                   </table>
                 </div>
               </div>
             </div>
           </div>
         </div>
+        
+<div class="container-fluid border ">
+  <div class="row">
+    <div class="col-md-12 ">
+      <ul class=" nav nav-tabs d-flex flex-row justify-content-around align-items-center ">
+        <li class="active">
+          <a data-toggle="tab" class="nav-link text-decoration-none  border-right border-left border" href="#map_1">Map 1</a></li>
+        <li>
+          <a data-toggle="tab" class="nav-link text-decoration-none  border-right border-left border" href="#map_2">Map 2</a></li>
+        <li>
+          <a data-toggle="tab" class="nav-link text-decoration-none  border-right border-left border" href="#map_3">Map 3</a></li>
+        <li>
+          <a data-toggle="tab" class="nav-link text-decoration-none  border-right border-left border" href="#map_4">Map 4</a></li>
+      </ul>
+    
+      <div class="tab-content "  style="height:400;width:100%">
+        <div id="map_1" class="tab-pane h-100 fade in active show">
+          <div class="map" id="map" class=" h-100 w-100"> 
+        </div>
+        </div>
+        <div id="map_2" class="tab-pane fade  h-100  ">
+          <div class="mmap" id='mmap' class=" h-100 w-100"></div>
+          <p class="text-white">tab 2</p>
       </div>
+        <div id="map_3" class="tab-pane  h-100 fade">
+          <p class="text-white">tab 3</p>
+          <div class="asd" id='asd' class=" h-100 w-100"></div>
+        </div>
+        <div id="map_4" class="tab-pane  h-100 fade">
+          <p class="text-white">tab 4</p>
+        </div>
+      </div>
+    </div>
+  </div>
+ 
+  </div>
+</div>
+      </div>
+
+
+
+
       <footer class="footer">
         <div class="container-fluid">
           <ul class="nav">
@@ -525,8 +537,88 @@
   <script src="{% static '/assets/js/plugins/chartjs.min.js' %} "></script>
   <script src="{% static '/assets/js/plugins/bootstrap-notify.js' %}"></script>
 
+
+
+
+
+
+
+
+
+
+
+
+
   <script src="{% static '/assets/js/black-dashboard.min.js?v=1.0.0' %}"></script>
   <script src="{% static '/assets/demo/demo.js' %} "></script>
+  <script src="{% static '/dashboard/js/leaflet.js'%}" ></script>
+ 
+
+
+
+
+
+
+
+
+
+
+
+<!-- leaf let multilayered map  -->
+<script>
+  var cities = L.layerGroup();
+
+	L.marker([39.61, -105.02]).bindPopup('This is Littleton, CO.').addTo(cities),
+	L.marker([39.74, -104.99]).bindPopup('This is Denver, CO.').addTo(cities),
+	L.marker([39.73, -104.8]).bindPopup('This is Aurora, CO.').addTo(cities),
+	L.marker([39.77, -105.23]).bindPopup('This is Golden, CO.').addTo(cities);
+
+
+	var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		mbUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+	var grayscale   = L.tileLayer(mbUrl, {id: 'mapbox/light-v9', tileSize: 512, zoomOffset: -1, attribution: mbAttr}),
+		streets  = L.tileLayer(mbUrl, {id: 'mapbox/streets-v11', tileSize: 512, zoomOffset: -1, attribution: mbAttr});
+
+	var map = L.map('map', {
+		center: [39.73, -104.99],
+		zoom: 10,
+		layers: [grayscale, cities]
+	});
+
+	var baseLayers = {
+		"Grayscale": grayscale,
+		"Streets": streets
+	};
+
+	var overlays = {
+		"Cities": cities
+	};
+
+	L.control.layers(baseLayers, overlays).addTo(map);
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <script>
     $(document).ready(function() {
       $().ready(function() {
@@ -653,46 +745,223 @@
         application: "black-dashboard-free"
       });
   </script>
+  
+  <script>
+    $(document).ready(function () {
+      $('#select_trends_by_country').on('change', function () {
+        var country = this.value;
+
+        $.ajax({
+          url: '/twitterTrendsByCountry',
+          type: 'GET',
+
+          data: {
+            'country': country
+          },
+          success: function (data) {
+            console.log("twitter trends by country name = success")
+            $('#twitter_table_body_1').empty();
+            $.each(data, function (i, item) {
+              var html = '<tr><td class="text-white font-weight-bold">' + i + '</td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.name + '</a></td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.count + '</a></td></tr>';
+              $('#twitter_table_body_1').append(html);
+            
+            });
+
+
+          },
+          error: function (error) {
+
+            console.log(error)
+          }
+        });
+
+
+
+      });
+    })
+
+
+  </script>
 
   <script>
-$(document).ready(function(){
-  $('#select_trends_by_country').on('change',function(){
-   var country=this.value;
+    $(document).ready(function () {
+      $('#resfreshWordwideTrends_btn').on('click', function () {
+        var country = '';
 
-    $.ajax({
-      url: '/twitterTrendsByCountry',
-      type:'GET',
+        $.ajax({
+          url: '/twitterTrendsByCountry',
+          type: 'GET',
+
+          data: {
+            'country': country
+          },
+          success: function (data) {
+            console.log("twitter trends by world  = success")
+           
+            $('#twitter_table_body_2').empty();
+            $.each(data, function (i, item) {
+              var html = '<tr><td class="text-white font-weight-bold">' + i + '</td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.name + '</a></td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.count + '</a></td></tr>';
+              $('#twitter_table_body_2').append(html);
      
+            });
+
+
+          },
+          error: function (error) {
+
+            console.log(error)
+          }
+        });
+
+
+
+      });
+    })
+
+
+  </script>
+<!-- Resources -->
+<script src="{% static '/dashboard/js/amcharts_core.js' %}"></script>
+<script src="{% static '/dashboard/js/amcharts_maps.js' %}"></script>
+<script src="{% static '/dashboard/js/amcharts_worldLow.js' %}"></script>
+<script src="{% static '/dashboard/js/amcharts_animated.js' %}"></script>
+
+<!-- Chart code -->
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("globe", am4maps.MapChart);
+
+// Set map definition
+chart.geodata = am4geodata_worldLow;
+
+// Set projection
+chart.projection = new am4maps.projections.Orthographic();
+chart.panBehavior = "rotateLongLat";
+chart.deltaLatitude = -20;
+chart.padding(0,0,0,0);
+
+// limits vertical rotation
+chart.adapter.add("deltaLatitude", function(delatLatitude){
+    return am4core.math.fitToRange(delatLatitude, -90, 90);
+})
+
+// Create map polygon series
+var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+
+// Make map load polygon (like country names) data from GeoJSON
+polygonSeries.useGeodata = true;
+
+// Configure series
+var polygonTemplate = polygonSeries.mapPolygons.template;
+polygonTemplate.tooltipText = "{name}";
+polygonTemplate.fill = am4core.color("#47c78a");
+polygonTemplate.stroke = am4core.color("#454a58");
+polygonTemplate.strokeWidth = 0.5;
+
+var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+graticuleSeries.mapLines.template.line.stroke = am4core.color("#ffffff");
+graticuleSeries.mapLines.template.line.strokeOpacity = 0.08;
+graticuleSeries.fitExtent = false;
+
+polygonTemplate.events.on("hit", function(ev) {
+  
+  // zoom to an object
+  //ev.target.series.chart.zoomToMapObject(ev.target);
+
+  // get object info
+ // console.log(ev.target.dataItem.dataContext.name);
+var value=ev.target.dataItem.dataContext.name;
+var country = value.toLowerCase();
+
+
+country=country.split(" ").join("-");
+console.log(country)
+
+  
+    $.ajax({
+      url: '/twitterTrendsWorldWide',
+      type: 'GET',
+
       data: {
         'country': country
       },
       success: function (data) {
-        $('#twitter_table').empty()
-       console.log(data)
-       console.log(data[0])
-       $('#twitter_table_body').empty();
-       $.each(Json.parse(data), function(i, item) {
-        console.log(item[i]["name"])
-        var  HTML='<tr><td class="text-white font-weight-bold">'+item[i].name+'</td><td><a href="" class="text-white font-weight-bold"></a></td><td><a href="" class="text-white font-weight-bold"></a></td></tr>';
-        $('#twitter_table').append(HTML);
-       console.log(i)
-    });
-      
-       
+
+        $('#twitter_table_body').empty();
+        $.each(data, function (i, item) {
+          var html = '<tr><td class="text-white font-weight-bold">' + i + '</td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.name + '</a></td><td><a href="' + item.href + '" class="text-white font-weight-bold">' + item.count + '</a></td></tr>';
+          $('#twitter_table_body').append(html);
+          console.log(i)
+        });
+
+    $('#selectCountryGlobe').modal('toggle');
+    $('#country_name').empty().append(value)
       },
       error: function (error) {
-       
-        console.log(error)
-       }
-    });
 
-    
+        console.log(error)
+      }
+  
+
+
 
   });
-  })
+});
 
 
-  </script>
+chart.backgroundSeries.mapPolygons.template.polygon.fillOpacity = 0.1;
+chart.backgroundSeries.mapPolygons.template.polygon.fill = am4core.color("#ffffff");
+
+// Create hover state and set alternative fill color
+var hs = polygonTemplate.states.create("hover");
+hs.properties.fill = chart.colors.getIndex(0).brighten(-0.5);
+
+let animation;
+setTimeout(function(){
+  animation = chart.animate({property:"deltaLongitude", to:100000}, 20000000);
+}, 3000)
+
+chart.seriesContainer.events.on("down", function(){
+if(animation){
+ // animation.stop();
+}
+})
+
+}); // end am4core.ready()
+</script>
+
+<!-- HTML -->
+
+
+  <!-- Modal -->
+<div  class="modal fade" id="selectCountryGlobe" tabindex="-1" role="dialog" aria-labelledby="selectCountryGlobeLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header custom_center bg-warning">
+       <p style="font-size:16px;">World globe </p>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body bg-dark">
+        <!-- <div id="globe"style="height:400px;width:100%"></div> -->
+      </div>
+      <div class="modal-footer d-flex flex-row justify-content-center align-items-center">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- leaf let maps  -->
+
+
 </body>
 
 </html>
