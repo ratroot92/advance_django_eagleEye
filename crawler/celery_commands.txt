@@ -1,0 +1,14 @@
+full debugging and start application 
+celery -A twitter worker --loglevel=info --settings=celeryconfig
+
+
+
+required debugging and start appilication 
+celery -A twitter worker --loglevel=info 
+
+
+
+shutdown celery 
+celery -A twitter control shutdown
+status=subprocess.run('celery -A twitter control shutdown',shell=True)
+

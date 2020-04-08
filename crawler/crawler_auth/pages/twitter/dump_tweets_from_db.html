@@ -1,0 +1,88 @@
+
+{% extends '../dashboard/layouts/base.html'%}
+{% load static %}
+{% block content %}
+
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            Number of tweets: {{ tweets|length }}
+        </div>
+    </div>
+	<div class="row">
+        {% for i in tweets %}
+        <div class="col-md-4 mt-5 border" style="border-radius:10px;">
+            <div class="row p-2">
+                <div class="col-md-2 m-0 p-0 d-flex flex-column justify-content-center align-items-center" style="height:auto;">
+                    <img class="img-fluid " src="{% static 'images/077_twitter-512.png'%}" style="height:50px;width:50px;border-radius:50%;"/>
+                    <p style="font-size:12px">
+                        Tweet # {{ forloop.counter }}
+                    </p>
+                </div>
+                <div class="col-md-10 ">
+                    <div class="row">
+                        <div class="col-md-12 d-flex flex-row justify-content-around align-items-center">
+                            <b class="text-warning " style="font-size:12px;">
+                                {{i.name}}
+                            </b>
+                            <span class="text-warning " style="font-size:12px;">
+                                @{{i.screen_name}}.
+                            </span>
+                            <span class="text-warning " style="font-size:10px;">
+                                {{i.date}}  {{i.time}}
+                            </span>
+                        </div>
+                        <div class="col-md-12 text-warning " style="font-size:12px;height:100px;overflow:auto;">
+                            <p class="p-2 ">
+                            </p>
+                            {{i.tweet}}
+                        </div>
+
+                            {% if i.photos is not empty %}
+                        <div class="col-md-12 text-warning " style="font-size:12px;height:100px;overflow:auto;">
+                           <img src="{{i.photos}}" height="100" width="100%" />
+                          
+                        </div>
+                        {% else %}
+                            {% endif %}
+
+
+                    </div>
+                    
+</div>
+<div class="col-md-3 text-warning">
+    <i class="fas fa-comment">
+    </i>
+    <span>
+        asd
+    </span>
+</div>
+<div class="col-md-3 text-warning">
+    <i aria-hidden="true" class="fa fa-retweet">
+    </i>
+    <span>
+        {{i.replies_count}}
+    </span>
+</div>
+<div class="col-md-3 text-warning">
+    <i class="fas fa-heart">
+    </i>
+    <span>
+        {{i.tweet_like_count}}
+    </span>
+</div>
+<div class="col-md-3 text-warning">
+    <i class="fas fa-upload">
+    </i>
+    <span>
+        {{i.retweet_count}}
+    </span>
+</div>
+</div>
+</div>
+        {% endfor%}
+	</div>
+</div>
+
+{% endblock %}

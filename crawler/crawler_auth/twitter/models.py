@@ -1,26 +1,68 @@
 from django.db import models
 from django.db.models.signals import pre_save,post_save
-
+from django import forms
+from django.core import validators
+from django.core.validators import ValidationError
+from datetime import datetime,date
 # Create your models here.
 
+
+
+    
 class Twitter_Target(models.Model):
-    target_platform = models.TextField(max_length=100)
-    target_type =models.TextField(max_length=100) 
-    twitter_username =models.TextField(max_length=100) 
-    submission_date = models.TextField(max_length=100)
-    target_scheduling=models.TextField(max_length=100)
     
+                
+                
+    target_scheudling_chioces=[('','Select Target Scheuling'),
+                               ('1hr','Every One Hour'),
+                               ('6hr','Every Six Hour'),
+                               ('12hr','Every Twelve Hour'),
+                               ('24hr','Every Day '),
+                             ]
+    target_platform = models.CharField(max_length=255,default="twitter")
+    target_type =models.CharField(max_length=255,default="twitter_person",) 
+    twitter_username =models.CharField(max_length=255,primary_key=True) 
+    target_scheduling=models.CharField(max_length=255,choices=target_scheudling_chioces)
+    scanning_status=models.CharField(max_length=255,default="pending")
+    created_at = models.DateField(auto_now_add=True,auto_now=False,blank=True)
+    updated_at = models.DateField(auto_now=True,blank=True)
+    objects=models.Manager
     
-def before_Twitter_Target_save(sender,instance,**kwargs):
-    print('submitting twitter_target ')
+class Twitter_TargetForm(forms.ModelForm):
+      def __init__(self, *args, **kwargs):
+            super(Twitter_TargetForm, self).__init__(*args, **kwargs)
+            self.fields['target_scheduling'].required = True
+            self.fields['target_platform'].required = True
+            self.fields['target_type'].required = True
+            self.fields['target_platform'].disabled = True
+            self.fields['target_type'].disabled = True
+            self.fields['scanning_status'].disabled = True
+                
+      class Meta: 
+            # readonly_fields=('submission_date',)
+            model=Twitter_Target
+            fields=['target_platform','target_type','twitter_username','target_scheduling','scanning_status']
+            # widgets = {
+            # 'submission_date': forms.DateInput(attrs={'type': 'date'})
+            #}
+      def clean_twitter_username(self):
+           _twitter_username=self.cleaned_data['twitter_username']  
+           try:
+             match=Twitter_Target.objects.get(twitter_username=_twitter_username)
+           except:
+             return self.cleaned_data['twitter_username']
+           raise validators.ValidationError("target already exsists")
+    
+# def before_Twitter_Target_save(sender,instance,**kwargs):
+#     print('submitting twitter_target ')
         
-def after_Twitter_Target_save(sender,instance,**kwargs):
-    print('submitting twitter_target ')
+# def after_Twitter_Target_save(sender,instance,**kwargs):
+#     print('submitting twitter_target ')
    
 
     
-pre_save.connect(before_Twitter_Target_save,sender=Twitter_Target)
-post_save.connect(after_Twitter_Target_save,sender=Twitter_Target)
+# pre_save.connect(before_Twitter_Target_save,sender=Twitter_Target)
+# post_save.connect(after_Twitter_Target_save,sender=Twitter_Target)
 
   
     

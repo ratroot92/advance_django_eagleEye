@@ -16,6 +16,8 @@ from django.db import models
 import subprocess
 import asyncio
 from .tasks import asd
+from .models import Tweets,Twitter_TargetForm,Twitter_Target
+from django.contrib import messages
 
 
 # Create your views here.
@@ -86,6 +88,37 @@ def getFollowingList(request):
     username = request.POST['twitter_username']
     following_list=getFollowing(username)
     return render(request, 'twitter/dump_following.html', { 'following_list': following_list})
+
+
+def addTwitterTarget(request):
+     form=Twitter_TargetForm
+     targets=Twitter_Target.objects.all()
+     if request.method ==  'POST':
+         form=Twitter_TargetForm(request.POST)
+         if form.is_valid():
+             form.save()
+             r=asd.delay(request.POST['twitter_username'])
+             messages.success(request,'Target added successfully')
+             return redirect('/twitter/addTwitterTarget')        
+     
+     return render(request,'twitter/addTwitterTarget.html',{'form':form,'targets':targets})
+
+def viewTweets(request,username):
+    tweets = Tweets.objects.filter(screen_name=username)
+    if(len(tweets)<=0):
+         messages.error(request,'No tweets found ')
+         return redirect('/twitter/addTwitterTarget')
+    return render(request,'twitter/dump_tweets_from_db.html',{'tweets':tweets})
+
+
+def username(request, _username):
+    return render(request, 'chat/room.html', {
+        '_username': _username
+    })
+
+
+
+
 
 
 
@@ -401,3 +434,4 @@ def getFollowing(username):
     })
     print(len(dic))
     return dic 
+

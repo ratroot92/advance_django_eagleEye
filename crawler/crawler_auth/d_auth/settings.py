@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'twitter',
     'django_celery_results',
     'djcelery',
+    'channels',
     
     # 'djcelery',
     # 'kombu.transport.django',
@@ -81,6 +82,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'd_auth.wsgi.application'
+ASGI_APPLICATION = 'd_auth.routing.application'
 
 
 # Database
@@ -129,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Karachi'
 
 USE_I18N = True
 

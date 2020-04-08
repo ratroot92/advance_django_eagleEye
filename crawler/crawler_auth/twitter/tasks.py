@@ -21,84 +21,93 @@ import json
 import twint
 import asyncio
 import nest_asyncio
-# from .models import Tweets_Model
-
+from .models import Twitter_Target
+import subprocess
 @shared_task
 def asd(_username):
-    tweets_list = []
     c = twint.Config()
-    c.Username = "maliksblr92"
-    # c.Username = _username
-    # c.Limit = limit
-    c.Store_object = True  # this is what you need
-    c.Hide_output = True
-    c.Database = "tweets.db"
-
-    tweet_text = []
-    tweet_id = []
-    tweet_date_timestamp = []
-    tweet_timestamp = []
-    tweet_userid = []
-    tweet_username = []
-    tweet_tweet_name = []
-    tweet_time_zone = []
-    tweet_replies_count = []
-    tweet_retweet_count = []
-    tweet_link = []
-    tweet_like_count = []
-    tweet_retweet_status = []
-    tweet_quote_url = []
-
+    c.Username = _username
+#    c.Limit = 20
+    c.Store_object = True
+    c.Hide_output = False
+    c.Database = "eagle_eye"
+   # nest_asyncio.apply()
     twint.run.Search(c)
-    tweets = twint.output.tweets_list
-    for tweet in tweets:
-        tweet_text.append(format(tweet.tweet))
-        tweet_id.append(format(tweet.id))
-        tweet_date_timestamp.append(format(tweet.datestamp))
-        tweet_timestamp.append(format(tweet.timestamp))
-        tweet_userid.append(format(tweet.user_id_str))
-        tweet_username.append(format(tweet.username))
-        tweet_tweet_name.append(format(tweet.name))
-        tweet_time_zone.append(format(tweet.timezone))
-        tweet_replies_count.append(format(tweet.replies_count))
-        tweet_retweet_count.append(format(tweet.retweets_count))
-        tweet_like_count.append(format(tweet.likes_count))
-        tweet_link.append(format(tweet.link))
-        tweet_retweet_status.append(format(tweet.retweet))
-        tweet_quote_url.append(format(tweet.quote_url))
-    dic = []
-    for item in zip(tweet_text, tweet_id, tweet_date_timestamp, tweet_timestamp, tweet_userid, tweet_username, tweet_tweet_name, tweet_time_zone, tweet_replies_count, tweet_retweet_count, tweet_link, tweet_like_count, tweet_retweet_status, tweet_quote_url):
+    t = Twitter_Target.objects.get(twitter_username=_username)
+    t.scanning_status = 'completed' 
+    t.save() 
+    #status=subprocess.run('celery -A twitter control shutdown',shell=True)
+    print("status.returncode");
+    
 
-        dic.append({
-            'tweet_text': item[0],
-            'tweet_id': item[1],
-            'tweet_date_timestamp': item[2],
-            'tweet_timestamp': item[3],
-            'tweet_userid': item[4],
-            'tweet_username': item[5],
-            'tweet_tweet_name': item[6],
-            'tweet_time_zone': item[7],
-            'tweet_replies_count': item[8],
-            'tweet_retweet_count': item[9],
-            'tweet_link': item[10],
-            'tweet_like_count': item[11],
-            'tweet_retweet_status': item[12],
-            'tweet_quote_url': item[13],
-        })
-    print(dic)
-    # target=Tweets_Model(
-    #     t_tweet=target_type,
-    #     t_id=target_platform,
-    #     t_datetime=twitter_username,
-    #     t_timestamp=submission_date,
-    #     t_user_id=submission_date,
-    #     t_username=target_scheduling,
-    #     t_name=target_type,
-    #     t_timezone=target_platform,
-    #     t_retweets_count=twitter_username,
-    #     t_link=submission_date,
-    #    )
-    # target.save()
+
+
+
+    # tweet_text = []
+    # tweet_id = []
+    # tweet_date_timestamp = []
+    # tweet_timestamp = []
+    # tweet_userid = []
+    # tweet_username = []
+    # tweet_tweet_name = []
+    # tweet_time_zone = []
+    # tweet_replies_count = []
+    # tweet_retweet_count = []
+    # tweet_link = []
+    # tweet_like_count = []
+    # tweet_retweet_status = []
+    # tweet_quote_url = []
+
+    # twint.run.Search(c)
+    # tweets = twint.output.tweets_list
+    # for tweet in tweets:
+    #     tweet_text.append(format(tweet.tweet))
+    #     tweet_id.append(format(tweet.id))
+    #     tweet_date_timestamp.append(format(tweet.datestamp))
+    #     tweet_timestamp.append(format(tweet.timestamp))
+    #     tweet_userid.append(format(tweet.user_id_str))
+    #     tweet_username.append(format(tweet.username))
+    #     tweet_tweet_name.append(format(tweet.name))
+    #     tweet_time_zone.append(format(tweet.timezone))
+    #     tweet_replies_count.append(format(tweet.replies_count))
+    #     tweet_retweet_count.append(format(tweet.retweets_count))
+    #     tweet_like_count.append(format(tweet.likes_count))
+    #     tweet_link.append(format(tweet.link))
+    #     tweet_retweet_status.append(format(tweet.retweet))
+    #     tweet_quote_url.append(format(tweet.quote_url))
+    # dic = []
+    # for item in zip(tweet_text, tweet_id, tweet_date_timestamp, tweet_timestamp, tweet_userid, tweet_username, tweet_tweet_name, tweet_time_zone, tweet_replies_count, tweet_retweet_count, tweet_link, tweet_like_count, tweet_retweet_status, tweet_quote_url):
+
+    #     dic.append({
+    #         'tweet_text': item[0],
+    #         'tweet_id': item[1],
+    #         'tweet_date_timestamp': item[2],
+    #         'tweet_timestamp': item[3],
+    #         'tweet_userid': item[4],
+    #         'tweet_username': item[5],
+    #         'tweet_tweet_name': item[6],
+    #         'tweet_time_zone': item[7],
+    #         'tweet_replies_count': item[8],
+    #         'tweet_retweet_count': item[9],
+    #         'tweet_link': item[10],
+    #         'tweet_like_count': item[11],
+    #         'tweet_retweet_status': item[12],
+    #         'tweet_quote_url': item[13],
+    #     })
+    # print(dic)
+    # # target=Tweets_Model(
+    # #     t_tweet=target_type,
+    # #     t_id=target_platform,
+    # #     t_datetime=twitter_username,
+    # #     t_timestamp=submission_date,
+    # #     t_user_id=submission_date,
+    # #     t_username=target_scheduling,
+    # #     t_name=target_type,
+    # #     t_timezone=target_platform,
+    # #     t_retweets_count=twitter_username,
+    # #     t_link=submission_date,
+    # #    )
+    # # target.save()
 
 
 

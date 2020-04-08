@@ -12,4 +12,7 @@ urlpatterns = [
     path('fullProfile/',views.fullProfile,name='fullProfile'),
     path('getFollowersList/',views.getFollowersList,name='getFollowersList'),
     path('getFollowingList/',views.getFollowingList,name='getFollowingList'),
+    path('/addTwitterTarget/',views.addTwitterTarget,name='addTwitterTarget'),
+    path('/viewTweets/?P(?P<username>[0-9]+)\\/$/',views.viewTweets,name='viewTweets'),
+    path('<str:_username>/', views.username, name='username'),
 ]	
