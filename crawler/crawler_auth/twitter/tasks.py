@@ -21,7 +21,7 @@ import json
 import twint
 import asyncio
 import nest_asyncio
-from .models import Twitter_Target
+from .models import Twitter_Target,Twitter_Target_Profile
 import subprocess
 @shared_task
 def asd(_username):
@@ -108,6 +108,34 @@ def asd(_username):
     # #     t_link=submission_date,
     # #    )
     # # target.save()
+
+
+@shared_task
+def twitterProfileScan(_username):
+    # nest_asyncio.apply()
+    c = twint.Config()
+    c.Username = _username
+    c.User_full = True
+    c.Store_object = True
+    c.Database = "eagle_eye"  
+    twint.run.Followers(c)  
+    # twint.run.Following(c)
+    # t = Twitter_Target_Profile.objects.get(twitter_username=_username)
+    # t.scanning_status = 'completed' 
+    # t.save() 
+    #status=subprocess.run('celery -A twitter control shutdown',shell=True)
+    # print("status.returncode");
+
+
+
+
+
+
+
+
+
+
+
 
 
 

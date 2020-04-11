@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'djcelery',
     'channels',
-    
+    # 'easy_pdf',
     # 'djcelery',
     # 'kombu.transport.django',
     
@@ -104,6 +104,8 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
+        # 'use_unicode':'True',
+        #  'charset':'utf8',
     }
 }
 

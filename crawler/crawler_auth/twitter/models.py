@@ -8,6 +8,75 @@ from datetime import datetime,date
 
 
 
+
+
+
+
+
+
+
+
+
+#twitter profile form and modal 
+
+class Twitter_Target_Profile(models.Model):
+    
+                
+                
+    target_scheudling_chioces=[('','Select Target Scheuling'),
+                               ('1hr','Every One Hour'),
+                               ('6hr','Every Six Hour'),
+                               ('12hr','Every Twelve Hour'),
+                               ('24hr','Every Day '),
+                             ]
+    target_platform = models.CharField(max_length=255,default="twitter")
+    target_type =models.CharField(max_length=255,default="twitter_profile",) 
+    twitter_username =models.CharField(max_length=255,primary_key=True) 
+    target_scheduling=models.CharField(max_length=255,choices=target_scheudling_chioces)
+    scanning_status=models.CharField(max_length=255,default="pending")
+    created_at = models.DateField(auto_now_add=True,auto_now=False,blank=True)
+    updated_at = models.DateField(auto_now=True,blank=True)
+    objects=models.Manager
+    
+class Twitter_TargetFormProfile(forms.ModelForm):
+      def __init__(self, *args, **kwargs):
+            super(Twitter_TargetFormProfile, self).__init__(*args, **kwargs)
+            self.fields['target_scheduling'].required = True
+            self.fields['target_platform'].required = True
+            self.fields['target_type'].required = True
+            self.fields['target_platform'].disabled = True
+            self.fields['target_type'].disabled = True
+            self.fields['scanning_status'].disabled = True
+                
+      class Meta: 
+            # readonly_fields=('submission_date',)
+            model=Twitter_Target_Profile
+            fields=['target_platform','target_type','twitter_username','target_scheduling','scanning_status']
+            # widgets = {
+            # 'submission_date': forms.DateInput(attrs={'type': 'date'})
+            #}
+      def clean_twitter_username(self):
+           _twitter_username=self.cleaned_data['twitter_username']  
+           try:
+             match=Twitter_TargetFormProfile.objects.get(twitter_username=_twitter_username)
+           except:
+             return self.cleaned_data['twitter_username']
+           raise validators.ValidationError("target already exsists")
+         
+         
+#Twitter tweets form 
+
+
+
+
+
+
+
+
+
+
+
+
     
 class Twitter_Target(models.Model):
     

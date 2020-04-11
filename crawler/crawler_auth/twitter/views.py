@@ -15,9 +15,20 @@ from django.db import models
 # from django_countries.fields import CountryField
 import subprocess
 import asyncio
-from .tasks import asd
-from .models import Tweets,Twitter_TargetForm,Twitter_Target
+from .tasks import asd,twitterProfileScan
+from .models import Tweets
+from .models import Twitter_TargetForm,Twitter_Target
+from .models import Twitter_TargetFormProfile,Twitter_Target_Profile
 from django.contrib import messages
+from django.core.paginator import Paginator,EmptyPage,PageNotAnInteger
+from xhtml2pdf import pisa
+from django.views.generic import View
+from django_xhtml2pdf.utils import generate_pdf
+from django.http import HttpResponse
+from django.views.generic import View
+import sys
+from twitter.utils import render_to_pdf #created in step 4
+
 
 
 # Create your views here.
@@ -90,6 +101,9 @@ def getFollowingList(request):
     return render(request, 'twitter/dump_following.html', { 'following_list': following_list})
 
 
+
+#Twtitter tweets start
+
 def addTwitterTarget(request):
      form=Twitter_TargetForm
      targets=Twitter_Target.objects.all()
@@ -104,18 +118,68 @@ def addTwitterTarget(request):
      return render(request,'twitter/addTwitterTarget.html',{'form':form,'targets':targets})
 
 def viewTweets(request,username):
-    tweets = Tweets.objects.filter(screen_name=username)
-    if(len(tweets)<=0):
+    tweets_list = Tweets.objects.filter(screen_name=username).order_by('-date')
+    if(len(tweets_list)<=0):
          messages.error(request,'No tweets found ')
          return redirect('/twitter/addTwitterTarget')
+    l=(len(tweets_list)//25)
+    paginator=Paginator(tweets_list,l)
+    page=request.GET.get('page')
+    try:
+        tweets=paginator.page(page)
+    except PageNotAnInteger:
+        tweets=paginator.page(1)
+    except EmptyPage:
+        tweets=paginator.page(paginator.num_pages)
     return render(request,'twitter/dump_tweets_from_db.html',{'tweets':tweets})
 
+
+
+    
+def generatePDF(request,username):
+        template = 'twitter/dump_tweets_from_db.html'
+        tweets_list = Tweets.objects.filter(screen_name=username).order_by('-date')
+
+        context = {
+            "tweets": tweets_list,
+           
+        }
+        pdf = render_to_pdf('pdfs/template_pdf.html', context)
+        if pdf:
+            response = HttpResponse(pdf, content_type='application/pdf')
+            filename = "Invoice_%s.pdf" %("12341231")
+            content = "inline; filename='%s'" %(filename)
+            download = request.GET.get("download")
+            if download:
+                content = "attachment; filename='%s'" %(filename)
+            response['Content-Disposition'] = content
+            return response
+        return HttpResponse("Not found")
 
 def username(request, _username):
     return render(request, 'chat/room.html', {
         '_username': _username
     })
+# twitter tweets end 
 
+# twitter profile start 
+
+def addTwitterTarget_Profile(request):
+     form=Twitter_TargetFormProfile
+     profile_targets=Twitter_Target_Profile.objects.all()
+     if request.method ==  'POST':
+         form=Twitter_TargetFormProfile(request.POST)
+         if form.is_valid():
+             form.save()
+             r=twitterProfileScan.delay(request.POST['twitter_username'])
+             messages.success(request,'Profile Target added successfully')
+             return redirect('/twitter/addTwitterTarget/profile')
+   
+     return render(request,'twitter/addTwitterTarget_Profile.html',{'form':form,'profile_targets':profile_targets})
+
+
+
+# twitter profile end 
 
 
 

@@ -1,5 +1,5 @@
 full debugging and start application 
-celery -A twitter worker --loglevel=info --settings=celeryconfig
+celery -A twitter worker --loglevel=info --loglevel=DEBUG
 
 
 

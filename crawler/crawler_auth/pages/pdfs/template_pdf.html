@@ -1,29 +1,7 @@
-{% extends '../twitter/layouts/base.html'%}
-{% load static %}
-{% block content %}
 
-<style>
-    /* width */
-    ::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #f1f1f1; 
-    }
-     
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #888; 
-    }
-    
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #555; 
-    }
-    </style>
+
+{% load static %}
+
 <div class="container-fluid">
     <div class="row bg-dark p-1 ">
         <div class="col-md-10 text-white d-flex flex-row justify-content-around align-items-center ">
@@ -45,12 +23,12 @@
                         style="height:50px;width:50px;border-radius:50%;" />
                     <p style="font-size:12px" class="text-primary font-weight-bold  ">
                         Tweet # {{ forloop.counter }}
-                    </p>    
+                    </p>
                 </div>
                 <div class="col-md-10 ">
                     <div class="row">
                         <div class="col-md-12 d-flex flex-row justify-content-around align-items-center">
-                            <b class="text-danger border m-0 p-0 col-md-4 " style="font-size:10px;">
+                            <b class="text-danger border m-0 p-0 col-md-4 " style="font-size:12px;">
                                 {{i.name}}
                             </b>
                             <span class="text-danger border m-0 p-0 col-md-4 " style="font-size:12px;">
@@ -150,4 +128,3 @@
 
 
 
-{% endblock %}
