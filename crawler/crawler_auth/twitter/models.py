@@ -140,7 +140,7 @@ class Favorites(models.Model):
     
     user = models.OneToOneField('Users', models.DO_NOTHING, primary_key=True,related_name='+')
     tweet = models.ForeignKey('Tweets', models.DO_NOTHING, related_name='+')
-
+    objects = models.Manager()
         #class Meta:
            # managed = False
          #   db_table = 'favorites'
@@ -150,7 +150,7 @@ class Favorites(models.Model):
 class Followers(models.Model):
     id = models.OneToOneField('Users', models.DO_NOTHING, db_column='id', primary_key=True,related_name='+')
     follower = models.ForeignKey('Users', models.DO_NOTHING, related_name='+')
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'followers'
@@ -161,7 +161,7 @@ class FollowersNames(models.Model):
     user = models.CharField(max_length=100,primary_key=True)
     time_update = models.IntegerField()
     follower = models.TextField()
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'followers_names'
@@ -171,7 +171,7 @@ class FollowersNames(models.Model):
 class Following(models.Model):
     id = models.OneToOneField('Users', models.DO_NOTHING, db_column='id', primary_key=True,related_name='+')
     following = models.ForeignKey('Users', models.DO_NOTHING, related_name='+')
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'following'
@@ -182,7 +182,7 @@ class FollowingNames(models.Model):
     user = models.CharField(max_length=100,primary_key=True)
     time_update = models.IntegerField()
     follows = models.TextField()
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'following_names'
@@ -193,6 +193,7 @@ class Replies(models.Model):
     tweet = models.ForeignKey('Tweets', models.DO_NOTHING, related_name='+')
     user_id = models.BigIntegerField(primary_key=True)
     username = models.TextField()
+    objects = models.Manager()
 
     #class Meta:
        # managed = False
@@ -206,6 +207,7 @@ class Retweets(models.Model):
     tweet = models.ForeignKey('Tweets', models.DO_NOTHING, related_name='+')
     retweet_id = models.BigIntegerField()
     retweet_date = models.BigIntegerField()
+    objects = models.Manager()
 
     #class Meta:
        # managed = False
@@ -245,7 +247,7 @@ class Tweets(models.Model):
     translate = models.TextField(blank=True, null=True)
     trans_src = models.TextField(blank=True, null=True)
     trans_dest = models.TextField(blank=True, null=True)
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'tweets'
@@ -272,7 +274,7 @@ class Users(models.Model):
     background_image = models.TextField(blank=True, null=True)
     hex_dig = models.TextField()
     time_update = models.BigIntegerField()
-
+    objects = models.Manager()
     #class Meta:
        # managed = False
      #   db_table = 'users'

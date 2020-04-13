@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
   <head>
@@ -47,5 +48,1185 @@
   
     
   </body>
+  <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+  <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
+  <script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
+  <script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
+  <script>
+    $(document).ready(function(){
+       
+    })
+</script>
+<script src="//www.amcharts.com/lib/4/core.js"></script>
+<script src="//www.amcharts.com/lib/4/charts.js"></script>
+<script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="//www.amcharts.com/lib/4/themes/dataviz.js"></script>
+<script src="//www.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script type="text/javascript">
+
+var geocoder = new google.maps.Geocoder();
+var address = "new york";
+
+geocoder.geocode( { 'address': address}, function(results, status) {
+
+  if (status == google.maps.GeocoderStatus.OK) {
+    var latitude = results[0].geometry.location.lat();
+    var longitude = results[0].geometry.location.lng();
+    alert(latitude);
+  } 
+}); 
+</script>
+<script>
+  
+   
+am4core.useTheme(am4themes_animated);
+
+// Create chart
+var chart = am4core.create("followers_tree", am4plugins_forceDirected.ForceDirectedTree);
+
+// Create series
+var series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+
+// Set data
+
+
+  
+
+series.data = [{
+"name":"{{user.0}}",
+"value":1,
+"image":"{{user.2}}",
+"children": [
+  {% for x in followers_list %}
+  {
+    "name": "{{x.name}}",
+    "value": "{{forloop.counter}}",
+    "image": "{{x.profile_image_url}}"
+  },
+{% endfor %}]
+}];
+
+console.log(series.data)
+
+
+// Set up data fields
+series.dataFields.value = "value";
+series.dataFields.name = "name";
+series.dataFields.id = "id";
+series.dataFields.children = "children";
+series.dataFields.linkWith = "link";
+
+// Add labels
+series.nodes.template.label.text = "{name}";
+series.nodes.template.label.valign = "bottom";
+series.nodes.template.label.fill = am4core.color("#fff");
+series.nodes.template.label.dy = 10;
+series.nodes.template.tooltipText = "{name}: [bold]{value}[/]";
+series.fontSize = 10;
+series.minRadius = 30;
+series.maxRadius = 30;
+
+// Configure circles
+series.nodes.template.circle.fillOpacity = 1;
+series.nodes.template.circle.fill = am4core.color("#fff");
+series.links.template.strokeWidth = 1;
+
+
+
+
+
+// Configure icons
+var icon = series.nodes.template.createChild(am4core.Image);
+icon.propertyFields.href = "image";
+icon.horizontalCenter = "middle";
+icon.verticalCenter = "middle";
+icon.width = 40;
+icon.height = 40;
+
+
+series.centerStrength = 0.2;
+series.links.template.distance = 3;
+</script>
+
+
+
+<script>
+  
+  
+
+am4core.useTheme(am4themes_animated);
+
+// Create chart
+var chart = am4core.create("following_tree", am4plugins_forceDirected.ForceDirectedTree);
+
+// Create series
+var series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+
+// Set data
+
+
+  
+
+series.data = [{
+"name":"{{user.0}}",
+"value":1,
+"image":"{{user.2}}",
+"children": [
+  {% for x in following_list %}
+  {
+    "name": "{{x.name}}",
+    "value": "{{forloop.counter}}",
+    "image": "{{x.profile_image_url}}"
+  },
+{% endfor %}]
+}];
+
+console.log(series.data)
+
+
+// Set up data fields
+series.dataFields.value = "value";
+series.dataFields.name = "name";
+series.dataFields.id = "id";
+series.dataFields.children = "children";
+series.dataFields.linkWith = "link";
+
+// Add labels
+series.nodes.template.label.text = "{name}";
+series.nodes.template.label.valign = "bottom";
+series.nodes.template.label.fill = am4core.color("#fff");
+series.nodes.template.label.dy = 10;
+series.nodes.template.tooltipText = "{name}: [bold]{value}[/]";
+series.fontSize = 10;
+series.minRadius = 30;
+series.maxRadius = 30;
+
+// Configure circles
+series.nodes.template.circle.fillOpacity = 1;
+series.nodes.template.circle.fill = am4core.color("#fff");
+series.links.template.strokeWidth = 1;
+
+
+
+
+
+// Configure icons
+var icon = series.nodes.template.createChild(am4core.Image);
+icon.propertyFields.href = "image";
+icon.horizontalCenter = "middle";
+icon.verticalCenter = "middle";
+icon.width = 40;
+icon.height = 40;
+
+
+series.centerStrength = 0.2;
+series.links.template.distance = 3;
+</script>
+/* end followers and following trees  */
+
+/* start following following and followers count  */
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_dark);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("following_chart_followers_count", am4charts.XYChart);
+
+var data=[
+  
+    {% for i in following_list %}
+{"category": "{{i.name}}", "value": "{{i.followers}}"},
+{% endfor %}
+]
+
+chart.data = data;
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.dataFields.category = "category";
+categoryAxis.renderer.minGridDistance = 15;
+categoryAxis.renderer.grid.template.location = 0.5;
+categoryAxis.renderer.grid.template.strokeDasharray = "1,3";
+categoryAxis.renderer.labels.template.rotation = -90;
+categoryAxis.renderer.labels.template.horizontalCenter = "left";
+categoryAxis.renderer.labels.template.fontSize = 12;
+categoryAxis.renderer.labels.template.location = 0.5;
+
+categoryAxis.renderer.labels.template.adapter.add("dx", function(dx, target) {
+    return -target.maxRight / 2;
+})
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.tooltip.disabled = true;
+valueAxis.renderer.ticks.template.disabled = true;
+valueAxis.renderer.axisFills.template.disabled = true;
+
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.categoryX = "category";
+series.dataFields.valueY = "value";
+series.tooltipText = "{valueY.value}";
+series.sequencedInterpolation = true;
+series.fillOpacity = 0;
+series.strokeOpacity = 1;
+series.strokeDashArray = "1,3";
+series.columns.template.width = 0.01;
+series.tooltip.pointerOrientation = "horizontal";
+
+var bullet = series.bullets.create(am4charts.CircleBullet);
+
+chart.cursor = new am4charts.XYCursor();
+
+chart.scrollbarX = new am4core.Scrollbar();
+chart.scrollbarY = new am4core.Scrollbar();
+
+
+}); // end am4core.ready()
+</script>
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_dark);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("following_chart_following_count", am4charts.XYChart);
+
+var data=[
+  
+    {% for i in following_list %}
+{"category": "{{i.name}}", "value": "{{i.following}}"},
+{% endfor %}
+]
+
+chart.data = data;
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.dataFields.category = "category";
+categoryAxis.renderer.minGridDistance = 15;
+categoryAxis.renderer.grid.template.location = 0.5;
+categoryAxis.renderer.grid.template.strokeDasharray = "1,3";
+categoryAxis.renderer.labels.template.rotation = -90;
+categoryAxis.renderer.labels.template.horizontalCenter = "left";
+categoryAxis.renderer.labels.template.fontSize = 12;
+categoryAxis.renderer.labels.template.location = 0.5;
+
+
+categoryAxis.renderer.labels.template.adapter.add("dx", function(dx, target) {
+    return -target.maxRight / 2;
+})
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.tooltip.disabled = true;
+valueAxis.renderer.ticks.template.disabled = true;
+valueAxis.renderer.axisFills.template.disabled = true;
+
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.categoryX = "category";
+series.dataFields.valueY = "value";
+series.tooltipText = "{valueY.value}";
+series.sequencedInterpolation = true;
+series.fillOpacity = 0;
+series.strokeOpacity = 1;
+series.strokeDashArray = "1,3";
+series.columns.template.width = 0.01;
+series.tooltip.pointerOrientation = "horizontal";
+
+var bullet = series.bullets.create(am4charts.CircleBullet);
+
+chart.cursor = new am4charts.XYCursor();
+
+chart.scrollbarX = new am4core.Scrollbar();
+chart.scrollbarY = new am4core.Scrollbar();
+
+
+}); // end am4core.ready()
+</script>
+
+
+
+
+
+
+
+
+/* end  */
+
+
+
+
+/* start following followers and following count  */
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_dark);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("followers_chart_followers_count", am4charts.XYChart);
+
+var data=[
+  
+    {% for i in followers_list %}
+{"category": "{{i.name}}", "value": "{{i.followers}}"},
+{% endfor %}
+]
+
+chart.data = data;
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.dataFields.category = "category";
+categoryAxis.renderer.minGridDistance = 15;
+categoryAxis.renderer.grid.template.location = 0.5;
+categoryAxis.renderer.grid.template.strokeDasharray = "1,3";
+categoryAxis.renderer.labels.template.rotation = -90;
+categoryAxis.renderer.labels.template.horizontalCenter = "left";
+categoryAxis.renderer.labels.template.fontSize = 12;
+categoryAxis.renderer.labels.template.location = 0.5;
+
+categoryAxis.renderer.labels.template.adapter.add("dx", function(dx, target) {
+    return -target.maxRight / 2;
+})
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.tooltip.disabled = true;
+valueAxis.renderer.ticks.template.disabled = true;
+valueAxis.renderer.axisFills.template.disabled = true;
+
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.categoryX = "category";
+series.dataFields.valueY = "value";
+series.tooltipText = "{valueY.value}";
+series.sequencedInterpolation = true;
+series.fillOpacity = 0;
+series.strokeOpacity = 1;
+series.strokeDashArray = "1,3";
+series.columns.template.width = 0.01;
+series.tooltip.pointerOrientation = "horizontal";
+
+var bullet = series.bullets.create(am4charts.CircleBullet);
+
+chart.cursor = new am4charts.XYCursor();
+
+chart.scrollbarX = new am4core.Scrollbar();
+chart.scrollbarY = new am4core.Scrollbar();
+
+
+}); // end am4core.ready()
+</script>
+
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_dark);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+var chart = am4core.create("followers_chart_following_count", am4charts.XYChart);
+
+var data=[
+  
+    {% for i in followers_list %}
+{"category": "{{i.name}}", "value": "{{i.following}}"},
+{% endfor %}
+]
+
+chart.data = data;
+var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.dataFields.category = "category";
+categoryAxis.renderer.minGridDistance = 15;
+categoryAxis.renderer.grid.template.location = 0.5;
+categoryAxis.renderer.grid.template.strokeDasharray = "1,3";
+categoryAxis.renderer.labels.template.rotation = -90;
+categoryAxis.renderer.labels.template.horizontalCenter = "left";
+categoryAxis.renderer.labels.template.fontSize = 12;
+categoryAxis.renderer.labels.template.location = 0.5;
+
+
+categoryAxis.renderer.labels.template.adapter.add("dx", function(dx, target) {
+    return -target.maxRight / 2;
+})
+
+var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+valueAxis.tooltip.disabled = true;
+valueAxis.renderer.ticks.template.disabled = true;
+valueAxis.renderer.axisFills.template.disabled = true;
+
+var series = chart.series.push(new am4charts.ColumnSeries());
+series.dataFields.categoryX = "category";
+series.dataFields.valueY = "value";
+series.tooltipText = "{valueY.value}";
+series.sequencedInterpolation = true;
+series.fillOpacity = 0;
+series.strokeOpacity = 1;
+series.strokeDashArray = "1,3";
+series.columns.template.width = 0.01;
+series.tooltip.pointerOrientation = "horizontal";
+
+var bullet = series.bullets.create(am4charts.CircleBullet);
+
+chart.cursor = new am4charts.XYCursor();
+
+chart.scrollbarX = new am4core.Scrollbar();
+chart.scrollbarY = new am4core.Scrollbar();
+
+
+}); // end am4core.ready()
+</script>
+
+
+
+
+
+
+
+
+/* end  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_dark);
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+// create chart
+var chart = am4core.create("followers_following_guage", am4charts.GaugeChart);
+chart.hiddenState.properties.opacity = 0;
+
+var axis = chart.xAxes.push(new am4charts.ValueAxis());
+axis.min = 0;
+axis.max = 160;
+axis.strictMinMax = true;
+axis.renderer.inside = true;
+//axis.renderer.ticks.template.inside = true;
+//axis.stroke = chart.colors.getIndex(3);
+axis.renderer.radius = am4core.percent(97);
+//axis.renderer.radius = 80;
+axis.renderer.line.strokeOpacity = 1;
+axis.renderer.line.strokeWidth = 5;
+axis.renderer.line.stroke = chart.colors.getIndex(0);
+axis.renderer.ticks.template.disabled = false
+axis.renderer.ticks.template.stroke = chart.colors.getIndex(0);
+axis.renderer.labels.template.radius = 35;
+axis.renderer.ticks.template.strokeOpacity = 1;
+axis.renderer.grid.template.disabled = true;
+axis.renderer.ticks.template.length = 10;
+axis.hiddenState.properties.opacity = 1;
+axis.hiddenState.properties.visible = true;
+axis.setStateOnChildren = true;
+axis.renderer.hiddenState.properties.endAngle = 180;
+
+var axis2 = chart.xAxes.push(new am4charts.ValueAxis());
+axis2.min = 0;
+axis2.max = 240;
+axis2.strictMinMax = true;
+
+axis2.renderer.line.strokeOpacity = 1;
+axis2.renderer.line.strokeWidth = 5;
+axis2.renderer.line.stroke = chart.colors.getIndex(3);
+axis2.renderer.ticks.template.stroke = chart.colors.getIndex(3);
+
+axis2.renderer.ticks.template.disabled = false
+axis2.renderer.ticks.template.strokeOpacity = 1;
+axis2.renderer.grid.template.disabled = true;
+axis2.renderer.ticks.template.length = 10;
+axis2.hiddenState.properties.opacity = 1;
+axis2.hiddenState.properties.visible = true;
+axis2.setStateOnChildren = true;
+axis2.renderer.hiddenState.properties.endAngle = 180;
+
+var hand = chart.hands.push(new am4charts.ClockHand());
+hand.fill = axis.renderer.line.stroke;
+hand.stroke = axis.renderer.line.stroke;
+hand.axis = axis;
+hand.pin.radius = 14;
+hand.startWidth = 10;
+
+var hand2 = chart.hands.push(new am4charts.ClockHand());
+hand2.fill = axis2.renderer.line.stroke;
+hand2.stroke = axis2.renderer.line.stroke;
+hand2.axis = axis2;
+hand2.pin.radius = 10;
+hand2.startWidth = 10;
+ 
+
+setInterval(function() {
+  hand.showValue({{  followers_list | length }}, 1000, am4core.ease.cubicOut);
+  label.text = Math.round(hand.value).toString();
+  hand2.showValue({{  following_list | length }}, 1000, am4core.ease.cubicOut);
+  label2.text = Math.round(hand2.value).toString();
+}, 2000);
+
+
+ 
+
+var legend = new am4charts.Legend();
+legend.isMeasured = false;
+legend.y = am4core.percent(100);
+legend.verticalCenter = "bottom";
+legend.parent = chart.chartContainer;
+legend.data = [{
+  "name": "Followers ",
+  "fill": chart.colors.getIndex(0),
+  "value":24,
+}, {
+  "name": "Following ",
+  "fill": chart.colors.getIndex(3)
+}];
+
+legend.itemContainers.template.events.on("hit", function(ev) {
+  var index = ev.target.dataItem.index;
+
+  if (!ev.target.isActive) {
+    chart.hands.getIndex(index).hide();
+    chart.xAxes.getIndex(index).hide();
+    labelList.getIndex(index).hide();
+  }
+  else {
+    chart.hands.getIndex(index).show();
+    chart.xAxes.getIndex(index).show();
+    labelList.getIndex(index).show();
+  }
+});
+
+var labelList = new am4core.ListTemplate(new am4core.Label());
+labelList.template.isMeasured = false;
+labelList.template.background.strokeWidth = 2;
+labelList.template.fontSize = 25;
+labelList.template.padding(10, 20, 10, 20);
+labelList.template.y = am4core.percent(50);
+labelList.template.horizontalCenter = "middle";
+
+var label = labelList.create();
+label.parent = chart.chartContainer;
+label.x = am4core.percent(40);
+label.background.stroke = chart.colors.getIndex(0);
+label.fill = chart.colors.getIndex(0);
+label.text = "0";
+
+var label2 = labelList.create();
+label2.parent = chart.chartContainer;
+label2.x = am4core.percent(60);
+label2.background.stroke = chart.colors.getIndex(3);
+label2.fill = chart.colors.getIndex(3);
+label2.text = "0";
+
+
+}); // end am4core.ready()
+</script>
+<script>
+am4core.ready(function() {
+
+// Themes begin
+am4core.useTheme(am4themes_animated);
+// Themes end
+
+
+
+// Create chart instance
+var chart = am4core.create("profile_stat_radial", am4charts.RadarChart);
+
+// Add data
+chart.data = [{
+  "category": "Following",
+  "value": {{profile.0.following}},
+  "full": 100
+}, {
+  "category": "Followers",
+  "value": {{profile.0.followers}},
+  "full": 100
+}, {
+  "category": "Tweets",
+  "value":  {{profile.0.tweets}},
+  "full": 100
+},
+{
+  "category": "Likes",
+  "value":  {{profile.0.likes}},
+  "full": 100
+},
+{
+  "category": "Media",
+  "value":  {{profile.0.media}},
+  "full": 100
+}, ];
+
+// Make chart not full circle
+chart.startAngle = -90;
+chart.endAngle = 180;
+chart.innerRadius = am4core.percent(20);
+
+// Set number format
+chart.numberFormatter.numberFormat = "#.#'%'";
+
+// Create axes
+var categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
+categoryAxis.dataFields.category = "category";
+categoryAxis.renderer.grid.template.location = 0;
+categoryAxis.renderer.grid.template.strokeOpacity = 0;
+categoryAxis.renderer.labels.template.horizontalCenter = "right";
+categoryAxis.renderer.labels.template.fontWeight = 500;
+categoryAxis.renderer.labels.template.adapter.add("fill", function(fill, target) {
+  return (target.dataItem.index >= 0) ? chart.colors.getIndex(target.dataItem.index) : fill;
+});
+categoryAxis.renderer.minGridDistance = 10;
+
+var valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
+valueAxis.renderer.grid.template.strokeOpacity = 0;
+valueAxis.min = 0;
+valueAxis.max = 100;
+valueAxis.strictMinMax = true;
+
+// Create series
+var series1 = chart.series.push(new am4charts.RadarColumnSeries());
+series1.dataFields.valueX = "full";
+series1.dataFields.categoryY = "category";
+series1.clustered = false;
+series1.columns.template.fill = new am4core.InterfaceColorSet().getFor("alternativeBackground");
+series1.columns.template.fillOpacity = 0.08;
+series1.columns.template.cornerRadiusTopLeft = 20;
+series1.columns.template.strokeWidth = 0;
+series1.columns.template.radarColumn.cornerRadius = 20;
+
+var series2 = chart.series.push(new am4charts.RadarColumnSeries());
+series2.dataFields.valueX = "value";
+series2.dataFields.categoryY = "category";
+series2.clustered = false;
+series2.columns.template.strokeWidth = 0;
+series2.columns.template.tooltipText = "{category}: [bold]{value}[/]";
+series2.columns.template.radarColumn.cornerRadius = 20;
+
+series2.columns.template.adapter.add("fill", function(fill, target) {
+  return chart.colors.getIndex(target.dataItem.index);
+});
+
+// Add cursor
+chart.cursor = new am4charts.RadarCursor();
+
+}); // end am4core.ready()
+</script>
+
+/* maps */
+<script src="https://www.amcharts.com/lib/4/maps.js"></script>
+<script src="https://www.amcharts.com/lib/4/geodata/continentsLow.js"></script>
+<script src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script>
+  am4core.ready(function() {
+  
+  // Themes begin
+  am4core.useTheme(am4themes_dark);
+  // Themes end
+  
+  // Create map instance
+  var chart = am4core.create("globe", am4maps.MapChart);
+  var interfaceColors = new am4core.InterfaceColorSet();
+  
+  try {
+      chart.geodata = am4geodata_worldLow;
+  }
+  catch (e) {
+      chart.raiseCriticalError(new Error("Map geodata could not be loaded. Please download the latest <a href=\"https://www.amcharts.com/download/download-v4/\">amcharts geodata</a> and extract its contents into the same directory as your amCharts files."));
+  }
+  
+  
+  var label = chart.createChild(am4core.Label)
+  label.text = "";
+  label.fontSize = 12;
+  label.align = "left";
+  label.valign = "bottom"
+  label.fill = am4core.color("#927459");
+  label.background = new am4core.RoundedRectangle()
+  label.background.cornerRadius(10,10,10,10);
+  label.padding(10,10,10,10);
+  label.marginLeft = 30;
+  label.marginBottom = 30;
+  label.background.strokeOpacity = 0.3;
+  label.background.stroke =am4core.color("#927459");
+  label.background.fill = am4core.color("#f9e3ce");
+  label.background.fillOpacity = 0.6;
+  
+  var dataSource = chart.createChild(am4core.TextLink)
+  dataSource.text = "";
+  dataSource.fontSize = 12;
+  dataSource.align = "left";
+  dataSource.valign = "top"
+  dataSource.url = "https://www.who.int/immunization/monitoring_surveillance/burden/vpd/surveillance_type/active/measles_monthlydata/en/"
+  dataSource.urlTarget = "_blank";
+  dataSource.fill = am4core.color("#927459");
+  dataSource.padding(10,10,10,10);
+  dataSource.marginLeft = 30;
+  dataSource.marginTop = 30;
+  
+  // Set projection
+  chart.projection = new am4maps.projections.Orthographic();
+  chart.panBehavior = "rotateLongLat";
+  chart.padding(20,20,20,20);
+  
+  // Add zoom control
+  chart.zoomControl = new am4maps.ZoomControl();
+  
+  var homeButton = new am4core.Button();
+  homeButton.events.on("hit", function(){
+    chart.goHome();
+  });
+  
+  homeButton.icon = new am4core.Sprite();
+  homeButton.padding(7, 5, 7, 5);
+  homeButton.width = 30;
+  homeButton.icon.path = "M16,8 L14,8 L14,16 L10,16 L10,10 L6,10 L6,16 L2,16 L2,8 L0,8 L8,0 L16,8 Z M16,8";
+  homeButton.marginBottom = 10;
+  homeButton.parent = chart.zoomControl;
+  homeButton.insertBefore(chart.zoomControl.plusButton);
+  
+  chart.backgroundSeries.mapPolygons.template.polygon.fill = am4core.color("#bfa58d");
+  chart.backgroundSeries.mapPolygons.template.polygon.fillOpacity = 1;
+  chart.deltaLongitude = 20;
+  chart.deltaLatitude = -20;
+  
+  // limits vertical rotation
+  chart.adapter.add("deltaLatitude", function(delatLatitude){
+      return am4core.math.fitToRange(delatLatitude, -90, 90);
+  })
+  
+  // Create map polygon series
+  
+  var shadowPolygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+  shadowPolygonSeries.geodata = am4geodata_continentsLow;
+  
+  try {
+      shadowPolygonSeries.geodata = am4geodata_continentsLow;
+  }
+  catch (e) {
+      shadowPolygonSeries.raiseCriticalError(new Error("Map geodata could not be loaded. Please download the latest <a href=\"https://www.amcharts.com/download/download-v4/\">amcharts geodata</a> and extract its contents into the same directory as your amCharts files."));
+  }
+  
+  shadowPolygonSeries.useGeodata = true;
+  shadowPolygonSeries.dx = 2;
+  shadowPolygonSeries.dy = 2;
+  shadowPolygonSeries.mapPolygons.template.fill = am4core.color("#000");
+  shadowPolygonSeries.mapPolygons.template.fillOpacity = 0.2;
+  shadowPolygonSeries.mapPolygons.template.strokeOpacity = 0;
+  shadowPolygonSeries.fillOpacity = 0.1;
+  shadowPolygonSeries.fill = am4core.color("#000");
+  
+  
+  // Create map polygon series
+  var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+  polygonSeries.useGeodata = true;
+  
+  polygonSeries.calculateVisualCenter = true;
+  polygonSeries.tooltip.background.fillOpacity = 0.2;
+  polygonSeries.tooltip.background.cornerRadius = 20;
+  
+  var template = polygonSeries.mapPolygons.template;
+  template.nonScalingStroke = true;
+  template.fill = am4core.color("#f9e3ce");
+  template.stroke = am4core.color("#e2c9b0");
+  
+  polygonSeries.calculateVisualCenter = true;
+  template.propertyFields.id = "id";
+  template.tooltipPosition = "fixed";
+  template.fillOpacity = 1;
+  
+  template.events.on("over", function (event) {
+    if (event.target.dummyData) {
+      event.target.dummyData.isHover = true;
+    }
+  })
+  template.events.on("out", function (event) {
+    if (event.target.dummyData) {
+      event.target.dummyData.isHover = false;
+    }
+  })
+  
+  var hs = polygonSeries.mapPolygons.template.states.create("hover");
+  hs.properties.fillOpacity = 1;
+  hs.properties.fill = am4core.color("#deb7ad");
+  
+  
+  var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
+  graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
+  graticuleSeries.fitExtent = false;
+  graticuleSeries.mapLines.template.strokeOpacity = 0.2;
+  graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
+  
+  
+  var measelsSeries = chart.series.push(new am4maps.MapPolygonSeries())
+  measelsSeries.tooltip.background.fillOpacity = 0;
+  measelsSeries.tooltip.background.cornerRadius = 20;
+  measelsSeries.tooltip.autoTextColor = false;
+  measelsSeries.tooltip.label.fill = am4core.color("#000");
+  measelsSeries.tooltip.dy = -5;
+  
+  var measelTemplate = measelsSeries.mapPolygons.template;
+  measelTemplate.fill = am4core.color("#bf7569");
+  measelTemplate.strokeOpacity = 0;
+  measelTemplate.fillOpacity = 0.75;
+  measelTemplate.tooltipPosition = "fixed";
+  
+  
+  
+  var hs2 = measelsSeries.mapPolygons.template.states.create("hover");
+  hs2.properties.fillOpacity = 1;
+  hs2.properties.fill = am4core.color("#86240c");
+  
+  polygonSeries.events.on("inited", function () {
+    polygonSeries.mapPolygons.each(function (mapPolygon) {
+      var count = data[mapPolygon.id];
+  
+      if (count > 0) {
+        var polygon = measelsSeries.mapPolygons.create();
+        polygon.multiPolygon = am4maps.getCircle(mapPolygon.visualLongitude, mapPolygon.visualLatitude, Math.max(0.2, Math.log(count) * Math.LN10 / 10));
+        polygon.tooltipText = mapPolygon.dataItem.dataContext.name + ": " + count;
+        mapPolygon.dummyData = polygon;
+        polygon.events.on("over", function () {
+          mapPolygon.isHover = true;
+        })
+        polygon.events.on("out", function () {
+          mapPolygon.isHover = false;
+        })
+      }
+      else {
+        mapPolygon.tooltipText = mapPolygon.dataItem.dataContext.name + ": no data";
+        mapPolygon.fillOpacity = 0.9;
+      }
+  
+    })
+  })
+  
+  
+  var data = {
+    "AL": 504.38,
+    "AM": 6.5,
+    "AO": 2.98,
+    "AR": 0.32,
+    "AT": 10.9,
+    "AU": 5.02,
+    "AZ": 17.38,
+    "BA": 24.45,
+    "BD": 13.4,
+    "BE": 12.06,
+    "BF": 93.37,
+    "BG": 1.68,
+    "BI": 0.95,
+    "BJ": 93.36,
+    "BR": 49.42,
+    "BT": 10.03,
+    "BY": 26.16,
+    "CA": 0.96,
+    "CD": 69.71,
+    "CF": 4.57,
+    "CG": 19.7,
+    "CH": 6.19,
+    "CI": 14.1,
+    "CL": 1.4,
+    "CM": 41.26,
+    "CN": 2.6,
+    "CO": 4.48,
+    "CY": 7.69,
+    "CZ": 23.09,
+    "DK": 1.58,
+    "EE": 9.91,
+    "EG": 0.63,
+    "ES": 4.96,
+    "FI": 3.27,
+    "FR": 43.26,
+    "GA": 3.03,
+    "GB": 14.3,
+    "GE": 809.09,
+    "GH": 39.78,
+    "GM": 2.45,
+    "GN": 45.98,
+    "GQ": 23.74,
+    "GR": 154.42,
+    "HR": 5.46,
+    "HU": 1.44,
+    "ID": 16.87,
+    "IE": 17.56,
+    "IL": 412.24,
+    "IN": 47.85,
+    "IQ": 12.96,
+    "IR": 1.13,
+    "IT": 44.29,
+    "JP": 3.27,
+    "KE": 16.8,
+    "KG": 253.37,
+    "KH": 0.44,
+    "KM": 1.26,
+    "KZ": 116.3,
+    "LA": 1.33,
+    "LK": 0.53,
+    "LR": 692.27,
+    "LS": 5.9,
+    "LT": 14.44,
+    "LU": 6.95,
+    "LV": 6.09,
+    "MA": 0.2,
+    "MD": 83.75,
+    "ME": 319.75,
+    "MG": 2386.35,
+    "MK": 28.83,
+    "ML": 48.68,
+    "MM": 40.31,
+    "MN": 0.66,
+    "MR": 14.65,
+    "MT": 11.65,
+    "MV": 9.35,
+    "MX": 0.04,
+    "MY": 86.41,
+    "MZ": 13.49,
+    "NA": 12.9,
+    "NE": 80.88,
+    "NG": 31.44,
+    "NL": 1.47,
+    "NO": 2.47,
+    "NP": 10.8,
+    "NZ": 9.23,
+    "PE": 1.29,
+    "PK": 159.14,
+    "PL": 8.24,
+    "PT": 16.68,
+    "RO": 63.05,
+    "RS": 473.46,
+    "RU": 14.24,
+    "RW": 5.45,
+    "SE": 2.64,
+    "SG": 8.18,
+    "SI": 3.37,
+    "SK": 112.78,
+    "SN": 3.37,
+    "SO": 8.03,
+    "SS": 19.3,
+    "TD": 75.63,
+    "TG": 34.84,
+    "TH": 81.02,
+    "TL": 9.46,
+    "TN": 7.8,
+    "TR": 7.08,
+    "UA": 1439.02,
+    "UG": 62.55,
+    "US": 1.32,
+    "UZ": 0.99,
+    "VE": 179.55,
+    "ZA": 3.09,
+    "ZM": 9.82,
+    "ZW": 0.06
+  }
+  
+  }); // end am4core.ready()
+  </script>
+  
+
+
+
+
+  
+<!-- Resources -->
+
+<script src="https://www.amcharts.com/lib/4/maps.js"></script>
+<script src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+  <!-- Chart code -->
+<script>
+  am4core.ready(function() {
+  
+  // Themes begin
+  am4core.useTheme(am4themes_dark);
+  am4core.useTheme(am4themes_animated);
+  // Themes end
+  
+  // Create map instance
+  var chart = am4core.create("globe_2", am4maps.MapChart);
+  
+  // Set map definition
+  chart.geodata = am4geodata_worldLow;
+  
+  // Set projection
+  chart.projection = new am4maps.projections.Miller();
+  
+  // Create map polygon series
+  var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
+  
+  // Exclude Antartica
+  polygonSeries.exclude = ["AQ"];
+  
+  // Make map load polygon (like country names) data from GeoJSON
+  polygonSeries.useGeodata = true;
+  
+  // Configure series
+  var polygonTemplate = polygonSeries.mapPolygons.template;
+  polygonTemplate.tooltipText = "{name}";
+  polygonTemplate.fill = chart.colors.getIndex(0).lighten(0.5);
+  
+  // Create hover state and set alternative fill color
+  var hs = polygonTemplate.states.create("hover");
+  hs.properties.fill = chart.colors.getIndex(0);
+  
+  // Add image series
+  var imageSeries = chart.series.push(new am4maps.MapImageSeries());
+  imageSeries.mapImages.template.propertyFields.longitude = "longitude";
+  imageSeries.mapImages.template.propertyFields.latitude = "latitude";
+  imageSeries.data = [
+  {% for i in followers_list %}
+  {
+    "title": "{{i.location}}",
+    "latitude": 30.375320,
+    "longitude": 69.345116,
+    "url": "http://www.google.co.jp"
+  },
+{% endfor %}  ];
+  
+  // add events to recalculate map position when the map is moved or zoomed
+  chart.events.on( "ready", updateCustomMarkers );
+  chart.events.on( "mappositionchanged", updateCustomMarkers );
+  
+  // this function will take current images on the map and create HTML elements for them
+  function updateCustomMarkers( event ) {
+    
+    // go through all of the images
+    imageSeries.mapImages.each(function(image) {
+      // check if it has corresponding HTML element
+      if (!image.dummyData || !image.dummyData.externalElement) {
+        // create onex
+        image.dummyData = {
+          externalElement: createCustomMarker(image)
+        };
+      }
+  
+      // reposition the element accoridng to coordinates
+      var xy = chart.geoPointToSVG( { longitude: image.longitude, latitude: image.latitude } );
+      image.dummyData.externalElement.style.top = xy.y + 'px';
+      image.dummyData.externalElement.style.left = xy.x + 'px';
+    });
+  
+  }
+  
+  // this function creates and returns a new marker element
+  function createCustomMarker( image ) {
+    
+    var chart = image.dataItem.component.chart;
+  
+    // create holder
+    var holder = document.createElement( 'div' );
+    holder.className = 'map-marker';
+    holder.title = image.dataItem.dataContext.title;
+    holder.style.position = 'absolute';
+  
+    // maybe add a link to it?
+    if ( undefined != image.url ) {
+      holder.onclick = function() {
+        window.location.href = image.url;
+      };
+      holder.className += ' map-clickable';
+    }
+  
+    // create dot
+    var dot = document.createElement( 'div' );
+    dot.className = 'dot';
+    holder.appendChild( dot );
+  
+    // create pulse
+    var pulse = document.createElement( 'div' );
+    pulse.className = 'pulse';
+    holder.appendChild( pulse );
+  
+    // append the marker to the map container
+    chart.svgContainer.htmlElement.appendChild( holder );
+  
+    return holder;
+  }
+  
+  }); // end am4core.ready()
+  </script>
+
+  <script>
+   $(document).ready(function(){
+
+    $("#globe").hide();
+    function ButtonText() {
+      if ($("#globe").is(":visible")) {
+          $("#btn_toggler_1").text("Plain");
+      } else {
+          $("#btn_toggler_1").text("Globe");
+      }
+  }
+  
+  ButtonText();
+  $("button").click(function () {
+      $("#globe").toggle();
+      $("#globe_2").toggle();
+      ButtonText();
+  });
+
+    
+  
+   });
+  </script> 
 
 </html>

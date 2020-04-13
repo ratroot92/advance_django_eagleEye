@@ -279,8 +279,8 @@ const _name =$(this).attr("data-id")
               {% endif %}<span class="{{i.twitter_username}}" id="{{i.twitter_username}}"></span> </td>
             <td class="text-primary table_columns">{{i.created_at}}</td>
             <td class="text-primary table_columns">{{i.updated_at}}</td>
-            <td class="text-primary table_columns"><a  href="{% url 'viewTweets' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
-         
+            <td class="text-primary table_columns"><a  href="{% url 'viewProfile' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
+        
             <td class="text-primary table_columns"><button type="button" class="btn btn-sm btn-primary scanBtn" data-id="{{i.twitter_username}}" id="scanBtn">re_Scan </button></td>
            
           

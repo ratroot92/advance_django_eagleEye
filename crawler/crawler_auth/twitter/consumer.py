@@ -1,7 +1,7 @@
 # chat/consumers.py
 import json
 from channels.generic.websocket import WebsocketConsumer
-from .tasks import asd,twitterProfileScan
+from .tasks import asd,twitterProfileScan_Following,twitterProfileScan_Followers
 from .models import Tweets,Twitter_Target
 from .models import Twitter_Target_Profile
 from django.http import JsonResponse

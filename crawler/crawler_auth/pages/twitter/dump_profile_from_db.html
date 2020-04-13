@@ -1,0 +1,482 @@
+{% extends '../twitter/layouts/base.html'%}
+{% load static %}
+{% block content %}
+
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1; 
+    }
+     
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #888; 
+    }
+    
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555; 
+    }
+    </style>
+<style>
+    .followers_attribute_style{
+        text-align: left;
+        font-size:14px
+
+
+    }
+
+    .followers_value_style{
+        text-align: right;  
+         font-size:14px
+
+    }
+    #followers_tree{
+        width: 100%;
+  height: 500px;
+    }
+    #following_tree{
+        width: 100%;
+  height: 500px;
+    }
+    #followers_chart_followers_count{
+        height: 300px;;
+    }
+    #followers_chart_following_count{
+        height: 300px;
+    }
+
+    #following_chart_followers_count{
+        height: 300px;;
+    }
+    #following_chart_following_count{
+        height: 300px;
+    }
+    #followers_following_guage{
+        height: 300px;;
+    }
+    #profile_stat_radial{
+        height: 300px;;
+    }
+</style>
+<style>
+    #btn_toggler_1{
+      width:80px;
+      height: 25px;
+      font-size: 12px;
+      font-weight: bold;;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #globe_2 {
+      width: 100%;
+      height: 500px;
+      overflow: hidden;
+    }
+    
+    .map-marker {
+        /* adjusting for the marker dimensions
+        so that it is centered on coordinates */
+        margin-left: -8px;
+        margin-top: -8px;
+        box-sizing: border-box;
+    }
+    .map-marker.map-clickable {
+        cursor: pointer;
+    }
+    .pulse {
+        width: 10px;
+        height: 10px;
+        border: 5px solid #91ff00;
+        -webkit-border-radius: 30px;
+        -moz-border-radius: 30px;
+        border-radius: 50%;
+        background-color: #f7f14c;
+        z-index: 10;
+        position: absolute;
+        box-sizing: border-box;
+    }
+    .map-marker .dot {
+        border: 10px solid #ee0000;
+        background: transparent;
+        -webkit-border-radius: 60px;
+        -moz-border-radius: 60px;
+        border-radius: 60px;
+        height: 50px;
+        width: 50px;
+        -webkit-animation: pulse 3s ease-out;
+        -moz-animation: pulse 3s ease-out;
+        animation: pulse 3s ease-out;
+        -webkit-animation-iteration-count: infinite;
+        -moz-animation-iteration-count: infinite;
+        animation-iteration-count: infinite;
+        position: absolute;
+        top: -20px;
+        left: -20px;
+        z-index: 1;
+        opacity: 0;
+        box-sizing: border-box;
+    }
+    @-moz-keyframes pulse {
+       0% {
+          -moz-transform: scale(0);
+          opacity: 0.0;
+       }
+       25% {
+          -moz-transform: scale(0);
+          opacity: 0.1;
+       }
+       50% {
+          -moz-transform: scale(0.1);
+          opacity: 0.3;
+       }
+       75% {
+          -moz-transform: scale(0.5);
+          opacity: 0.5;
+       }
+       100% {
+          -moz-transform: scale(1);
+          opacity: 0.0;
+       }
+      }
+      @-webkit-keyframes "pulse" {
+       0% {
+          -webkit-transform: scale(0);
+          opacity: 0.0;
+       }
+       25% {
+          -webkit-transform: scale(0);
+          opacity: 0.1;
+       }
+       50% {
+          -webkit-transform: scale(0.1);
+          opacity: 0.3;
+       }
+       75% {
+          -webkit-transform: scale(0.5);
+          opacity: 0.5;
+       }
+       100% {
+          -webkit-transform: scale(1);
+          opacity: 0.0;
+       }
+    }
+    </style>
+  
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-6 bg-dark " data-somedata="{{user}}" id="followers_tree">
+        
+    </div>
+    <div class="col-md-6 bg-dark " data-somedata="{{user}}" id="following_tree">
+        
+    </div>
+    
+</div>
+<div class="row bg-primary">
+    <div class="col-md-6 text-center text-white font-weight-bold " >
+       Followers profiles with followers count
+    </div>
+    <div class="col-md-6 text-center text-white font-weight-bold " >
+        Followers profiles with following count
+    </div>
+</div>
+<div class="row bg-dark">
+    <div class="col-md-6 mt-1 border border-primary" id="followers_chart_followers_count"></div>
+    <div class="col-md-6 mt-1 border border-primary" id="followers_chart_following_count"></div>
+</div>
+<div class="row bg-primary">
+    <div class="col-md-6 text-center text-white font-weight-bold " >
+       Following profiles with followers count
+    </div>
+    <div class="col-md-6 text-center text-white font-weight-bold " >
+        Following profiles with following count
+    </div>
+</div>
+<div class="row bg-dark">
+    
+    <div class="col-md-6 mt-1  border border-primary" id="following_chart_followers_count">
+
+    </div>
+    <div class="col-md-6 mt-1  border border-primary" id="following_chart_following_count">
+
+    </div>
+</div>
+
+<div class="row bg-dark">
+    <div class="col-md-6" id="followers_following_guage"></div>
+    <div class="col-md-6" id="profile_stat_radial"></div>
+</div>
+
+
+<div class="row bg-dark">
+<div class="col-md-12   "style="background-color:transparent;">
+    <div id="globe"  style="width:100%;height: 400px;;"></div>
+    <div id="globe_2" style="width:100%;height: 400px;;"></div>
+</div>
+  </div>
+	<div class="row border">
+		
+		   <div class="col-md-6 m-0 p-0 " style="height: auto;overflow-y:auto;">
+            <div class="row">
+                <div class="col-md-12 text-center card-header bg-dark text-white  ">
+                  <p style="font-size: 25px;font-weight: bold;"><span class="text-warning">{{username}}</span> Followers List ( {{  followers_list | length }}) </p>
+                </div>
+            </div>
+            <div id="accordion">
+                {% for f in followers_list %}
+                <div class="card m-0 p-0 ">
+                    <div class="card-header d-flex flex-row " id="_id{{f.id}}">
+                      <div class="w-25">  <img src="{{f.profile_image_url}}" style="height:80px;width:80px;border-radius:50%;"/></div>
+                       <div class="w-75"> <button aria-controls="_{{f.id}}" aria-expanded="true" class="btn nav-link" data-target="#_{{f.id}}" data-toggle="collapse" style="font-size:16px;">
+                            {{f.username}}
+                        </button>
+                        <span class="float-right ">{{f.name}}</span></div>
+                    </div>
+                    <div aria-labelledby="_id{{f.id}}" class="collapse " data-parent="#accordion" id="_{{f.id}}">
+                        <div class="card-body">
+                            <div class="row list-group d-flex flex-row ">
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Username
+                                </div>
+                                <div class="col-md-6 list-group-item border followers_value_style text-success">
+                                {{f.username}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Name
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    _{{f.name}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Bio
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.bio}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Location
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.location}}
+                                </div>
+                              <!--   <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    URL
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.url}}
+                                </div> -->
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Join-Date
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.join_date}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    join-Time
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.join_time}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Tweets-Count
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.tweets}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Following
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.following}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Followers
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.followers}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Is-Private
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.private}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Is-Verfied
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.verified}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Likes
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.likes}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Media-Count
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.media}}
+                                </div>
+
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    URL
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.url}}
+                                </div>
+                                
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Profile_Url
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    <a href="https://twitter.com/{{f.username}}" class="nav-link" >Click here </a>
+                                </div>
+                            </div>
+                            <ul>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6 m-0 p-0 " style="height: auto;overflow-y:auto;">
+            <div class="row">
+                <div class="col-md-12 text-center card-header bg-dark text-white  ">
+                  <p style="font-size: 25px;font-weight: bold;"><span class="text-warning">{{username}}</span> Following List  ( {{  following_list | length }}) </p>
+                </div>
+            </div>
+            <div id="accordion">
+                {% for f in following_list %}
+                <div class="card m-0 p-0 ">
+                    <div class="card-header d-flex flex-row " id="_id{{f.id}}">
+                      <div class="w-25">  <img src="{{f.profile_image_url}}" style="height:80px;width:80px;border-radius:50%;"/></div>
+                       <div class="w-75"> <button aria-controls="_{{f.id}}" aria-expanded="true" class="btn nav-link" data-target="#_{{f.id}}" data-toggle="collapse" style="font-size:16px;">
+                            {{f.username}}
+                        </button>
+                        <span class="float-right ">{{f.name}}</span></div>
+                    </div>
+                    <div aria-labelledby="_id{{f.id}}" class="collapse " data-parent="#accordion" id="_{{f.id}}">
+                        <div class="card-body">
+                            <div class="row list-group d-flex flex-row ">
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Username
+                                </div>
+                                <div class="col-md-6 list-group-item border followers_value_style text-success">
+                                {{f.username}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Name
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    _{{f.name}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Bio
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.bio}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Location
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.location}}
+                                </div>
+                              <!--   <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    URL
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.url}}
+                                </div> -->
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Join-Date
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.join_date}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    join-Time
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.join_time}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Tweets-Count
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.tweets}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Following
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.following}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Followers
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.followers}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Is-Private
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.private}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Is-Verfied
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.verified}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Likes
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.likes}}
+                                </div>
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Media-Count
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.media}}
+                                </div>
+
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    URL
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    {{f.url}}
+                                </div>
+                                
+                                <div class="col-md-6 list-group-item text-primary followers_attribute_style">
+                                    Profile_Url
+                                </div>
+                                <div class="col-md-6 list-group-item followers_value_style text-success">
+                                    <a href="https://twitter.com/{{f.username}}" class="nav-link" >Click here </a>
+                                </div>
+                            </div>
+                            <ul>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+	</div>
+</div>
+
+{% endblock %}

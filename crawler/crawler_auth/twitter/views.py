@@ -15,8 +15,8 @@ from django.db import models
 # from django_countries.fields import CountryField
 import subprocess
 import asyncio
-from .tasks import asd,twitterProfileScan
-from .models import Tweets
+from .tasks import asd,twitterProfileScan_Followers,twitterProfileScan_Following
+from .models import Tweets,Users,Followers,Following
 from .models import Twitter_TargetForm,Twitter_Target
 from .models import Twitter_TargetFormProfile,Twitter_Target_Profile
 from django.contrib import messages
@@ -28,7 +28,8 @@ from django.http import HttpResponse
 from django.views.generic import View
 import sys
 from twitter.utils import render_to_pdf #created in step 4
-
+import time 
+from django.db.models.sql.datastructures import Empty
 
 
 # Create your views here.
@@ -87,10 +88,6 @@ def fullProfile(request):
 
 
 
-def getFollowersList(request):
-    username = request.POST['twitter_username']
-    followers_list=getFollowers(username)
-    return render(request, 'twitter/dump_followers.html', { 'followers_list': followers_list})
 
 
 
@@ -171,12 +168,44 @@ def addTwitterTarget_Profile(request):
          form=Twitter_TargetFormProfile(request.POST)
          if form.is_valid():
              form.save()
-             r=twitterProfileScan.delay(request.POST['twitter_username'])
-             messages.success(request,'Profile Target added successfully')
+             _username=request.POST['twitter_username']
+             c = twint.Config()
+             c.Username =_username
+             c.Database ="eagle_eye"
+             twint.run.Lookup(c)
+             status=Users.objects.filter(username=_username).exists()
+             print(username,status)
+             if status:
+                r=twitterProfileScan_Followers.delay(_username)
+                s=twitterProfileScan_Following.delay(_username)
+                messages.success(request,'Profile Target added successfully')
+             else:
+                messages.error(request,'Profile Target Failed Please try again')
+                target = Twitter_Target_Profile.objects.filter(twitter_username=_username).delete()
+                # Twitter_Target_Profile.objects.filter(twitter_username=username).delete()
+                
              return redirect('/twitter/addTwitterTarget/profile')
    
      return render(request,'twitter/addTwitterTarget_Profile.html',{'form':form,'profile_targets':profile_targets})
 
+def viewProfile(request,username):
+    get_user_id=Users.objects.values_list('id_str', flat=True).get(username=username)
+    profile=Users.objects.filter(username=username)
+    user=Users.objects.values_list('username','name','profile_image_url').get(username=username)
+    
+    print(user)
+    followers_list=Users.objects.raw("select * from twitter_users  join twitter_followers on twitter_followers.follower_id=twitter_users.id where twitter_followers.id="+get_user_id)
+    following_list=Users.objects.raw("select * from twitter_users inner join twitter_following on twitter_following.following_id=twitter_users.id where twitter_following.id="+get_user_id)
+    # following_list=Following.objects.filter(id=get_user_id).select_related().values_list()
+    
+    print(following_list)
+    if(len(followers_list)<=0):
+         messages.error(request,'No Followers found ')
+         return redirect('/twitter/addTwitterTarget/profile')
+    return render(request,'twitter/dump_profile_from_db.html',{'username':username,'followers_list':followers_list,'following_list':following_list,'profile':profile})
+   
+    
+    # return render(request, 'twitter/dump_followers.html', { 'followers_list': followers_list})
 
 
 # twitter profile end 
