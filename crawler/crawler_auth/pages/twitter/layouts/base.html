@@ -28,7 +28,7 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/select/1.3.1/css/select.bootstrap4.min.css"/>
     <title>Twitter | Add Target!</title>
     <style>
-        
+
 
         body{
   background: url(/static/images/thumb-1920-810997.jpg) no-repeat center center fixed;
@@ -40,13 +40,13 @@
   </head>
   <body>
 
-    
+
    {% block content %}
 
 
     {% endblock %}
-  
-    
+
+
   </body>
   <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
   <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
@@ -54,7 +54,7 @@
   <script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
   <script>
     $(document).ready(function(){
-       
+
     })
 </script>
 <script src="//www.amcharts.com/lib/4/core.js"></script>
@@ -76,12 +76,12 @@ geocoder.geocode( { 'address': address}, function(results, status) {
     var latitude = results[0].geometry.location.lat();
     var longitude = results[0].geometry.location.lng();
     alert(latitude);
-  } 
-}); 
+  }
+});
 </script>
 <script>
-  
-   
+
+
 am4core.useTheme(am4themes_animated);
 
 // Create chart
@@ -94,7 +94,7 @@ var series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries(
 // Set data
 
 
-  
+
 
 series.data = [{
 "name":"{{user.0}}",
@@ -155,8 +155,8 @@ series.links.template.distance = 3;
 
 
 <script>
-  
-  
+
+
 
 am4core.useTheme(am4themes_animated);
 
@@ -170,7 +170,7 @@ var series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries(
 // Set data
 
 
-  
+
 
 series.data = [{
 "name":"{{user.0}}",
@@ -242,7 +242,7 @@ am4core.useTheme(am4themes_animated);
 var chart = am4core.create("following_chart_followers_count", am4charts.XYChart);
 
 var data=[
-  
+
     {% for i in following_list %}
 {"category": "{{i.name}}", "value": "{{i.followers}}"},
 {% endfor %}
@@ -302,7 +302,7 @@ am4core.useTheme(am4themes_animated);
 var chart = am4core.create("following_chart_following_count", am4charts.XYChart);
 
 var data=[
-  
+
     {% for i in following_list %}
 {"category": "{{i.name}}", "value": "{{i.following}}"},
 {% endfor %}
@@ -376,7 +376,7 @@ am4core.useTheme(am4themes_animated);
 var chart = am4core.create("followers_chart_followers_count", am4charts.XYChart);
 
 var data=[
-  
+
     {% for i in followers_list %}
 {"category": "{{i.name}}", "value": "{{i.followers}}"},
 {% endfor %}
@@ -436,7 +436,7 @@ am4core.useTheme(am4themes_animated);
 var chart = am4core.create("followers_chart_following_count", am4charts.XYChart);
 
 var data=[
-  
+
     {% for i in followers_list %}
 {"category": "{{i.name}}", "value": "{{i.following}}"},
 {% endfor %}
@@ -612,7 +612,7 @@ hand2.stroke = axis2.renderer.line.stroke;
 hand2.axis = axis2;
 hand2.pin.radius = 10;
 hand2.startWidth = 10;
- 
+
 
 setInterval(function() {
   hand.showValue({{  followers_list | length }}, 1000, am4core.ease.cubicOut);
@@ -622,7 +622,7 @@ setInterval(function() {
 }, 2000);
 
 
- 
+
 
 var legend = new am4charts.Legend();
 legend.isMeasured = false;
@@ -777,23 +777,23 @@ chart.cursor = new am4charts.RadarCursor();
 <script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
 <script>
   am4core.ready(function() {
-  
+
   // Themes begin
   am4core.useTheme(am4themes_dark);
   // Themes end
-  
+
   // Create map instance
   var chart = am4core.create("globe", am4maps.MapChart);
   var interfaceColors = new am4core.InterfaceColorSet();
-  
+
   try {
       chart.geodata = am4geodata_worldLow;
   }
   catch (e) {
       chart.raiseCriticalError(new Error("Map geodata could not be loaded. Please download the latest <a href=\"https://www.amcharts.com/download/download-v4/\">amcharts geodata</a> and extract its contents into the same directory as your amCharts files."));
   }
-  
-  
+
+
   var label = chart.createChild(am4core.Label)
   label.text = "";
   label.fontSize = 12;
@@ -809,7 +809,7 @@ chart.cursor = new am4charts.RadarCursor();
   label.background.stroke =am4core.color("#927459");
   label.background.fill = am4core.color("#f9e3ce");
   label.background.fillOpacity = 0.6;
-  
+
   var dataSource = chart.createChild(am4core.TextLink)
   dataSource.text = "";
   dataSource.fontSize = 12;
@@ -821,20 +821,20 @@ chart.cursor = new am4charts.RadarCursor();
   dataSource.padding(10,10,10,10);
   dataSource.marginLeft = 30;
   dataSource.marginTop = 30;
-  
+
   // Set projection
   chart.projection = new am4maps.projections.Orthographic();
   chart.panBehavior = "rotateLongLat";
   chart.padding(20,20,20,20);
-  
+
   // Add zoom control
   chart.zoomControl = new am4maps.ZoomControl();
-  
+
   var homeButton = new am4core.Button();
   homeButton.events.on("hit", function(){
     chart.goHome();
   });
-  
+
   homeButton.icon = new am4core.Sprite();
   homeButton.padding(7, 5, 7, 5);
   homeButton.width = 30;
@@ -842,29 +842,29 @@ chart.cursor = new am4charts.RadarCursor();
   homeButton.marginBottom = 10;
   homeButton.parent = chart.zoomControl;
   homeButton.insertBefore(chart.zoomControl.plusButton);
-  
+
   chart.backgroundSeries.mapPolygons.template.polygon.fill = am4core.color("#bfa58d");
   chart.backgroundSeries.mapPolygons.template.polygon.fillOpacity = 1;
   chart.deltaLongitude = 20;
   chart.deltaLatitude = -20;
-  
+
   // limits vertical rotation
   chart.adapter.add("deltaLatitude", function(delatLatitude){
       return am4core.math.fitToRange(delatLatitude, -90, 90);
   })
-  
+
   // Create map polygon series
-  
+
   var shadowPolygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
   shadowPolygonSeries.geodata = am4geodata_continentsLow;
-  
+
   try {
       shadowPolygonSeries.geodata = am4geodata_continentsLow;
   }
   catch (e) {
       shadowPolygonSeries.raiseCriticalError(new Error("Map geodata could not be loaded. Please download the latest <a href=\"https://www.amcharts.com/download/download-v4/\">amcharts geodata</a> and extract its contents into the same directory as your amCharts files."));
   }
-  
+
   shadowPolygonSeries.useGeodata = true;
   shadowPolygonSeries.dx = 2;
   shadowPolygonSeries.dy = 2;
@@ -873,26 +873,26 @@ chart.cursor = new am4charts.RadarCursor();
   shadowPolygonSeries.mapPolygons.template.strokeOpacity = 0;
   shadowPolygonSeries.fillOpacity = 0.1;
   shadowPolygonSeries.fill = am4core.color("#000");
-  
-  
+
+
   // Create map polygon series
   var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
   polygonSeries.useGeodata = true;
-  
+
   polygonSeries.calculateVisualCenter = true;
   polygonSeries.tooltip.background.fillOpacity = 0.2;
   polygonSeries.tooltip.background.cornerRadius = 20;
-  
+
   var template = polygonSeries.mapPolygons.template;
   template.nonScalingStroke = true;
   template.fill = am4core.color("#f9e3ce");
   template.stroke = am4core.color("#e2c9b0");
-  
+
   polygonSeries.calculateVisualCenter = true;
   template.propertyFields.id = "id";
   template.tooltipPosition = "fixed";
   template.fillOpacity = 1;
-  
+
   template.events.on("over", function (event) {
     if (event.target.dummyData) {
       event.target.dummyData.isHover = true;
@@ -903,42 +903,42 @@ chart.cursor = new am4charts.RadarCursor();
       event.target.dummyData.isHover = false;
     }
   })
-  
+
   var hs = polygonSeries.mapPolygons.template.states.create("hover");
   hs.properties.fillOpacity = 1;
   hs.properties.fill = am4core.color("#deb7ad");
-  
-  
+
+
   var graticuleSeries = chart.series.push(new am4maps.GraticuleSeries());
   graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
   graticuleSeries.fitExtent = false;
   graticuleSeries.mapLines.template.strokeOpacity = 0.2;
   graticuleSeries.mapLines.template.stroke = am4core.color("#fff");
-  
-  
+
+
   var measelsSeries = chart.series.push(new am4maps.MapPolygonSeries())
   measelsSeries.tooltip.background.fillOpacity = 0;
   measelsSeries.tooltip.background.cornerRadius = 20;
   measelsSeries.tooltip.autoTextColor = false;
   measelsSeries.tooltip.label.fill = am4core.color("#000");
   measelsSeries.tooltip.dy = -5;
-  
+
   var measelTemplate = measelsSeries.mapPolygons.template;
   measelTemplate.fill = am4core.color("#bf7569");
   measelTemplate.strokeOpacity = 0;
   measelTemplate.fillOpacity = 0.75;
   measelTemplate.tooltipPosition = "fixed";
-  
-  
-  
+
+
+
   var hs2 = measelsSeries.mapPolygons.template.states.create("hover");
   hs2.properties.fillOpacity = 1;
   hs2.properties.fill = am4core.color("#86240c");
-  
+
   polygonSeries.events.on("inited", function () {
     polygonSeries.mapPolygons.each(function (mapPolygon) {
       var count = data[mapPolygon.id];
-  
+
       if (count > 0) {
         var polygon = measelsSeries.mapPolygons.create();
         polygon.multiPolygon = am4maps.getCircle(mapPolygon.visualLongitude, mapPolygon.visualLatitude, Math.max(0.2, Math.log(count) * Math.LN10 / 10));
@@ -955,11 +955,11 @@ chart.cursor = new am4charts.RadarCursor();
         mapPolygon.tooltipText = mapPolygon.dataItem.dataContext.name + ": no data";
         mapPolygon.fillOpacity = 0.9;
       }
-  
+
     })
   })
-  
-  
+
+
   var data = {
     "AL": 504.38,
     "AM": 6.5,
@@ -1077,15 +1077,15 @@ chart.cursor = new am4charts.RadarCursor();
     "ZM": 9.82,
     "ZW": 0.06
   }
-  
+
   }); // end am4core.ready()
   </script>
-  
 
 
 
 
-  
+
+
 <!-- Resources -->
 
 <script src="https://www.amcharts.com/lib/4/maps.js"></script>
@@ -1094,40 +1094,45 @@ chart.cursor = new am4charts.RadarCursor();
 <script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
   <!-- Chart code -->
 <script>
+
+  var addr='islamabad'
+    $.get('https://nominatim.openstreetmap.org/search?city='+addr+'&format=json',function(data){
+      console.log(data)
+    })
   am4core.ready(function() {
-  
+
   // Themes begin
   am4core.useTheme(am4themes_dark);
   am4core.useTheme(am4themes_animated);
   // Themes end
-  
+
   // Create map instance
   var chart = am4core.create("globe_2", am4maps.MapChart);
-  
+
   // Set map definition
   chart.geodata = am4geodata_worldLow;
-  
+
   // Set projection
   chart.projection = new am4maps.projections.Miller();
-  
+
   // Create map polygon series
   var polygonSeries = chart.series.push(new am4maps.MapPolygonSeries());
-  
+
   // Exclude Antartica
   polygonSeries.exclude = ["AQ"];
-  
+
   // Make map load polygon (like country names) data from GeoJSON
   polygonSeries.useGeodata = true;
-  
+
   // Configure series
   var polygonTemplate = polygonSeries.mapPolygons.template;
   polygonTemplate.tooltipText = "{name}";
   polygonTemplate.fill = chart.colors.getIndex(0).lighten(0.5);
-  
+
   // Create hover state and set alternative fill color
   var hs = polygonTemplate.states.create("hover");
   hs.properties.fill = chart.colors.getIndex(0);
-  
+
   // Add image series
   var imageSeries = chart.series.push(new am4maps.MapImageSeries());
   imageSeries.mapImages.template.propertyFields.longitude = "longitude";
@@ -1135,20 +1140,21 @@ chart.cursor = new am4charts.RadarCursor();
   imageSeries.data = [
   {% for i in followers_list %}
   {
+
     "title": "{{i.location}}",
     "latitude": 30.375320,
     "longitude": 69.345116,
     "url": "http://www.google.co.jp"
   },
 {% endfor %}  ];
-  
+
   // add events to recalculate map position when the map is moved or zoomed
   chart.events.on( "ready", updateCustomMarkers );
   chart.events.on( "mappositionchanged", updateCustomMarkers );
-  
+
   // this function will take current images on the map and create HTML elements for them
   function updateCustomMarkers( event ) {
-    
+
     // go through all of the images
     imageSeries.mapImages.each(function(image) {
       // check if it has corresponding HTML element
@@ -1158,26 +1164,26 @@ chart.cursor = new am4charts.RadarCursor();
           externalElement: createCustomMarker(image)
         };
       }
-  
+
       // reposition the element accoridng to coordinates
       var xy = chart.geoPointToSVG( { longitude: image.longitude, latitude: image.latitude } );
       image.dummyData.externalElement.style.top = xy.y + 'px';
       image.dummyData.externalElement.style.left = xy.x + 'px';
     });
-  
+
   }
-  
+
   // this function creates and returns a new marker element
   function createCustomMarker( image ) {
-    
+
     var chart = image.dataItem.component.chart;
-  
+
     // create holder
     var holder = document.createElement( 'div' );
     holder.className = 'map-marker';
     holder.title = image.dataItem.dataContext.title;
     holder.style.position = 'absolute';
-  
+
     // maybe add a link to it?
     if ( undefined != image.url ) {
       holder.onclick = function() {
@@ -1185,23 +1191,23 @@ chart.cursor = new am4charts.RadarCursor();
       };
       holder.className += ' map-clickable';
     }
-  
+
     // create dot
     var dot = document.createElement( 'div' );
     dot.className = 'dot';
     holder.appendChild( dot );
-  
+
     // create pulse
     var pulse = document.createElement( 'div' );
     pulse.className = 'pulse';
     holder.appendChild( pulse );
-  
+
     // append the marker to the map container
     chart.svgContainer.htmlElement.appendChild( holder );
-  
+
     return holder;
   }
-  
+
   }); // end am4core.ready()
   </script>
 
@@ -1216,7 +1222,7 @@ chart.cursor = new am4charts.RadarCursor();
           $("#btn_toggler_1").text("Globe");
       }
   }
-  
+
   ButtonText();
   $("button").click(function () {
       $("#globe").toggle();
@@ -1224,9 +1230,9 @@ chart.cursor = new am4charts.RadarCursor();
       ButtonText();
   });
 
-    
-  
+
+
    });
-  </script> 
+  </script>
 
 </html>

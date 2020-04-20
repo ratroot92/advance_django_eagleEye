@@ -4,8 +4,8 @@ from . import views
 
 
 urlpatterns = [
-   
-    #twitter engine urls 
+
+    #twitter engine urls
     path('index/',views.twitterIndex,name='twitterIndex'),
     path('/submitTarget/',views.submitTarget,name='submitTarget'),
     path('tweets_keyword/',views.tweets_keyword,name='tweets_keyword'),
@@ -17,4 +17,5 @@ urlpatterns = [
     path('/viewTweets/?P(?P<username>[0-9]+)\\/$/',views.viewTweets,name='viewTweets'),
     # path('<str:_username>/', views.username, name='username'),
     path('/generatePDF/?P(?P<username>[0-9]+)\\/$/',views.generatePDF,name='generatePDF'),
-]	
+    path('/test/',views.test,name='test'),
+]

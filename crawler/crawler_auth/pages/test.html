@@ -1,220 +1,134 @@
-
-<!doctype html>
-<html>
-
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 <head>
-	<title>Line Chart</title>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.css" 
-	integrity="sha256-IvM9nJf/b5l2RoebiFno92E5ONttVyaEEsdemDC6iQA=" crossorigin="anonymous" />
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" 
-	integrity="sha256-R4pqcOYV8lt7snxMQO/HSbVCFRPMdrhAFMH+vr9giYI=" crossorigin="anonymous"></script>
-	<style>
-		canvas {
-			-moz-user-select: none;
-			-webkit-user-select: none;
-			-ms-user-select: none;
-		}
-	</style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
 </head>
-
 <body>
-	<div style="width:1000px">
-		<p>This example demonstrates a time series scale by drawing a financial line chart using just the core library. For more specific functionality for financial charts, please see <a href="https://github.com/chartjs/chartjs-chart-financial">chartjs-chart-financial</a></p>
-		<canvas id="chart1"></canvas>
-	</div>
-	<br>
-	<br>
-	Chart Type:
-	<select id="type">
-		<option value="line">Line</option>
-		<option value="bar">Bar</option>
-	</select>
-	<select id="unit">
-		<option value="second">Second</option>
-		<option value="minute">Minute</option>
-		<option value="hour">Hour</option>
-		<option value="day" selected>Day</option>
-		<option value="month">Month</option>
-		<option value="year">Year</option>
-	</select>
-	<button id="update">update</button>
+	<div class="row">
+		<div class="col-md-2 col-sm-2 col-xs-2">
+			<p><button class="btn btn-primary btn-sm" id="get-location-btn"><span>Get Location</span></button></p>
+		</div><!-- .col -->
+		<div class="col-md-10 col-sm-10 col-xs-10">
+			<div class="panel panel-default">
+				<div class="panel-heading">Location Response</div>
+				<div class="panel-body">
+					<p>Lat/Long: <input id="location-lat-long" type="text" class="form-control"/></p>
+					<p>Address: <input id="location-address" type="text" class="form-control"/</p>
+					<p>Map:</p><div id="map-container" style="height: 400px;"></div>
+				</div>
+			</div>
+		</div><!-- .col -->
+	</div><!-- .row -->
+	<script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+	<script src="{% static '/assets/js/core/popper.min.js' %} "></script>
+	<script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
+	<script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
 	<script>
-		function generateData() {
-			var unit = document.getElementById('unit').value;
+		"use strict";
 
-			function unitLessThanDay() {
-				return unit === 'second' || unit === 'minute' || unit === 'hour';
-			}
+		$(document).ready(function() {
 
-			function beforeNineThirty(date) {
-				return date.hour() < 9 || (date.hour() === 9 && date.minute() < 30);
-			}
-
-			// Returns true if outside 9:30am-4pm on a weekday
-			function outsideMarketHours(date) {
-				if (date.isoWeekday() > 5) {
-					return true;
+			// get location button functionality
+			$("#get-location-btn").click(function(event){
+				event.preventDefault();
+				$("#location-lat-long").val("Finding location. Please wait...");
+				// check if browser supports the geolocation api
+				if(navigator.geolocation) {
+					var asd =navigator.geolocation.getCurrentPosition(success);
+					console.log(asd)		// if geolocation supported, call function
+				} else {
+					$("#location-lat-long").val('Your browser doesn\'t support the geolocation api.');
 				}
-				if (unitLessThanDay() && (beforeNineThirty(date) || date.hour() > 16)) {
-					return true;
-				}
-				return false;
-			}
 
-			function randomNumber(min, max) {
-				return Math.random() * (max - min) + min;
-			}
+			});
 
-			function randomBar(date, lastClose) {
-				var open = randomNumber(lastClose * 0.95, lastClose * 1.05).toFixed(2);
-				var close = randomNumber(open * 0.95, open * 1.05).toFixed(2);
-				return {
-					t: date.valueOf(),
-					y: close
+			// function to get lat/long and plot on a google map
+			function success(position) {
+				var latitude		= position.coords.latitude;				// set latitude variable
+				var longitude		= position.coords.longitude;			// set longitude variable
+
+				var mapcanvas		= document.createElement('div');		// create div to hold map
+				mapcanvas.id = 'map';										// give this div an id of 'map'
+				mapcanvas.style.height = '400px';							// set map height
+				mapcanvas.style.width = '100%';								// set map width
+
+				document.querySelector('#map-container').appendChild(mapcanvas);	// place new div within the 'map-container' div
+
+				var coords = new google.maps.LatLng(latitude,longitude);	// set lat/long object for new map
+
+				var options = {												// set options for map
+					zoom: 15,
+					center: coords,
+					mapTypeControl: false,
+					navigationControlOptions: {
+						style: google.maps.NavigationControlStyle.SMALL
+					},
+					mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
+
+				var map = new google.maps.Map(document.getElementById("map"), options);	// create new map using settings above
+
+				var marker = new google.maps.Marker({						// place a marker at our lat/long
+					position:	coords,
+					map:		map
+				});
+
+				var latLongResponse	= 'Latitude: ' + latitude + ' / Longitude: ' + longitude;
+				var lat=latitude
+				var lon=longitude
+				console.log(lat,lon)	// build string containing lat/long
+				getAddress(latitude,longitude);							// geocode the lat/long into an address
+
+				$("#location-lat-long").val(latLongResponse);									// write lat/long string to input field
+
 			}
 
-			var date = moment('Jan 01 1990', 'MMM DD YYYY');
-			var now = moment();
-			var data = [];
-			var lessThanDay = unitLessThanDay();
-			for (; data.length < 600 && date.isBefore(now); date = date.clone().add(1, unit).startOf(unit)) {
-				if (outsideMarketHours(date)) {
-					if (!lessThanDay || !beforeNineThirty(date)) {
-						date = date.clone().add(date.isoWeekday() >= 5 ? 8 - date.isoWeekday() : 1, 'day');
-					}
-					if (lessThanDay) {
-						date = date.hour(9).minute(30).second(0);
-					}
-				}
-				data.push(randomBar(date, data.length > 0 ? data[data.length - 1].y : 30));
+
+			// function to process address data
+			function processAddress(address) {
+				$("#location-address").val(address);									// write address to field
+				var spokenResponse = "I've got you at " + address;						// build string to speak
+				speakText(spokenResponse);												// speak the address
 			}
 
-			return data;
-		}
+			// function to geocode a lat/long
+			function getAddress(myLatitude,myLongitude) {
 
+				var geocoder	= new google.maps.Geocoder();							// create a geocoder object
+				var location	= new google.maps.LatLng(myLatitude, myLongitude);		// turn coordinates into an object
 
-function scrapt_stats(){
-()
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-		var ctx = document.getElementById('chart1').getContext('2d');
-		ctx.canvas.width = 1000;
-		ctx.canvas.height = 300;
-
-		var color = Chart.helpers.color;
-		var cfg = {
-			data: {
-				datasets: [{
-					label: 'CHRT - Chart.js Corporation',
-					backgroundColor: color(window.chartColors.).alpha(0.5).rgbString(),
-					borderColor: window.chartColors.,
-					data: generateData(),
-					type: 'line',
-					pointRadius: 0,
-					fill: false,
-					lineTension: 0,
-					borderWidth: 2
-				}]
-			},
-			options: {
-				animation: {
-					duration: 0
-				},
-				scales: {
-					xAxes: [{
-						type: 'time',
-						distribution: 'series',
-						offset: true,
-						ticks: {
-							major: {
-								enabled: true,
-								fontStyle: 'bold'
-							},
-							source: 'data',
-							autoSkip: true,
-							autoSkipPadding: 75,
-							maxRotation: 0,
-							sampleSize: 100
-						},
-						afterBuildTicks: function(scale, ticks) {
-							var majorUnit = scale._majorUnit;
-							var firstTick = ticks[0];
-							var i, ilen, val, tick, currMajor, lastMajor;
-
-							val = moment(ticks[0].value);
-							if ((majorUnit === 'minute' && val.second() === 0)
-									|| (majorUnit === 'hour' && val.minute() === 0)
-									|| (majorUnit === 'day' && val.hour() === 9)
-									|| (majorUnit === 'month' && val.date() <= 3 && val.isoWeekday() === 1)
-									|| (majorUnit === 'year' && val.month() === 0)) {
-								firstTick.major = true;
-							} else {
-								firstTick.major = false;
-							}
-							lastMajor = val.get(majorUnit);
-
-							for (i = 1, ilen = ticks.length; i < ilen; i++) {
-								tick = ticks[i];
-								val = moment(tick.value);
-								currMajor = val.get(majorUnit);
-								tick.major = currMajor !== lastMajor;
-								lastMajor = currMajor;
-							}
-							return ticks;
-						}
-					}],
-					yAxes: [{
-						gridLines: {
-							drawBorder: false
-						},
-						scaleLabel: {
-							display: true,
-							labelString: 'Closing price ($)'
-						}
-					}]
-				},
-				tooltips: {
-					intersect: false,
-					mode: 'index',
-					callbacks: {
-						label: function(tooltipItem, myData) {
-							var label = myData.datasets[tooltipItem.datasetIndex].label || '';
-							if (label) {
-								label += ': ';
-							}
-							label += parseFloat(tooltipItem.value).toFixed(2);
-							return label;
-						}
+				geocoder.geocode({'latLng': location}, function (results, status) {
+					if(status == google.maps.GeocoderStatus.OK) {						// if geocode success
+						processAddress(results[0].formatted_address);					// if address found, pass to processing function
+					} else {
+					  alert("Geocode failure: " + status);								// alert any other error(s)
+					  return false;
 					}
-				}
+				});
 			}
-		};
 
-		var chart = new Chart(ctx, cfg);
 
-		document.getElementById('update').addEventListener('click', function() {
-			var type = document.getElementById('type').value;
-			var dataset = chart.config.data.datasets[0];
-			dataset.type = type;
-			dataset.data = generateData();
-			chart.update();
+			// function to speak a response
+			function speakText(response) {
+
+				// setup synthesis
+				var msg = new SpeechSynthesisUtterance();
+				var voices = window.speechSynthesis.getVoices();
+				msg.voice = voices[2];					// Note: some voices don't support altering params
+				msg.voiceURI = 'native';
+				msg.volume = 1;							// 0 to 1
+				msg.rate = 1;							// 0.1 to 10
+				msg.pitch = 2;							// 0 to 2
+				msg.text = response;
+				msg.lang = 'en-US';
+
+				speechSynthesis.speak(msg);
+			}
 		});
-
 	</script>
 </body>
-
 </html>

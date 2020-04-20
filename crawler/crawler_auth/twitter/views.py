@@ -28,7 +28,7 @@ from django.http import HttpResponse
 from django.views.generic import View
 import sys
 from twitter.utils import render_to_pdf #created in step 4
-import time 
+import time
 from django.db.models.sql.datastructures import Empty
 
 
@@ -49,7 +49,7 @@ def submitTarget(request):
     twitter_username=request.POST['twitter_username']
     submission_date=request.POST['submission_date']
     target_scheduling=request.POST['target_scheduling']
-    #got all variables 
+    #got all variables
     #save them to database
     target=Twitter_Target(target_type=target_type,target_platform=target_platform,
                           twitter_username=twitter_username,submission_date=submission_date,
@@ -57,7 +57,7 @@ def submitTarget(request):
     target.save()
     r=asd.delay(twitter_username)
     #databse save complete
-    
+
     return render(request,'twitter/index.html')
 
 
@@ -110,8 +110,8 @@ def addTwitterTarget(request):
              form.save()
              r=asd.delay(request.POST['twitter_username'])
              messages.success(request,'Target added successfully')
-             return redirect('/twitter/addTwitterTarget')        
-     
+             return redirect('/twitter/addTwitterTarget')
+
      return render(request,'twitter/addTwitterTarget.html',{'form':form,'targets':targets})
 
 def viewTweets(request,username):
@@ -132,14 +132,14 @@ def viewTweets(request,username):
 
 
 
-    
+
 def generatePDF(request,username):
         template = 'twitter/dump_tweets_from_db.html'
         tweets_list = Tweets.objects.filter(screen_name=username).order_by('-date')
 
         context = {
             "tweets": tweets_list,
-           
+
         }
         pdf = render_to_pdf('pdfs/template_pdf.html', context)
         if pdf:
@@ -157,9 +157,9 @@ def username(request, _username):
     return render(request, 'chat/room.html', {
         '_username': _username
     })
-# twitter tweets end 
+# twitter tweets end
 
-# twitter profile start 
+# twitter profile start
 
 def addTwitterTarget_Profile(request):
      form=Twitter_TargetFormProfile
@@ -183,34 +183,35 @@ def addTwitterTarget_Profile(request):
                 messages.error(request,'Profile Target Failed Please try again')
                 target = Twitter_Target_Profile.objects.filter(twitter_username=_username).delete()
                 # Twitter_Target_Profile.objects.filter(twitter_username=username).delete()
-                
+
              return redirect('/twitter/addTwitterTarget/profile')
-   
+
      return render(request,'twitter/addTwitterTarget_Profile.html',{'form':form,'profile_targets':profile_targets})
 
 def viewProfile(request,username):
     get_user_id=Users.objects.values_list('id_str', flat=True).get(username=username)
     profile=Users.objects.filter(username=username)
     user=Users.objects.values_list('username','name','profile_image_url').get(username=username)
-    
+
     print(user)
     followers_list=Users.objects.raw("select * from twitter_users  join twitter_followers on twitter_followers.follower_id=twitter_users.id where twitter_followers.id="+get_user_id)
     following_list=Users.objects.raw("select * from twitter_users inner join twitter_following on twitter_following.following_id=twitter_users.id where twitter_following.id="+get_user_id)
     # following_list=Following.objects.filter(id=get_user_id).select_related().values_list()
-    
+
     print(following_list)
     if(len(followers_list)<=0):
          messages.error(request,'No Followers found ')
          return redirect('/twitter/addTwitterTarget/profile')
     return render(request,'twitter/dump_profile_from_db.html',{'username':username,'followers_list':followers_list,'following_list':following_list,'profile':profile})
-   
-    
+
+
     # return render(request, 'twitter/dump_followers.html', { 'followers_list': followers_list})
 
 
-# twitter profile end 
+# twitter profile end
 
-
+def test(request):
+    return render(request,'test.html');
 
 
 
@@ -377,7 +378,7 @@ def getProfile(_username):
 
 
 def getFollowers(username):
-    
+
 
     nest_asyncio.apply()
     c = twint.Config()
@@ -449,12 +450,12 @@ def getFollowers(username):
 
     })
     print(len(dic))
-    return dic 
+    return dic
 
 
 
 def getFollowing(username):
-    
+
 
     nest_asyncio.apply()
     c = twint.Config()
@@ -526,5 +527,5 @@ def getFollowing(username):
 
     })
     print(len(dic))
-    return dic 
+    return dic
 
