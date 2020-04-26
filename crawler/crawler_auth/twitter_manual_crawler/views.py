@@ -16,13 +16,19 @@ import json
 from .tasks import getTweets
 from .tasks import getAllFollowers
 from .tasks import getSingleUser
+from .tasks import getAllFollowings
 
 # model imports
 from .models import tweets_target_model
 from .models import tweets_target_form
 from .models import profiles_target_form
 from .models import profiles_target_model
-from .models import  Followers
+from .models import  Followers,Followings
+from .models import Activity_Logger
+
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+from .tasks import asd
 def gettweets(request,_username):
     Tweets.objects.filter(username=_username)
     return render (request,'tweets.html')
@@ -37,12 +43,21 @@ def tweets_targets(request):
          form=tweets_target_form(request.POST or None)
          if form.is_valid():
              form.save()
-            #  r=asd.delay(request.POST['twitter_username'])
+             log=Activity_Logger(activity_name='Adding Tweets Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Tweets Target Added With Username = '+request.POST['twitter_username'],
+                             activity_status='successfull')
+             log.save()
              messages.success(request,'Tweets Target added successfully')
              print("form saved success")
              r=getTweets.delay(request.POST['twitter_username'])
              return redirect('/tw/tweets_targets')
          else:
+             log=Activity_Logger(activity_name='Adding Twitter Tweets Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Failed to Add Tweets Target With Username = '+request.POST['twitter_username'+'\n Target Already Exsist'],
+                             activity_status='failure')
+             log.save()
              print("tweets target form not saved : error ")
              messages.error(request,'Tweets Target insertion Failed')
      return render(request,'tweets_targets.html',{'form':form,'tweets_targets':tweets_targets})
@@ -83,7 +98,12 @@ def delete_tweets_targets(request,username):
          lower_username=username.lower()
          tweets_target_model.objects.filter(twitter_username=username).all().delete()
          Tweets.objects.filter(username=lower_username).all().delete()
-         messages.success(request,'Tweets Target deleted successfully')
+         messages.success(request,' Twitter Tweets Target eleted successfully')
+         log=Activity_Logger(activity_name='Deleting Tweets Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Tweets Target  With Username = '+username+' Deleted Successfully',
+                             activity_status='successfull')
+         log.save()
          return redirect('/tw/tweets_targets')
 
 
@@ -99,38 +119,123 @@ def profiles_targets(request):
         form=profiles_target_form(request.POST or None)
         if form.is_valid():
             form.save()
+            log=Activity_Logger(activity_name='Adding Twitter Profile Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile  Target Added With Username = '+request.POST['twitter_username'],
+                             activity_status='successfull')
+            log.save()
             s=getSingleUser.delay(request.POST['twitter_username'])
             r=getAllFollowers.delay(request.POST['twitter_username'])
+            t=getAllFollowings.delay(request.POST['twitter_username'])
             messages.success(request,'Profile Target added successfully')
             # r=getTweets.delay(request.POST['twitter_username'])
             return redirect('/tw/profiles_targets')
         else:
                 print("Profile Target Insertion Failed  : error ")
                 messages.error(request,'profiles Target insertion Failed')
+                log=Activity_Logger(activity_name='Adding Twitter Profile Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Failed to Add Twitter Profile Target With Username = '+request.POST['twitter_username'+'\n Target Already Exsist'],
+                             activity_status='failure')
+                log.save()
     return render(request,'profiles_targets.html',{'form':form,'profiles_targets':profiles_targets})
 
 
 
 def delete_profiles_targets(request,username):
-         ower_username=username.lower()
+         lower_username=username.lower()
          deleted_target=profiles_target_model.objects.get(twitter_username=username)
-         Followers.objects.filter(following_id_fk=deleted_target.followers_fkey).all().delete()
+         Followers.objects.filter(follower_id_fk=deleted_target.followers_fkey).all().delete()
+         Followings.objects.filter(following_id_fk=deleted_target.followers_fkey).all().delete()
          profiles_target_model.objects.get(twitter_username=username).delete()
          messages.success(request,'Profile Target deleted successfully')
+         log=Activity_Logger(activity_name='Deleting Twitter Profile Target',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile  Target  With Username = '+username+' Deleted Successfully',
+                             activity_status='successfull')
+         log.save()
          return redirect('/tw/profiles_targets')
 
 
 
 
+def viewProfile_Following_locations(request,username):
+     profile_target=profiles_target_model.objects.get(twitter_username=username)
+     following_list=Followings.objects.filter(following_id_fk=profile_target.followers_fkey).order_by('-join_date')
+     if(len(following_list)<1):
+          messages.success(request,'Target Has no Followings ! Operation Failed  ')
+          return redirect('/tw/profiles_targets')
+     log=Activity_Logger(activity_name='Viewing Followings Locations',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile Target  With Username = '+username+' Followings Locations were Viewed',
+                             activity_status='successfull')
+     log.save()
+     return render(request,'profile_targets_following_locations.html',{'following_list':following_list,'profile_target':profile_target})
 
 
 
+def viewProfile_Followers_locations(request,username):
+     profile_target=profiles_target_model.objects.get(twitter_username=username)
+     followers_list=Followers.objects.filter(follower_id_fk=profile_target.followers_fkey).order_by('-join_date')
+     if(len(followers_list)<1):
+          messages.success(request,'Target Has no Followers ! Operation Failed  ')
+          return redirect('/tw/profiles_targets')
+     log=Activity_Logger(activity_name='Viewing Followers Locations',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile Target  With Username = '+username+' Followers Locations were Viewed',
+                             activity_status='successfull')
+     log.save()
+     return render(request,'profile_targets_followers_locations.html',{'followers_list':followers_list,'profile_target':profile_target})
+
+def viewProfile_Followers_tree(request,username):
+    profile_target=profiles_target_model.objects.get(twitter_username=username)
+    followers_list=Followers.objects.filter(follower_id_fk=profile_target.followers_fkey).order_by('-join_date')
+    if(len(followers_list)<1):
+          messages.success(request,'Target Has no Followers ! Operation Failed  ')
+          return redirect('/tw/profiles_targets')
+    log=Activity_Logger(activity_name='Viewing Followers Tree',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile Target  With Username = '+username+' Followers Tree was Viewed',
+                             activity_status='successfull')
+    log.save()
+    return render(request,'profile_targets_followers_tree.html',{'followers_list':followers_list})
+
+
+def viewProfile_Following_tree(request,username):
+    profile_target=profiles_target_model.objects.get(twitter_username=username)
+    following_list=Followings.objects.filter(following_id_fk=profile_target.followers_fkey).order_by('-join_date')
+    if(len(following_list)<1):
+          messages.success(request,'Target Has no Followings ! Operation Failed  ')
+          return redirect('/tw/profiles_targets')
+    log=Activity_Logger(activity_name='Viewing Followings Tree',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile Target  With Username = '+username+' Followings Tree was Viewed',
+                             activity_status='successfull')
+    log.save()
+    return render(request,'profile_targets_following_tree.html',{'following_list':following_list,'profile_targets':profile_target})
+
+
+def viewProfile_Full_profile(request,username):
+    profile_target=profiles_target_model.objects.get(twitter_username=username)
+    followers_list=Followers.objects.filter(follower_id_fk=profile_target.followers_fkey).order_by('-join_date')
+    following_list=Followings.objects.filter(following_id_fk=profile_target.followers_fkey).order_by('-join_date')
+    log=Activity_Logger(activity_name='Viewing Complete Profile',
+                             activity_app='Twitter_Manual_Crawler',
+                             activity_details='Twitter Profile Target  With Username = '+username+' Complete Profile was Viewed',
+                             activity_status='successfull')
+    log.save()
+    return render(request,'profile_targets_full_profile.html',{'followers_list':followers_list,'following_list':following_list,'profile_target':profile_target})
 
 
 
+def test_notifications(request):
+    r=asd.delay()
+    return HttpResponse('<div>asdasdasdasdadasda</div>')
 
-
-
+def logs(request):
+    all_logs=Activity_Logger.objects.all().order_by('-created_at')
+    print(len(all_logs))
+    return render(request,'logs.html',{'logs':all_logs})
 
 
 def index(request):

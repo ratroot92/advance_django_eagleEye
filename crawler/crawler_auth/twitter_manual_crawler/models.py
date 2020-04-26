@@ -91,7 +91,7 @@ class Followers(models.Model):
     lon = models.TextField(blank=True, null=True)
     created_at = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updated_at = models.DateField(auto_now=True,blank=True)
-    following_id_fk = models.TextField(blank=True, null=True)
+    follower_id_fk = models.TextField(blank=True, null=True)
     objects = models.Manager()
 
 
@@ -117,6 +117,63 @@ post_save.connect(add_locations_in_users_model_after_save_follower,sender=Follow
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+class Followings(models.Model):
+    id = models.BigIntegerField(primary_key=True)
+    name = models.TextField(blank=True, null=True)
+    username = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    location = models.TextField(blank=True, null=True)
+    url = models.TextField(blank=True, null=True)
+    join_date = models.TextField(blank=True, null=True)
+    join_time = models.TextField(blank=True, null=True)
+    tweets = models.TextField(blank=True, null=True)
+    following = models.TextField(blank=True, null=True)
+    followers = models.TextField(blank=True, null=True)
+    likes = models.TextField(blank=True, null=True)
+    media = models.TextField(blank=True, null=True)
+    is_private = models.TextField(blank=True, null=True)
+    is_verified = models.TextField(blank=True, null=True)
+    profile_image_url = models.TextField(blank=True, null=True)
+    background_image = models.TextField(blank=True, null=True)
+    lat = models.TextField(blank=True, null=True)
+    lon = models.TextField(blank=True, null=True)
+    created_at = models.DateField(auto_now_add=True,auto_now=False,blank=True)
+    updated_at = models.DateField(auto_now=True,blank=True)
+    following_id_fk = models.TextField(blank=True, null=True)
+    objects = models.Manager()
+
+
+def add_locations_after_save_following(sender,instance,**kwargs):
+    print("running post save")
+    print(instance.location)
+    try:
+      if(instance.location !=''):
+           _address=instance.location
+           _id=instance.id
+           print(instance)
+           geolocator = Nominatim()
+           location = geolocator.geocode(_address)
+           print(location.latitude, location.longitude)
+           user_to_be_updated=Followings.objects.filter(id=_id).update(lat=location.latitude,lon=location.longitude)
+      else:
+          pass
+    except:
+      pass
+
+
+post_save.connect(add_locations_after_save_following,sender=Followings)
 
 
 
@@ -160,22 +217,12 @@ class Tweets(models.Model):
      reply_to=models.TextField(blank=True, null=True)
      objects = models.Manager()
 
-def count_tweets_on_insertion(sender,instance,**kwargs):
-    print("before evry tweets save ")
-    # count=Tweets.objects.filter(username=instance.username).count()
-    # channel_layer = get_channel_layer()
-    # async_to_sync(channel_layer.group_send)(
-    #     'event_sharif',
-    #     {
-    #         'type': 'tweets_insertion',
-    #         'message': count
-    #     }
-    # )
+# def count_tweets_on_insertion(sender,instance,**kwargs):
+#     print("before evry tweets save ")
 
 
 
-
-pre_save.connect(count_tweets_on_insertion,sender=Tweets)
+# pre_save.connect(count_tweets_on_insertion,sender=Tweets)
 
 
 
@@ -262,6 +309,12 @@ class profiles_target_model(models.Model):
     followers_count=models.CharField(max_length=255,default="0")
     followings_count=models.CharField(max_length=255,default="0")
     tweets_count=models.CharField(max_length=255,default="0")
+    profile_img_url=models.CharField(max_length=255,default="0")
+    background_image=models.CharField(max_length=255,default="0")
+    username=models.CharField(max_length=255,default="0")
+    name=models.CharField(max_length=255,default="0")
+    media=models.CharField(max_length=255,default="0")
+    location=models.CharField(max_length=255,default="0")
     created_at = models.DateField(auto_now_add=True,auto_now=False,blank=True)
     updated_at = models.DateField(auto_now=True,blank=True)
     followers_fkey=models.CharField(max_length=255,default="0")
@@ -281,12 +334,20 @@ class profiles_target_form(forms.ModelForm):
             self.fields['followers_count'].disabled = True
             self.fields['followings_count'].disabled = True
             self.fields['followers_fkey'].disabled = True
+            self.fields['profile_img_url'].disabled = True
+            self.fields['background_image'].disabled = True
+            self.fields['username'].disabled = True
+            self.fields['name'].disabled = True
+            self.fields['media'].disabled = True
+            self.fields['location'].disabled = True
 
       class Meta:
             # readonly_fields=('submission_date',)
             model=profiles_target_model
             fields=['target_platform','target_type','twitter_username','target_scheduling',
-                    'scanning_status','tweets_count','followers_count','followings_count','followers_fkey']
+                    'scanning_status','tweets_count','followers_count','followings_count',
+                    'followers_fkey','profile_img_url','background_image','username','name',
+                    'media','location']
             # widgets = {
             # 'submission_date': forms.DateInput(attrs={'type': 'date'})
             #}
@@ -297,3 +358,16 @@ class profiles_target_form(forms.ModelForm):
            except:
              return self.cleaned_data['twitter_username']
            raise validators.ValidationError("target already exsists")
+
+
+
+class Activity_Logger(models.Model):
+    activity_name = models.TextField(blank=True, null=True)
+    activity_app = models.TextField(blank=True, null=True)
+    activity_details = models.TextField(blank=True, null=True)
+    activity_status = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True,auto_now=False,blank=True)
+    updated_at = models.DateField(auto_now=True,blank=True)
+    objects=models.Manager
+    class Meta:
+        ordering = ['-created_at',]

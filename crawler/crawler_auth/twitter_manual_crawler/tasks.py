@@ -6,13 +6,20 @@ import json
 import twint
 import asyncio
 import nest_asyncio
-from .models import Tweets,Users,tweets_target_model,count_tweets_on_insertion,Followers,profiles_target_model
+from .models import Tweets,Users,tweets_target_model
+from .models import Followers,profiles_target_model
+from .models import Followings
+from .models import Activity_Logger
 import subprocess
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 @shared_task
 def getTweets(_username):
-
+    log=Activity_Logger(activity_name='Tweets Scanning | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Tweets of   Username = '+_username+' Started',
+                             activity_status='successfull')
+    log.save()
     asyncio.set_event_loop(asyncio.new_event_loop())
     c = twint.Config()
     # c.Username = "maliksblr92"
@@ -97,6 +104,7 @@ def getTweets(_username):
     # "reply_to":"",
 
     # }
+    twint.output.clean_lists()
     twint.run.Search(c)
     tweets = twint.output.tweets_list
     for tweet in tweets:
@@ -276,24 +284,37 @@ def getTweets(_username):
     t.scanning_status = 'completed'
     t.tweets_count=tweets_counts
     t.save()
+    info_message='Followers List Scanning For Twitter Username \"'+_username+ '\" Completed'
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
             'event_sharif',
                 {
             'type': 'tweets_insertion_socket_close',
-            'message': 'scanning complete ! socket closed ',
+            'message': info_message,
             'username': _username,
+            'info': 'tweets_insertion_socket_close',
                 }
                 )
+    log=Activity_Logger(activity_name='Tweets Scanning  | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Tweets of   Username = '+_username+' Completed',
+                             activity_status='successfull')
+    log.save()
 
 
 @shared_task
 def getAllFollowers(_username):
+    log=Activity_Logger(activity_name='Followers Scanning  | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Followers of   Username = '+_username+' Started',
+                             activity_status='successfull')
+    log.save()
     asyncio.set_event_loop(asyncio.new_event_loop())
     c = twint.Config()
     c.Username = _username
     c.User_full = True
     c.Store_object = True
+    twint.output.clean_lists()
     twint.run.Followers(c)
     user_lists = twint.output.users_list
 
@@ -390,17 +411,157 @@ def getAllFollowers(_username):
                is_verified =i['is_verified'],
                media =i['media'],
                background_image =i['background_image'],
-               following_id_fk=get_profile_target_fkey.followers_fkey
+               follower_id_fk=get_profile_target_fkey.followers_fkey
                 )
         followers.save()
+    info_message='Followers List Scanning For Twitter Username \"'+_username+ '\" Completed'
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+            'event_sharif',
+                {
+            'type': 'followers_scanning_complete',
+            'message': info_message,
+            'username': _username,
+            'info': 'followers_scanning_complete',
+                }
+                )
+    log=Activity_Logger(activity_name='Followers Scanning  | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Followers of   Username = '+_username+' Completed',
+                             activity_status='successfull')
+    log.save()
 
 
 
 
+@shared_task
+def getAllFollowings(_username):
+    log=Activity_Logger(activity_name='Followings Scanning  | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Followings of   Username = '+_username+' Started',
+                             activity_status='successfull')
+    log.save()
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    c = twint.Config()
+    c.Username = _username
+    c.User_full = True
+    c.Store_object = True
+    twint.output.clean_lists()
+    twint.run.Following(c)
+    user_lists = twint.output.users_list
+
+    id=[]
+    name =[]
+    username  =[]
+    bio  =[]
+    location =[]
+    url  =[]
+    join_date  =[]
+    join_time=[]
+    tweets  =[]
+    following =[]
+    followers =[]
+    likes    =[]
+    profile_image_url =[]
+    is_private  =[]
+    is_verified =[]
+    media =[]
+    background_image =[]
+
+    for user in user_lists:
+        id.append(user.id)
+        name.append(user.name)
+        username.append(user.username)
+        bio.append(user.bio)
+        location.append(user.location)
+        url.append(user.url)
+        join_date.append(user.join_date)
+        join_time.append(user.join_time)
+        tweets.append(user.tweets)
+        following.append(user.following)
+        followers.append(user.followers)
+        likes.append(user.likes)
+        profile_image_url.append(user.avatar)
+        is_private.append(user.is_private )
+        is_verified.append(user.is_verified)
+        media.append(user.media_count)
+        background_image.append(user.background_image)
+    dic = []
+    for item in zip(id,name,username,bio,location,url,join_date,join_time,tweets,following,followers,likes,profile_image_url,is_private,is_verified,media,background_image):
+
+        dic.append({
+            'id':item[0],
+            'name':item[1],
+            'username':item[2],
+            'bio':item[3],
+            'location':item[4],
+            'url':item[5],
+            'join_date':item[6],
+            'join_time':item[7],
+            'tweets':item[8],
+            'following':item[9],
+            'followers':item[10],
+            'likes':item[11],
+            'profile_image_url':item[12],
+            'is_private':item[13],
+            'is_verified':item[14],
+            'media':item[15],
+            'background_image':item[16],
 
 
+            })
+    get_profile_target_fkey=profiles_target_model.objects.filter(twitter_username=_username).get()
+    for i in dic:
+        # lower_case_username=_username.lower()
+        # count=Tweets.objects.filter(username=lower_case_username).count()
+        # channel_layer = get_channel_layer()
+        # async_to_sync(channel_layer.group_send)(
+        #     'event_sharif',
+        #         {
+        #     'type': 'tweets_insertion',
+        #     'message': count,
+        #     'username': _username,
+        #         }
+        #         )
+        # print(count)
 
-
+        followings=Followings(
+               id=i['id'],
+               name =i['name'],
+               username  =i['username'],
+               bio  =i['bio'],
+               location =i['location'],
+               url  =i['url'],
+               join_date  =i['join_date'],
+               join_time=i['join_time'],
+               tweets  =i['tweets'],
+               following =i['following'],
+               followers =i['followers'],
+               likes    =i['likes'],
+               profile_image_url =i['profile_image_url'],
+               is_private  =i['is_private'],
+               is_verified =i['is_verified'],
+               media =i['media'],
+               background_image =i['background_image'],
+               following_id_fk=get_profile_target_fkey.followers_fkey,
+                )
+        followings.save()
+    info_message='Following List Scanning For Twitter Username \"'+_username+ '\" Completed'
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+            'event_sharif',
+                {
+            'type': 'following_scanning_complete',
+            'message': info_message,
+            'username': _username,
+            'info': 'following_scanning_complete',
+                }
+                )
+    log=Activity_Logger(activity_name='Followings Scanning  | Celert Tasks' ,
+                             activity_app='Twitter_Manual_Crawler ',
+                             activity_details='Scanning Followings of   Username = '+_username+' Completed',
+                             activity_status='successfull')
+    log.save()
 
 
 
@@ -419,15 +580,54 @@ def getSingleUser(_username):
     c.Username = _username
     c.Store_object = True
     # user = {'id': ''}
+    twint.output.clean_lists()
     twint.run.Lookup(c)
     u = twint.output.users_list
-    print(u)
+    id=''
+    following=''
+    followers=''
+    tweets=''
+    name=''
+    username=''
+    media=''
+    location=''
+    profile_img_url=''
+    background_image=''
+    for i in u:
+        id=i.id
+        following=i.following
+        followers=i.followers
+        tweets=i.tweets
+        name=i.name
+        username=i.username
+        media=i.media_count
+        location=i.location
+        profile_img_url=i.avatar
+        background_image=i.background_image
+
     update_profile_target=profiles_target_model.objects.get(twitter_username=_username)
-    update_profile_target.followers_fkey=u[0].id
-    update_profile_target.followings_count=u[0].following
-    update_profile_target.followers_count= u[0].followers
-    update_profile_target.tweets_count=u[0].tweets
+    update_profile_target.followers_fkey=id
+    update_profile_target.followings_count=following
+    update_profile_target.followers_count= followers
+    update_profile_target.tweets_count=tweets
+    update_profile_target.name=name
+    update_profile_target.username=username
+    update_profile_target.media=media
+    update_profile_target.location=location
+    update_profile_target.profile_img_url= profile_img_url
+    update_profile_target.background_image=background_image
     update_profile_target.save()
+
+    print('###############################+ID+###################################')
+    print(id)
+    print('################################+following+##################################')
+    print(following)
+    print('################################+followers+##################################')
+    print(followers)
+    print('################################+tweets+##################################')
+    print(tweets)
+    print('################################+name+##################################')
+    print(name)
     # user['id'] = format(u[0].id)
     # user['id_str'] = format(u[0].id)
     # user['name'] = u[0].name
@@ -449,6 +649,20 @@ def getSingleUser(_username):
 
 
 
+@shared_task
+def asd():
+    _username='maliksblr92'
+    info_message='Following List Scanning For Twitter Username \"'+_username+ '\" Completed'
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+            'event_sharif',
+                {
+            'type': 'following_scanning_complete',
+            'message': info_message,
+            'username': _username,
+            'info': 'following_scanning_complete',
+                }
+                )
 
 
 

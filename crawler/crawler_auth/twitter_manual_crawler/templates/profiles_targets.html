@@ -19,6 +19,7 @@
   </div>
   </div>
 <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
 <script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
 <script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
@@ -26,6 +27,7 @@
 <script src="{% static '/assets/js/black-dashboard.min.js?v=1.0.0' %}"></script>
 <script src="{% static '/assets/demo/demo.js' %} "></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
@@ -51,137 +53,54 @@
 <script type="text/javascript" src="https://cdn.datatables.net/searchpanes/1.0.1/js/dataTables.searchPanes.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/searchpanes/1.0.1/js/searchPanes.bootstrap4.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+
+
 <script>
+$(document).ready(function(){
 
-//    $(document).ready(function(){
-//       // const _username='maliksblr92'
-//     //const chatSocket = new WebSocket('ws://'+ window.location.host+'/re_scan/'+ _username+ '/')
-//     const chatSocket = new WebSocket('ws://'+ window.location.host+'/re_scan/')
-
-//           $('.scanBtn').on('click',function(){
-//             let _name =$(this).attr("data-id")
-
-//             console.log(_name)
-
-//             console.log(chatSocket)
-//             chatSocket.send(JSON.stringify({
-//             '_username': _name
-
-//             }));
+const useranme=''
 
 
+const chatSocket = new WebSocket('ws://'+ window.location.host+'/rescan/profile_targets/')
+   console.log(chatSocket)
 
 
-//         //      chatSocket.onopen = function(e) {
-//         //     console.log('connection opened')
-//         //     chatSocket.send(JSON.stringify({
-//         //   'message': 'asd'
-//         //     }));
-//         //  };
+   $('.scanBtn').on('click',function(){
+    var r = confirm(" CUATION ! \n All previously fetched records will be deleted  ");
+        if (r == true) {
+            let _name =$(this).attr("data-id")
+            console.log(_name)
+            console.log(chatSocket)
+            chatSocket.send(JSON.stringify({
+            '_username': _name
 
-//            })
-//           chatSocket.onmessage = function(e) {
-//             const data = JSON.parse(e.data);
-//            console.log(data);
-//           if(data._status_code==1){
-//             alert("Server Denied request \n  Scanning already completed   ")
-//           }
-
-
-//         };
+            }));
 
 
 
-//         chatSocket.onclose = function(e) {
-//             console.error('Web-socket closed unexpectedly');
-//         };
-
-//         })
-
-
-
+          chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+           console.log(data);
+          if(data._status_code==1){
+            alert("Server Denied request \n  Scanning already completed   ")
+          }
 
 
+        };
+      }
+      else{
+console.log("User Denied Rescanning Request")
+        }
+      })
 
 
-    </script>
-<!-- <script>
-
-  $(document).ready(function(){
-   const chatSocket = new WebSocket('ws://'+ window.location.host+'/getCount/')
-
-
-         $('.getCount').on('click',function(){
-           const _name =$(this).attr("data-id")
-
-           console.log(_name)
-
-           console.log(chatSocket)
-           chatSocket.send(JSON.stringify({
-           '_username': _name
-
-           }));
-
-           chatSocket.onmessage = function(e) {
-           const data = JSON.parse(e.data);
-          console.log(data);
-          $('#'+_name).empty().append(" [ "+data._tweets_count+" ]")
-       };
-
-
-       //      chatSocket.onopen = function(e) {
-       //     console.log('connection opened')
-       //     chatSocket.send(JSON.stringify({
-       //   'message': 'asd'
-       //     }));
-       //  };
-
-          })
+        chatSocket.onclose = function(e) {
+            console.error('Web-socket closed unexpectedly');
+        };
 
 
 
-
-       chatSocket.onclose = function(e) {
-           console.error('Web-socket closed unexpectedly');
-       };
-
-       })
-
-
-
-
-
-
-
-   </script> -->
-<script>
-// $(document).ready(function(){
-
-
-
-
-
-//    const chatSocket = new WebSocket('ws://'+ window.location.host+'/tweets_db_insertion/')
-//    console.log(chatSocket)
-
-
-
-
-//    chatSocket.onclose=function(e){
-//     console.log("closing websocket ")
-//     location.reload(true);
-//    }
-
-//    chatSocket.onmessage=function(e){
-//     const data = JSON.parse(e.data);
-//           console.log(data);
-//           console.log(data.username);
-
-
-//           $('#'+data.username).empty().append(" [ "+data.message+" ]")
-//    }
-
-//       });
+      });
 $(document).ready(function(){
   $('#TwitterTargetTable').DataTable({
     dom: 'Bfrtip',
@@ -201,7 +120,7 @@ $(document).ready(function(){
 }
 #success_message{
   position: absolute;;
-  width: 250px;
+  width: 350px;
   height: 60px;
   top: 0px;
   right: 0px;;
@@ -209,7 +128,7 @@ $(document).ready(function(){
 
 #warning_message{
   position: absolute;;
-  width: 250px;
+  width: 350px;
   height: 60px;
   top: 0px;
   right: 0px;;
@@ -227,6 +146,8 @@ $(document).ready(function(){
   font-size: 12px;;
 }
 </style>
+
+
 
 <!-- message for success -->
 {% if messages %}
@@ -367,7 +288,7 @@ $(document).ready(function(){
             <th scope="col" class="text-primary table_columns">followings_count </th>
             <th scope="col" class="text-primary table_columns">created_at </th>
             <!-- <th scope="col" class="text-primary table_columns">updated_at </th> -->
-            <th scope="col" class="text-primary table_columns">view_tweets </th>
+            <th scope="col" class="text-primary table_columns">view_operations</th>
 
             <th scope="col" class="text-primary table_columns">re_scan </th>
             <th scope="col" class="text-primary table_columns">other_operations </th>
@@ -389,12 +310,23 @@ $(document).ready(function(){
               <td class="text-primary table_columns">{{i.followings_count}}</td>
             <td class="text-primary table_columns">{{i.created_at}}</td>
             <!-- <td class="text-primary table_columns">{{i.updated_at}}</td> -->
-            <td class="text-primary table_columns"><a  href="{% url 'viewTweets' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
+            <td class="text-primary table_columns"><div class="dropdown">
+  <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <i class="fas fa-eye fa-2x"></i>
+  </button>
+  <div class="dropdown-menu dropdown-sm" aria-labelledby="dropdownMenu2">
+    <a class="dropdown-item " type="button" href="{% url 'viewProfile_Full_profile' username=i.twitter_username %}">Full_profile</a>
+    <a class="dropdown-item " type="button" href="{% url 'viewProfile_Following_tree' username=i.twitter_username %}">Following_tree </a>
+    <a class="dropdown-item " type="button" href="{% url 'viewProfile_Followers_tree' username=i.twitter_username %}">Followers_tree </a>
+    <a class="dropdown-item " type="button" href="{% url 'viewProfile_Followers_locations' username=i.twitter_username %}">Follower_locations </a>
+    <a class="dropdown-item " type="button" href="{% url 'viewProfile_Following_locations' username=i.twitter_username %}">Following_locations </a>
+  </div>
+</div></td>
 
             <td class="text-primary table_columns"><button type="button" class="btn btn-sm btn-primary scanBtn" data-id="{{i.twitter_username}}" id="scanBtn">re_Scan </button></td>
 
 
-            <td class="text-primary table_columns"><button type="button" class="btn btn-sm btn-success getCount" data-id="{{i.twitter_username}}" id="scanBtn">getCount </button>
+            <td class="text-primary table_columns">
               <a type="button" class="btn btn-sm btn-danger getCount"href="{% url 'delete_profiles_targets' username=i.twitter_username %}" id="deleteBtn">delete </a></td>
 
 

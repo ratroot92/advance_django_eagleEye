@@ -59,6 +59,9 @@
     const chatSocket = new WebSocket('ws://'+ window.location.host+'/re_scan/')
 
           $('.scanBtn').on('click',function(){
+
+            var r = confirm(" CUATION ! \n All previously fetched records will be deleted  ");
+        if (r == true) {
             let _name =$(this).attr("data-id")
 
             console.log(_name)
@@ -70,14 +73,11 @@
             }));
 
 
+          }
+        else{
+console.log("User Denied Rescanning Request")
+        }
 
-
-        //      chatSocket.onopen = function(e) {
-        //     console.log('connection opened')
-        //     chatSocket.send(JSON.stringify({
-        //   'message': 'asd'
-        //     }));
-        //  };
 
            })
           chatSocket.onmessage = function(e) {
@@ -161,7 +161,7 @@ $(document).ready(function(){
 
 
 
-   const chatSocket = new WebSocket('ws://'+ window.location.host+'/tweets_db_insertion/')
+  const chatSocket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/twitter_manual_crawler/')
    console.log(chatSocket)
 
 
@@ -201,7 +201,7 @@ $(document).ready(function(){
 }
 #success_message{
   position: absolute;;
-  width: 250px;
+  width: 350px;
   height: 60px;
   top: 0px;
   right: 0px;;
@@ -209,7 +209,7 @@ $(document).ready(function(){
 
 #warning_message{
   position: absolute;;
-  width: 250px;
+  width: 350px;
   height: 60px;
   top: 0px;
   right: 0px;;

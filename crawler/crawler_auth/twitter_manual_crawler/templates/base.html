@@ -7,15 +7,68 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/fontawesome.min.css" integrity="sha256-CuUPKpitgFmSNQuPDL5cEfPOOJT/+bwUlhfumDJ9CI4=" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <title>TW | Tweets Targets</title>
   </head>
   <body>
   {% block content %}
   {% endblock%}
+  <script>
 
+    $(document).ready(function(){
+
+
+
+
+
+    const chatSocket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/twitter_manual_crawler/')
+    console.log(chatSocket)
+    chatSocket.onclose=function(e){
+     console.log("closing websocket ")
+    //  location.reload(true);
+    }
+
+    chatSocket.onmessage=function(e){
+     const data = JSON.parse(e.data);
+           console.log(data);
+           console.log(data.message);
+    if(data.info=='followers_scanning_complete'){
+    console.log(data.info)
+
+    }
+    else if(data.info=='following_scanning_complete'){
+      console.log(data.info)
+    }
+
+
+
+    Command: toastr["info"]('<div class="text-center "><button class="btn btn-warning  font-weight-bold ">CELERY NOTIFIER</button></div><div class="text-white font-weight-bold ">'+data.message+'</div>')
+
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    }
+
+       });
+    </script>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

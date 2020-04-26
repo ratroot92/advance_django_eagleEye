@@ -1,0 +1,146 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+    </style>
+<style>
+    .followers_attribute_style{
+        text-align: left;
+        font-size:14px
+
+
+    }
+
+    .followers_value_style{
+        text-align: right;
+         font-size:14px
+
+    }
+    #followers_tree{
+        width: 100%;
+        height: 1200px!important;
+        overflow:auto!important ;
+    }
+
+</style>
+
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-12 bg-dark " id="followers_tree">
+
+    </div>
+
+</div>
+
+</div>
+<script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+<script src="{% static '/assets/js/core/popper.min.js' %} "></script>
+<script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
+<script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
+
+<script src="//www.amcharts.com/lib/4/core.js"></script>
+<script src="//www.amcharts.com/lib/4/charts.js"></script>
+<script src="//www.amcharts.com/lib/4/themes/animated.js"></script>
+<script src="//www.amcharts.com/lib/4/themes/dataviz.js"></script>
+<script src="//www.amcharts.com/lib/4/plugins/forceDirected.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/dark.js"></script>
+<script src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+<script>
+
+
+am4core.useTheme(am4themes_animated);
+
+// Create chart
+var chart = am4core.create("followers_tree", am4plugins_forceDirected.ForceDirectedTree);
+
+// Create series
+var series = chart.series.push(new am4plugins_forceDirected.ForceDirectedSeries());
+
+
+// Set data
+
+
+
+
+series.data = [{
+"name":"{{user.0}}",
+"value":1,
+"image":"{{user.2}}",
+"children": [
+{% for x in followers_list %}
+{
+  "name": "{{x.name}}",
+  "value": "{{forloop.counter}}",
+  "image": "{{x.profile_image_url}}"
+},
+{% endfor %}]
+}];
+
+console.log(series.data)
+
+
+// Set up data fields
+series.dataFields.value = "value";
+series.dataFields.name = "name";
+series.dataFields.id = "id";
+series.dataFields.children = "children";
+series.dataFields.linkWith = "link";
+
+// Add labels
+series.nodes.template.label.text = "{name}";
+series.nodes.template.label.valign = "bottom";
+series.nodes.template.label.fill = am4core.color("#fff");
+series.nodes.template.label.dy = 10;
+series.nodes.template.tooltipText = "{name}: [bold]{value}[/]";
+series.fontSize = 10;
+series.minRadius = 30;
+series.maxRadius = 30;
+
+// Configure circles
+series.nodes.template.circle.fillOpacity = 1;
+series.nodes.template.circle.fill = am4core.color("#fff");
+series.links.template.strokeWidth = 1;
+
+
+
+
+
+// Configure icons
+var icon = series.nodes.template.createChild(am4core.Image);
+icon.propertyFields.href = "image";
+icon.horizontalCenter = "middle";
+icon.verticalCenter = "middle";
+icon.width = 40;
+icon.height = 40;
+
+
+series.centerStrength = 0.5;
+series.links.template.distance = 8;
+</script>
+
+
+{% endblock %}

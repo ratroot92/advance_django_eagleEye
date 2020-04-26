@@ -1,7 +1,8 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
-from .tasks import getTweets
+from .tasks import getTweets,getAllFollowers,getSingleUser,getAllFollowings
 from .models import Tweets,tweets_target_model
+from .models import profiles_target_model
 from django.http import JsonResponse
 from asgiref.sync import async_to_sync
 class Twitter_Tweets_Targets_Channels(WebsocketConsumer):
@@ -36,10 +37,42 @@ class Twitter_Tweets_Targets_Channels(WebsocketConsumer):
             '_status_code': 1,
         }))
 
+class Rescan_Twitter_Profile_Target(WebsocketConsumer):
 
 
 
-class Count_Tweets(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        _username = text_data_json['_username']
+        get_user=profiles_target_model.objects.get(twitter_username=_username)
+        print(get_user.twitter_username)
+        if(get_user.scanning_status=='pending' or get_user.scanning_status=='completed'):
+            t=profiles_target_model.objects.get(twitter_username=_username)
+            t.scanning_status = 'pending'
+            t.save()
+            s=getSingleUser.delay(_username)
+            r=getAllFollowers.delay(_username)
+            t=getAllFollowings.delay(_username)
+            self.send(text_data=json.dumps({
+            '_username': 'Django Twitter Consumer Replying To : ws://127.0.0.1:8000/rescan/profile_targets/',
+            '_reply': 'success',
+            '_status_code': 0,
+        }))
+        else:
+            self.send(text_data=json.dumps({
+            '_username': 'Django Twitter Consumer Replying To : ws://127.0.0.1:8000/rescan/profile_targets/',
+            '_reply': 'failure / request rejected / already completed ',
+            '_status_code': 1,
+        }))
+
+
+class CELERY_NOTIFICATIONS_TWITTER_MANUAl_CRAWLER(WebsocketConsumer):
     def connect(self):
         self.room_name = 'event'
         self.room_group_name = self.room_name+"_sharif"
@@ -49,25 +82,27 @@ class Count_Tweets(WebsocketConsumer):
         )
         print(self.room_group_name)
         self.accept()
-        print("#######CONNECTED############")
+        print("###############CELERY NOTIFICATIONS CHANNEL  CONNECTED ##########################")
 
     def disconnect(self, code):
         async_to_sync(self.channel_layer.group_discard)(
             self.room_group_name,
             self.channel_name
         )
-        print("DISCONNECED CODE: ",code)
+        print("########### CELERY NOTIFICATIONS CHANNEL DISCONNECED CODE: ##############",code)
 
     def receive(self, text_data=None, bytes_data=None):
-        print(" MESSAGE RECEIVED")
+        print("###############CELERY NOTIFICATIONS RECEIVED ##########################")
         data = json.loads(text_data)
         message = data['message']
         username = data['username']
+        info = data['info']
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,{
                 "type": 'tweets_insertion',
                 "message": message,
-                "username": username
+                "username": username,
+                "info": info
             }
         )
 
@@ -79,13 +114,53 @@ class Count_Tweets(WebsocketConsumer):
             }
         )
 
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,{
+                "type": 'followers_scanning_complete',
+                "message": message,
+                "username": username,
+                "info": info,
+            }
+        )
+        async_to_sync(self.channel_layer.group_send)(
+            self.room_group_name,{
+                "type": 'following_scanning_complete',
+                "message": message,
+                "username": username,
+                "info": info,
+            }
+        )
+
     def tweets_insertion_socket_close(self,event):
         self.disconnect()
 
-    def tweets_insertion(self,event):
+    def followers_scanning_complete(self,event):
+        print("############### CELERY =  followers_scanning_complete ##########################")
         message = event['message']
         username = event['username']
+        info=event['info']
         self.send(text_data=json.dumps({
             'message': message,
-            'username': username
+            'username': username,
+            'info':info,
+        }))
+    def following_scanning_complete(self,event):
+        print("############### CELERY =  following_scanning_complete ##########################")
+        message = event['message']
+        username = event['username']
+        info=event['info']
+        self.send(text_data=json.dumps({
+            'message': message,
+            'username': username,
+            'info':info,
+        }))
+    def tweets_insertion(self,event):
+        print("############### CELERY =  tweets_insertion ##########################")
+        message = event['message']
+        username = event['username']
+        info=event['info']
+        self.send(text_data=json.dumps({
+            'message': message,
+            'username': username,
+              'info':info,
         }))
