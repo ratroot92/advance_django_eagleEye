@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 import os
 
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -40,14 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'django_countries',
-    'twitter',
+    #app seperated  'twitter',
     'django_celery_results',
     'djcelery',
     'channels',
+    'geopy',
+    'twitter_manual_crawler',
     # 'easy_pdf',
     # 'djcelery',
     # 'kombu.transport.django',
-    
+
 ]
 
 
@@ -88,24 +91,33 @@ ASGI_APPLICATION = 'd_auth.routing.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'eagle_eye',
+#             # 'NAME': 'd_auth',
+#         'USER': 'admin',
+#         # 'PASSWORD': 'asd',
+#         'PASSWORD': 'password',
+#         'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#         # 'use_unicode':'True',
+#         #  'charset':'utf8',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'djongo',
         'NAME': 'eagle_eye',
-            # 'NAME': 'd_auth',
-        'USER': 'admin',
-        # 'PASSWORD': 'asd',  
-        'PASSWORD': 'password',
-        'HOST': '127.0.0.1',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
-        # 'use_unicode':'True',
-        #  'charset':'utf8',
+        'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
+
     }
 }
 
@@ -173,4 +185,16 @@ CACHES = {
         'LOCATION': 'my_cache_table',
     }
 }
-CELERY_IMPORTS = ['twitter.tasks']
+# app seperated CELERY_IMPORTS = ['twitter.tasks']
+CELERY_IMPORTS = ['twitter_manual_crawler.tasks']
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+             "capacity": 1500,  # default 100
+            "expiry": 10,  # default 60
+        },
+    },
+}

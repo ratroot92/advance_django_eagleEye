@@ -1,0 +1,154 @@
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+
+<style>
+    /* width */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    </style>
+<div class="container-fluid">
+    <div class="row bg-dark p-1 ">
+        <div class="col-md-10 text-white d-flex flex-row justify-content-around align-items-center ">
+           <span class="badge badge-warning"> Tweets on Page : {{ tweets|length }}</span>
+           <span class="badge badge-warning"> Target Profile : {{ tweets.0.username }}</span>
+           <span class="badge badge-danger float-right"><a class="nav-link text-decoration-none text-white" >gneratePDF</a></span>
+        </div>
+        <div class="col-md-2">
+            <span class="badge badge-danger float-right"><a class="nav-link text-decoration-none text-white" href="/twitter/addTwitterTarget">View All_targets</a></span>
+        </div>
+    </div>
+    <div class="row m-1">
+        {% for i in tweets %}
+        <div class="col-md-4 mt-2  border bg-white" style="border-radius:10px;">
+            <div class="row p-2">
+                <div class="col-md-2 m-0 p-0 d-flex flex-column justify-content-center align-items-center"
+                    style="height:auto;">
+                    <img class="img-fluid " src="/static/images/077_twitter-512.png"
+                        style="height:50px;width:50px;border-radius:50%;" />
+                    <p style="font-size:12px" class="text-primary font-weight-bold  ">
+                        Tweet # {{ forloop.counter }}
+                    </p>
+                </div>
+                <div class="col-md-10 ">
+                    <div class="row">
+                        <div class="col-md-12 d-flex flex-row justify-content-around align-items-center">
+                            <b class="text-danger border m-0 p-0 col-md-4 " style="font-size:10px;">
+                                {{i.name}}
+                            </b>
+                            <span class="text-danger border m-0 p-0 col-md-4 " style="font-size:12px;">
+                                @{{i.username}}.
+                            </span>
+                            <span class="text-danger border m-0 p-0 col-md-4 " style="font-size:10px;">
+                                {{i.datestamp}} {{i.timestamp}}
+                            </span>
+                        </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 text-dark font-weight-bold " style="font-size:14px;height:150px;overflow:auto;">
+
+                {{i.text}}
+            </div>
+
+            {% if i.photos != '[]' %}
+            <div class="col-md-12 text-dark " style="font-size:12px;height:200px;overflow:auto;">
+                <img src="{{i.photos|cut:'['|cut:']'|cut:'\''}}" class="img-thumbnail" />
+
+            </div>
+
+           {% else %}
+           <div class="col-md-12 text-dark " style="font-size:12px;height:200px;overflow:auto;">
+            <img src="/static/images/no_img_placeholder.png"  class="img-thumbnail" />
+
+         </div>
+            {% endif %}
+
+
+        </div>
+
+
+        <div class="row "style="position:relative;bottom:0px;">
+                <div class="col-md-3 text-dark d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
+                    <i class=" text-danger fas fa-comment">
+                    </i>
+                    <span style="font-size: 9px;;">
+                        {{i.mentions|cut:'['|cut:']'|cut:'\'' }}
+                    </span>
+                </div>
+                <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
+                    <i aria-hidden="true" class=" text-danger fa fa-retweet">
+                    </i>
+                    <span style="font-size: 12px;;">
+                        {{i.replies_count}}
+                    </span>
+                </div>
+                <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
+                    <i class=" text-danger fas fa-heart">
+                    </i>
+                    <span style="font-size: 12px;;">
+                        {{i.likes_count}}
+                    </span>
+                </div>
+                <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
+                    <i class=" text-danger fas fa-upload">
+                    </i>
+                    <span style="font-size: 12px;;">
+                        {{i.retweets_count}}
+                    </span>
+                </div>
+            </div>
+            </div>
+
+        {% endfor%}
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+<nav aria-label="Page navigation example ">
+    <ul class="pagination justify-content-end mt-3 ">
+        {% for pages in tweets.paginator.page_range %}
+        {% if tweets.number == pages %}
+        <li class="page-item active"><a class="page-link" href="?page={{pages}}">{{pages}}</a></li>
+
+        {% else %}
+        <li class="page-item "><a class="page-link" href="?page={{pages}}">{{pages}}</a></li>
+        {% endif %}
+        {% endfor %}
+
+
+</nav>
+
+
+
+
+{% endblock %}

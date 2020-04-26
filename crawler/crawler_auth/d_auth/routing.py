@@ -1,6 +1,6 @@
 from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter, URLRouter
-from twitter import routing
+from twitter_manual_crawler import routing
 
 application = ProtocolTypeRouter({
     # (http->django views is added by default)

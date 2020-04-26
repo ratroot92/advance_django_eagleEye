@@ -17,9 +17,10 @@ from django.contrib import admin
 from django.urls import path,include
 
 urlpatterns = [
-   
+
     path('',include('auth.urls')),
     path('admin/', admin.site.urls),
-    path('dashboard', include("dashboard.urls")), 
-    path('twitter', include("twitter.urls")), 
+    path('dashboard', include("dashboard.urls")),
+    # path('twitter', include("twitter.urls")),
+    path('tw', include("twitter_manual_crawler.urls")),
 ]
