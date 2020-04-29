@@ -304,6 +304,8 @@ def getTweets(_username):
 
 @shared_task
 def getAllFollowers(_username):
+    deleted_target=profiles_target_model.objects.get(twitter_username=_username)
+    Followers.objects.filter(follower_id_fk=deleted_target.followers_fkey).all().delete()
     log=Activity_Logger(activity_name='Followers Scanning  | Celert Tasks' ,
                              activity_app='Twitter_Manual_Crawler ',
                              activity_details='Scanning Followers of   Username = '+_username+' Started',
@@ -380,19 +382,6 @@ def getAllFollowers(_username):
             })
     get_profile_target_fkey=profiles_target_model.objects.filter(twitter_username=_username).get()
     for i in dic:
-        # lower_case_username=_username.lower()
-        # count=Tweets.objects.filter(username=lower_case_username).count()
-        # channel_layer = get_channel_layer()
-        # async_to_sync(channel_layer.group_send)(
-        #     'event_sharif',
-        #         {
-        #     'type': 'tweets_insertion',
-        #     'message': count,
-        #     'username': _username,
-        #         }
-        #         )
-        # print(count)
-
         followers=Followers(
                id=i['id'],
                name =i['name'],
@@ -436,6 +425,8 @@ def getAllFollowers(_username):
 
 @shared_task
 def getAllFollowings(_username):
+    deleted_target=profiles_target_model.objects.get(twitter_username=_username)
+    Followings.objects.filter(following_id_fk=deleted_target.followers_fkey).all().delete()
     log=Activity_Logger(activity_name='Followings Scanning  | Celert Tasks' ,
                              activity_app='Twitter_Manual_Crawler ',
                              activity_details='Scanning Followings of   Username = '+_username+' Started',

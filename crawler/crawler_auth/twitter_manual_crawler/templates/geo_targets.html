@@ -1,0 +1,107 @@
+{% load static %}
+<html>
+<head>
+
+
+    <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+    <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
+    <script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+
+    <script src="{% static 'map/leaflet-src.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'map/leaflet.css'%}"/>
+
+    <script src="{% static 'map/Leaflet.draw.js'%}"></script>
+    <script src="{% static 'map/Leaflet.Draw.Event.js'%}"></script>
+    <link rel="stylesheet" href="{% static 'map/leaflet.draw.css'%}"/>
+
+    <script src="{% static 'map/Toolbar.js'%}"></script>
+    <script src="{% static 'map/Tooltip.js'%}"></script>
+
+    <script src="{% static 'map/GeometryUtil.js'%}"></script>
+    <script src="{% static 'map/LatLngUtil.js'%}"></script>
+    <script src="{% static 'map/LineUtil.Intersect.js'%}"></script>
+    <script src="{% static 'map/Polygon.Intersect.js'%}"></script>
+    <script src="{% static 'map/Polyline.Intersect.js'%}"></script>
+    <script src="{% static 'map/TouchEvents.js'%}"></script>
+    <script src="{% static 'map/DrawToolbar.js'%}"></script>
+    <script src="{% static 'map/Draw.Feature.js'%}"></script>
+    <script src="{% static 'map/Draw.SimpleShape.js'%}"></script>
+    <script src="{% static 'map/Draw.Polyline.js'%}"></script>
+    <script src="{% static 'map/Draw.Marker.js'%}"></script>
+    <script src="{% static 'map/Draw.Circle.js'%}"></script>
+    <script src="{% static 'map/Draw.CircleMarker.js'%}"></script>
+    <script src="{% static 'map/Draw.Polygon.js'%}"></script>
+    <script src="{% static 'map/Draw.Rectangle.js'%}"></script>
+    <script src="{% static 'map/EditToolbar.js'%}"></script>
+    <script src="{% static 'map/EditToolbar.Edit.js'%}"></script>
+    <script src="{% static 'map/EditToolbar.Delete.js'%}"></script>
+    <script src="{% static 'map/Control.Draw.js'%}"></script>
+    <script src="{% static 'map/Edit.Poly.js'%}"></script>
+    <script src="{% static 'map/Edit.SimpleShape.js'%}"></script>
+    <script src="{% static 'map/Edit.Rectangle.js'%}"></script>
+    <script src="{% static 'map/Edit.Marker.js'%}"></script>
+    <script src="{% static 'map/Edit.CircleMarker.js'%}"></script>
+    <script src="{% static 'map/Edit.Circle.js'%}"></script>
+</head>
+<body>
+<div id="map" style="width: 100%; height: 600px; border: 1px solid #ccc"></div>
+
+<script>
+    var osmUrl = 'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+            osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            osm = L.tileLayer(osmUrl, { maxZoom: 18, attribution: osmAttrib }),
+            map = new L.Map('map', { center: new L.LatLng(51.505, -0.04), zoom: 13 }),
+            drawnItems = L.featureGroup().addTo(map);
+    L.control.layers({
+        'osm': osm.addTo(map),
+        "google": L.tileLayer('http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}', {
+            attribution: 'google'
+        })
+    }, { 'drawlayer': drawnItems }, { position: 'topleft', collapsed: false }).addTo(map);
+    map.addControl(new L.Control.Draw({
+        edit: {
+            featureGroup: drawnItems,
+            poly: {
+                allowIntersection: false
+            }
+        },
+        draw: {
+            polygon: {
+                allowIntersection: false,
+                showArea: true
+            }
+        }
+    }));
+
+    map.on(L.Draw.Event.CREATED, function (e) {
+  console.clear();
+  var type = e.layerType
+  var layer = e.layer;
+  
+
+  // Do whatever else you need to. (save to db, add to map etc)
+  
+  drawnItems.addLayer(layer);
+  
+  console.log("Coordinates:");
+  
+  if (type == "marker" || type == "circle" || type == "circlemarker"){
+    console.log([layer.getLatLng().lat, layer.getLatLng().lng]);
+  }
+  else {
+    var objects = layer.getLatLngs()[0];
+    for (var i = 0; i < objects.length; i++){
+      console.log([objects[i].lat,objects[i].lng]);
+    }
+  }
+  
+  
+});
+
+
+
+</script>
+</body>
+</html>

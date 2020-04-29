@@ -238,6 +238,23 @@ def logs(request):
     return render(request,'logs.html',{'logs':all_logs})
 
 
+
+# geo targets views
+
+
+def geo_targets(request):
+    return render(request,'geo_targets.html')
+
+def bbox(request):
+    return render(request,'bbox.html')
+
+
+
+
+
+
+
+
 def index(request):
     user_dict=getUser()
     new_user=Users(id=user_dict['id'],

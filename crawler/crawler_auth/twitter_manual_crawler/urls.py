@@ -22,5 +22,8 @@ urlpatterns = [
     path('/test_notifications/',views.test_notifications,name='test_notifications'),
     # logs
     path('/logs/',views.logs,name='logs'),
+    # geo targets
+    path('/geo_targets/',views.geo_targets,name='geo_targets'),
+    path('/bbox/',views.bbox,name='bbox')
 
 ]
