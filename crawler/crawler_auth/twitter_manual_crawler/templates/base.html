@@ -14,7 +14,48 @@
     <link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet" />
     <title>TW | Tweets Targets</title>
   </head>
-  <body>
+  <style>
+    .cover {
+      background: url(/static/images/background_gradient.svg) no-repeat center center fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    }
+  </style>
+  <body class="cover">
+
+<div class="row">
+  <div class="col-md-12">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Eagel Eye Twitter</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    
+      <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+          <li class="nav-item active">
+           
+            <a class="nav-link" href="/tw/tweets_targets">Tweets Targets <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tw/profiles_targets">Profile Targets</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link " href="/tw/logs">Logs</a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search">
+          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
+  </div>
+</div>
   {% block content %}
   {% endblock%}
   <script>
@@ -38,14 +79,6 @@
            console.log(data.message);
     if(data.info=='followers_scanning_complete'){
     console.log(data.info)
-
-    }
-    else if(data.info=='following_scanning_complete'){
-      console.log(data.info)
-    }
-
-
-
     Command: toastr["info"]('<div class="text-center "><button class="btn btn-warning  font-weight-bold ">CELERY NOTIFIER</button></div><div class="text-white font-weight-bold ">'+data.message+'</div>')
 
     toastr.options = {
@@ -66,9 +99,40 @@
       "hideMethod": "fadeOut"
     }
     }
+    else if(data.info=='following_scanning_complete'){
+      console.log(data.info)
+      Command: toastr["info"]('<div class="text-center "><button class="btn btn-warning  font-weight-bold ">CELERY NOTIFIER</button></div><div class="text-white font-weight-bold ">'+data.message+'</div>')
+
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": true,
+      "progressBar": true,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    }
+    }
+    else if(data.info=='tweets_insertion'){
+
+    }
+
+
+
+    
+    }
 
        });
     </script>
+
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>

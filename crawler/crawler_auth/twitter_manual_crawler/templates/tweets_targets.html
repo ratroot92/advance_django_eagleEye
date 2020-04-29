@@ -3,22 +3,10 @@
 {% extends 'base.html'%}
 {% load static %}
 {% block content %}
-<div class="container-fluid">
-  <div class="row">
-  <div class="col-md-4"></div>
-  <div class="col-md-8">
 
-<nav aria-label="breadcrumb">
-  <ol class="breadcrumb ">
-    <li class="breadcrumb-item  active" aria-current="page"><a class="text-decoration-none" href="/tw/tweets_targets">Tweets Targets</a></li>
-    <li class="breadcrumb-item "><a class="text-decoration-none" href="/tw/profiles_targets">Profile Targets</a></li>
 
-  </ol>
-</nav>
-  </div>
-  </div>
-  </div>
 <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
 <script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
 <script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
@@ -169,7 +157,7 @@ $(document).ready(function(){
 
    chatSocket.onclose=function(e){
     console.log("closing websocket ")
-    location.reload(true);
+    //location.reload(true);
    }
 
    chatSocket.onmessage=function(e){
@@ -221,7 +209,7 @@ $(document).ready(function(){
 .form_container{
   border-radius: 10px;
   padding: 20px;;
-  background-color: black;
+  background-color: transparent;
 }
 .table_columns{
   font-size: 12px;;
@@ -259,8 +247,8 @@ $(document).ready(function(){
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6 form_container border d-flex flex-row justify-content-center align-items-center">
+    <div class="col-md-2"></div>
+    <div class="col-md-8 form_container border d-flex flex-row justify-content-center align-items-center">
       <form action="/tw/tweets_targets/" method="POST">
         {% csrf_token %}
 
@@ -347,49 +335,49 @@ $(document).ready(function(){
         </div>
       </form>
     </div>
-    <div class="col-md-3"></div>
+    <div class="col-md-2"></div>
   </div>
 
   <div class="row">
 
-    <div class="col-md-12 border table_container bg-white">
+    <div class="col-md-12 border table_container ">
       <table  id="TwitterTargetTable" class="table  ">
         <thead>
           <tr>
-            <th scope="col" class="text-primary table_columns">#</th>
-            <!-- <th scope="col" class="text-primary table_columns">target_platform</th>
-            <th scope="col" class="text-primary table_columns">target_type</th> -->
-            <th scope="col" class="text-primary table_columns">twitter_username</th>
-            <th scope="col" class="text-primary table_columns">target_scheduling</th>
-            <th scope="col" class="text-primary table_columns">scanning_status</th>
-            <th scope="col" class="text-primary table_columns">tweets_count</th>
-            <th scope="col" class="text-primary table_columns">created_at </th>
-            <!-- <th scope="col" class="text-primary table_columns">updated_at </th> -->
-            <th scope="col" class="text-primary table_columns">view_tweets </th>
-            <th scope="col" class="text-primary table_columns">re_scan </th>
-            <th scope="col" class="text-primary table_columns">other_operations </th>
+            <th scope="col" class="text-white text-capitalize table_columns">#</th>
+            <!-- <th scope="col" class="text-white text-capitalize table_columns">target_platform</th>
+            <th scope="col" class="text-white text-capitalize table_columns">target_type</th> -->
+            <th scope="col" class="text-white text-capitalize table_columns">twitter_username</th>
+            <th scope="col" class="text-white text-capitalize table_columns">target_scheduling</th>
+            <th scope="col" class="text-white text-capitalize table_columns">scanning_status</th>
+            <th scope="col" class="text-white text-capitalize table_columns">tweets_count</th>
+            <th scope="col" class="text-white text-capitalize table_columns">created_at </th>
+            <!-- <th scope="col" class="text-white text-capitalize table_columns">updated_at </th> -->
+            <th scope="col" class="text-white text-capitalize table_columns">view_tweets </th>
+            <th scope="col" class="text-white text-capitalize table_columns">re_scan </th>
+            <th scope="col" class="text-white text-capitalize table_columns">other_operations </th>
           </tr>
         </thead>
         <tbody>
           {% for i in tweets_targets %}
           <tr>
-            <td class="text-primary table_columns">{{forloop.counter}}</td>
-            <!-- <td class="text-primary table_columns">{{i.target_platform}}</td>
-            <td class="text-primary table_columns">{{i.target_type}}</td> -->
-            <td class="text-primary table_columns">{{i.twitter_username}}</td>
-            <td class="text-primary table_columns">{{i.target_scheduling}}</td>
-            <td class="text-primary table_columns">{{i.scanning_status}}   {% if i.scanning_status == 'pending' %}
+            <td class="text-white table_columns">{{forloop.counter}}</td>
+            <!-- <td class="text-white table_columns">{{i.target_platform}}</td>
+            <td class="text-white table_columns">{{i.target_type}}</td> -->
+            <td class="text-white table_columns">{{i.twitter_username}}</td>
+            <td class="text-white table_columns">{{i.target_scheduling}}</td>
+            <td class="text-white table_columns">{{i.scanning_status}}   {% if i.scanning_status == 'pending' %}
               <i class="fas fa-cog fa-spin"></i>
               {% endif %}<span class="{{i.twitter_username}}" id="{{i.twitter_username}}"></span> </td>
-              <td class="text-primary table_columns">{{i.tweets_count}}</td>
-            <td class="text-primary table_columns">{{i.created_at}}</td>
-            <!-- <td class="text-primary table_columns">{{i.updated_at}}</td> -->
-            <td class="text-primary table_columns"><a  href="{% url 'viewTweets' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
+              <td class="text-white table_columns">{{i.tweets_count}}</td>
+            <td class="text-white table_columns">{{i.created_at}}</td>
+            <!-- <td class="text-white table_columns">{{i.updated_at}}</td> -->
+            <td class="text-white table_columns"><a  href="{% url 'viewTweets' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
 
-            <td class="text-primary table_columns"><button type="button" class="btn btn-sm btn-primary scanBtn" data-id="{{i.twitter_username}}" id="scanBtn">re_Scan </button></td>
+            <td class="text-white table_columns"><button type="button" class="btn btn-sm btn-primary scanBtn" data-id="{{i.twitter_username}}" id="scanBtn">re_Scan </button></td>
 
 
-            <td class="text-primary table_columns"><button type="button" class="btn btn-sm btn-success getCount" data-id="{{i.twitter_username}}" id="scanBtn">getCount </button>
+            <td class="text-white table_columns"><button type="button" class="btn btn-sm btn-success getCount" data-id="{{i.twitter_username}}" id="scanBtn">getCount </button>
               <a type="button" class="btn btn-sm btn-danger getCount"href="{% url 'delete_tweets_targets' username=i.twitter_username %}" id="deleteBtn">delete </a></td>
 
 

@@ -73,14 +73,14 @@
             </div>
 
             {% if i.photos != '[]' %}
-            <div class="col-md-12 text-dark " style="font-size:12px;height:200px;overflow:auto;">
-                <img src="{{i.photos|cut:'['|cut:']'|cut:'\''}}" class="img-thumbnail" />
+            <div class="col-md-12 text-dark text-center " style="font-size:12px;height:250px;overflow:auto;">
+                <img src="{{i.photos|cut:'['|cut:']'|cut:'\''}}" style="height:200px;width:300px;" class="img-thumbnail" />
 
             </div>
 
            {% else %}
-           <div class="col-md-12 text-dark " style="font-size:12px;height:200px;overflow:auto;">
-            <img src="/static/images/no_img_placeholder.png"  class="img-thumbnail" />
+           <div class="col-md-12 text-dark text-center " style="font-size:12px;height:200px;overflow:auto;">
+            <img src="/static/images/no_img_placeholder.png" style="height:200px;width:300px;" class="img-thumbnail" />
 
          </div>
             {% endif %}
