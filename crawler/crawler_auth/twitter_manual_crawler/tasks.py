@@ -25,7 +25,7 @@ def getTweets(_username):
     # c.Username = "maliksblr92"
     c.Username = _username
     c.Store_object = True
-    c.Limit =20
+    # c.Limit =20
     c.Hide_output = True
     # c.Database = "eagle_eye"
     # nest_asyncio.apply()
@@ -236,8 +236,9 @@ def getTweets(_username):
             'event_sharif',
                 {
             'type': 'tweets_insertion',
-            'message': count,
+            'message': count+1,
             'username': _username,
+            'info': 'tweets_insertion',
                 }
                 )
         print(count)
