@@ -1,0 +1,178 @@
+
+
+{% extends 'base.html'%}
+{% load static %}
+{% block content %}
+<div class="container-fluid">
+<div class="row">
+    <div class="col-md-12 card border p-2">
+        <ul class="nav nav-tabs">
+            <li class="btn border border-dark" class="active"><a data-toggle="tab" class="text-decoration-none" href="#Phrase_Search">Phrase_Search</a></li>
+            <li class="btn border border-dark"><a data-toggle="tab" class="text-decoration-none" href="#Phrase_Location_Search">Phrase_Location_Search</a></li>
+            <li class="btn border border-dark"><a data-toggle="tab" class="text-decoration-none" href="#Phrase_Geo_Location_Search">Phrase_Geo_Location_Search</a></li>
+          </ul>
+          
+          <div class="tab-content mt-2">
+            <div id="Phrase_Search" class="tab-pane fade in active show">
+              <div class="row">
+                <div class="col-md-3 "></div>
+                <div class="col-md-6 card m-0 p-0">
+                    <div class="card-header text-center">
+                       Phrase Search
+                    </div>
+                    <div class="card-body d-flex flex-row justify-content-center align-items-center">
+                      <form action="" class="bg-white">
+                        <div class="form-group form-inline">
+                          <label for="Search_type" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                              style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Type</span>
+                              <input type="text" name="Search_type" id="Search_type"  class="form-control" required="required"
+                               style="border-radius:15px 15px 15px 15px!important;width:350px; " value="phrase_seacrh" disabled="disbaled">
+                          </label>
+                       </div>
+                        <div class="form-group form-inline">
+                           <label for="phrase" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Phrase</span>
+                               <input type="text" name="phrase" id="phrase" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                        </div>
+           
+                        <div class="form-group form-inline">
+                           <label for="limit"  >
+                               <span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Limit</span>
+                               <input type="number" name="limit" id="limit" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                           <small class="text-warning font-weight-bold ml-2">Limit should be between 20 to 3200</small>
+                        </div>
+           
+                       </form>
+                    </div>
+                    <div class="card-footer">
+                      <input type="submit" name="submit"  id="submit" value="Submit Query"class=" float-right btn btn-success">
+                    </div>
+                </div>
+                <div class="col-md-3 "></div>
+            </div>
+            </div>
+            <div id="Phrase_Location_Search" class="tab-pane fade">
+              <div class="row">
+                <div class="col-md-3 "></div>
+                <div class="col-md-6 card m-0 p-0">
+                    <div class="card-header text-center">
+                       Phrase Sreach with location
+                    </div>
+                    <div class="card-body d-flex flex-row justify-content-center align-items-center">
+                      <form action="" class="bg-white">
+                        <div class="form-group form-inline">
+                          <label for="Search_type" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                              style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Type</span>
+                              <input type="text" name="Search_type" id="Search_type"  class="form-control" required="required"
+                               style="border-radius:15px 15px 15px 15px!important;width:350px; " value="phrase_location_seacrh" disabled="disbaled">
+                          </label>
+                       </div>
+                        <div class="form-group form-inline">
+                           <label for="phrase" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Phrase</span>
+                               <input type="text" name="phrase" id="phrase" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                        </div>
+
+
+                        <div class="form-group form-inline">
+                          <label for="location" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                              style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Location</span>
+                              <input type="text" name="location" id="location" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                          </label>
+                       </div>
+           
+                        <div class="form-group form-inline">
+                           <label for="limit"  >
+                               <span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Limit</span>
+                               <input type="number" name="limit" id="limit" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                           <small class="text-warning font-weight-bold ml-2">Limit should be between 20 to 3200</small>
+                        </div>
+           
+                       </form>
+                    </div>
+                    <div class="card-footer">
+                      <input type="submit" name="submit"  id="submit" value="Submit Query"class=" float-right btn btn-success">
+                    </div>
+                </div>
+                
+                <div class="col-md-3 "></div>
+            </div>
+            </div>
+            <div id="Phrase_Geo_Location_Search" class="tab-pane fade">
+              <div class="row">
+                <div class="col-md-3 "></div>
+                <div class="col-md-6 card m-0 p-0">
+                    <div class="card-header text-center">
+                        Fetch Tweets By Geo-Location
+                    </div>
+                    <div class="card-body d-flex flex-row justify-content-center align-items-center">
+                      <form action="" class="bg-white">
+                        <div class="form-group form-inline">
+                          <label for="Search_type" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                              style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Type</span>
+                              <input type="text" name="Search_type" id="Search_type"  class="form-control" required="required"
+                               style="border-radius:15px 15px 15px 15px!important;width:350px; " value="geo_location_search" disabled="disbaled">
+                          </label>
+                       </div>
+                        <div class="form-group form-inline">
+                           <label for="latitude" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Latitude</span>
+                               <input type="text" name="latitude" id="latitude" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                        </div>
+
+
+                        <div class="form-group form-inline">
+                          <label for="longitude" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                              style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Longitude</span>
+                              <input type="text" name="longitude" id="longitude" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                          </label>
+                       </div>
+
+
+
+                       <div class="form-group form-inline">
+                        <label for="radius" class="" ><span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                            style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Radius</span>
+                            <input type="text" name="radius" id="radius" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                        </label>
+                     </div>
+
+
+                        
+           
+                        <div class="form-group form-inline">
+                           <label for="limit"  >
+                               <span class="text-white bg-info border  d-flex flex-row justify-content-center align-items-center"
+                               style="height:35px;width:150px;border-radius:15px 15px 15px 15px ;letter-spacing:3px;">Search Limit</span>
+                               <input type="number" name="limit" id="limit" class="form-control" required="required" style="border-radius:15px 15px 15px 15px!important;width:350px; ">
+                           </label>
+                           <small class="text-warning font-weight-bold ml-2">Limit should be between 20 to 3200</small>
+                        </div>
+           
+                       </form>
+                    </div>
+                    <div class="card-footer">
+                      <input type="submit" name="submit"  id="submit" value="Submit Query"class=" float-right btn btn-success">
+                    </div>
+                </div>
+                <div class="col-md-3 "></div>
+            </div>
+            </div>
+          </div>
+          <!-- end of tab-content -->
+          
+    </div>
+    </div>
+  
+</div>
+
+
+
+{% endblock %}

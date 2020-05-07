@@ -248,7 +248,8 @@ def geo_targets(request):
 def bbox(request):
     return render(request,'bbox.html')
 
-
+def rapid_search(request):
+    return render(request,'rapidsearch.html')
 
 
 

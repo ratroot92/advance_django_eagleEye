@@ -24,6 +24,7 @@ urlpatterns = [
     path('/logs/',views.logs,name='logs'),
     # geo targets
     path('/geo_targets/',views.geo_targets,name='geo_targets'),
-    path('/bbox/',views.bbox,name='bbox')
+    path('/bbox/',views.bbox,name='bbox'),
+    path('/rapid_search/',views.rapid_search,name='rapid_search')
 
 ]
