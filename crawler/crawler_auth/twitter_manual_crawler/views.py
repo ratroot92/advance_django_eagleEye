@@ -249,6 +249,50 @@ def bbox(request):
     return render(request,'bbox.html')
 
 def rapid_search(request):
+    if request.method=='POST':
+        search_type=request.POST['search_type']
+
+
+
+        if search_type=='phrase_seacrh':
+            phrase=request.POST['phrase']
+            tweet_type=request.POST['tweet_type']
+            username=''
+            print("######################################################")
+            print("Search Type == ",search_type)
+            print("Tweets Type == ",tweet_type)
+            print("######################################################")
+            limit=request.POST['limit']
+            tweets=phraseSearch(phrase,limit,tweet_type,username)
+            if(len(tweets)<1):
+                messages.error(request,'Query Failed - No Tweets Found ')
+                return redirect('/tw/rapid_search')
+            else:
+                messages.success(request,'Query Successfull ')
+                return render(request,'rapid_view_tweets_images.html',{'tweets':tweets})
+
+
+
+
+
+        elif search_type=='phrase_search_with_username':
+            phrase=request.POST['phrase']
+            tweet_type=request.POST['tweet_type']
+            username=request.POST['username']
+            print("######################################################")
+            print("Search Type == ",search_type)
+            print("Tweets Type == ",tweet_type)
+            print("######################################################")
+            limit=request.POST['limit']
+            tweets=phraseSearch(phrase,limit,tweet_type,username)
+            if(len(tweets)<1):
+                messages.error(request,'Query Failed - No Tweets Found ')
+                return redirect('/tw/rapid_search')
+            else:
+                messages.success(request,'Query Successfull ')
+                return render(request,'rapid_view_tweets_images.html',{'tweets':tweets})
+
+
     return render(request,'rapidsearch.html')
 
 
@@ -378,3 +422,158 @@ def getUser():
 
 
     return(user)
+
+
+
+# Rapid Search Methods
+# phrase search + Phrase search with username
+def phraseSearch(_phrase,_limit,_tweet_type,_username):
+    log=Activity_Logger(activity_name='Rapid Tweets  Search  | Phrase Search' ,
+                             activity_app='Twitter_Manual_Crawler | Rapid Tweets Search ',
+                             activity_details='Scanning Tweets of   Phrase = '+_phrase+' Started',
+                             activity_status='successfull')
+    log.save()
+    asyncio.set_event_loop(asyncio.new_event_loop())
+    c = twint.Config()
+    c.Store_object = True
+    c.Search = ""+_phrase
+    if _username!='':
+        c.Username=_username
+    c.Limit =_limit
+    print(_tweet_type)
+    if _tweet_type =='both':
+        # c.Images = True
+        c.Images = False
+        print("image=false")
+    if _tweet_type=='img':
+        c.Images = True
+        print("image=true")
+    if _tweet_type=='text':
+        c.Images = False
+        print("image=false")
+    c.Hide_output = True
+# lists
+    id=[]
+    id_str=[]
+    conversation_id=[]
+    datetime=[]
+    datestamp=[]
+    timestamp=[]
+    user_id=[]
+    user_id_str=[]
+    username=[]
+    name=[]
+    place=[]
+    timezone=[]
+    img=[]
+    mentions=[]
+    urls=[]
+    photos=[]
+    video=[]
+    text=[]
+    hashtags=[]
+    cashtags=[]
+    replies_count=[]
+    retweets_count=[]
+    likes_count=[]
+    link=[]
+    user_rt_id=[]
+    retweet=[]
+    retweet_id=[]
+    retweet_date=[]
+    quote_url=[]
+    near=[]
+    geo=[]
+    source=[]
+    reply_to=[]
+# Search starts here
+    twint.output.clean_lists()
+    twint.run.Search(c)
+    tweets = twint.output.tweets_list
+    for tweet in tweets:
+      id.append(tweet.id)
+      id_str.append(tweet.id_str)
+      conversation_id.append(tweet.conversation_id)
+      datetime.append(tweet.datetime)
+      datestamp.append(tweet.datestamp)
+      timestamp.append(tweet.timestamp)
+      user_id.append(tweet.user_id)
+      user_id_str.append(tweet.user_id_str)
+      username.append(tweet.username)
+      name.append(tweet.name)
+      place.append(tweet.place)
+      timezone.append(tweet.timezone)
+      mentions.append(tweet.mentions)
+      urls.append(tweet.urls)
+      photos.append(tweet.photos)
+      video.append(tweet.video)
+      text.append(tweet.tweet)
+      hashtags.append(tweet.hashtags)
+      cashtags.append(tweet.cashtags)
+      replies_count.append(tweet.replies_count)
+      retweets_count.append(tweet.retweets_count)
+      likes_count.append(tweet.likes_count)
+      link.append(tweet.link)
+      user_rt_id.append(tweet.user_rt_id)
+      retweet.append(tweet.retweet)
+      retweet_id.append(tweet.retweet_id)
+      retweet_date.append(tweet.retweet_date)
+      quote_url.append(tweet.quote_url)
+      near.append(tweet.near)
+      geo.append(tweet.geo)
+      source.append(tweet.source)
+      reply_to.append(tweet.reply_to)
+
+    # Construct Dictionary of Tweets
+    dic = []
+    for item in zip(id,id_str,conversation_id,datetime,
+                datestamp,timestamp,user_id,user_id_str,username
+                ,name,place,timezone,mentions,urls,photos,
+                 video,text,hashtags,cashtags,replies_count,likes_count,retweets_count,link
+               ,user_rt_id,retweet,retweet_id,retweet_date,quote_url,near,geo,
+                source,reply_to
+               ):
+
+        dic.append({
+            'id':item[0],
+            'id_str':item[1],
+            'conversation_id':item[2],
+            'datetime':item[3],
+            'datestamp':item[4],
+            'timestamp':item[5],
+            'user_id':item[6],
+            'user_id_str':item[7],
+            'username':item[8],
+            'name':item[9],
+            'place':item[10],
+            'timezone':item[11],
+            'mentions':item[12],
+            'urls':item[13],
+            'photos':item[14],
+            'video':item[15],
+            'text':item[16],
+            'hashtags':item[17],
+            'cashtags':item[18],
+            'replies_count':item[19],
+            'likes_count':item[20],
+            'retweets_count':item[21],
+            'link':item[22],
+            'user_rt_id':item[23],
+            'retweet':item[24],
+            'retweet_id':item[25],
+            'retweet_date':item[26],
+            'quote_url':item[27],
+            'near':item[28],
+            'geo':item[29],
+            'source':item[30],
+            'reply_to':item[31],
+                })
+
+
+
+    log=Activity_Logger(activity_name='Rapid Tweets  Search  | Phrase Search' ,
+                             activity_app='Twitter_Manual_Crawler | Rapid Tweets Search ',
+                             activity_details='Scanning Tweets of   Phrase = '+_phrase+' Completed',
+                             activity_status='successfull')
+    log.save()
+    return dic
