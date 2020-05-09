@@ -2,18 +2,19 @@
 
 {% extends 'base.html'%}
 {% load static %}
-{% block content %}
 
-<script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
+{% block targets_scripts%}
+
+<!-- <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 <script src="{% static '/assets/js/core/popper.min.js' %} "></script>
 <script src="{% static '/assets/js/core/bootstrap.min.js' %} "></script>
 <script src="{% static '/assets/js/plugins/perfect-scrollbar.jquery.min.js' %} "></script>
 <script src="{% static '/assets/js/plugins/bootstrap-notify.js' %}"></script>
 <script src="{% static '/assets/js/black-dashboard.min.js?v=1.0.0' %}"></script>
-<script src="{% static '/assets/demo/demo.js' %} "></script>
-<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static '/assets/demo/demo.js' %} "></script> -->
 
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
@@ -39,64 +40,9 @@
 <script type="text/javascript" src="https://cdn.datatables.net/searchpanes/1.0.1/js/dataTables.searchPanes.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/searchpanes/1.0.1/js/searchPanes.bootstrap4.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
-
-
-<script>
-$(document).ready(function(){
-
-const useranme=''
-
-
-const chatSocket = new WebSocket('ws://'+ window.location.host+'/rescan/profile_targets/')
-   console.log(chatSocket)
-
-
-   $('.scanBtn').on('click',function(){
-    var r = confirm(" CUATION ! \n All previously fetched records will be deleted  ");
-        if (r == true) {
-            let _name =$(this).attr("data-id")
-            console.log(_name)
-            console.log(chatSocket)
-            chatSocket.send(JSON.stringify({
-            '_username': _name
-
-            }));
-
-
-
-          chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-           console.log(data);
-          if(data._status_code==1){
-            alert("Server Denied request \n  Scanning already completed   ")
-          }
-
-
-        };
-      }
-      else{
-console.log("User Denied Rescanning Request")
-        }
-      })
-
-
-        chatSocket.onclose = function(e) {
-            console.error('Web-socket closed unexpectedly');
-        };
-
-
-
-      });
-$(document).ready(function(){
-  $('#TwitterTargetTable').DataTable({
-    dom: 'Bfrtip',
-  buttons: [
-      'copy', 'excel', 'pdf'
-  ]
-  })
-
-})
-</script>
+<script src="{% static 'scripts/tweets_target.js' %} "></script>
+{% endblock %}
+{% block content %}
 <style>
 #id_target_platform,#id_target_type,#id_twitter_username,#id_submission_date,#id_target_scheduling{
   height: 35px;

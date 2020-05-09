@@ -37,6 +37,45 @@ class Twitter_Tweets_Targets_Channels(WebsocketConsumer):
             '_status_code': 1,
         }))
 
+
+
+class TweetCount(WebsocketConsumer):
+    def connect(self):
+        self.accept()
+
+    def disconnect(self, close_code):
+        pass
+
+    def receive(self, text_data):
+        text_data_json = json.loads(text_data)
+        _username = text_data_json['_username']
+        tweets_count=0;
+        get_user=tweets_target_model.objects.get(twitter_username=_username)
+        print(get_user.twitter_username)
+        if(get_user.scanning_status=='completed' or get_user.scanning_status=='pending' ):
+        #if(get_user.scanning_status=='pending' ):
+            tweets_count = Tweets.objects.filter(screen_name=_username).count()
+            print(tweets_count)
+            if(tweets_count<=0):
+                # t = tweets_target_model.objects.get(twitter_username=_username)
+                # t.scanning_status = 'pending' 
+                # t.save() 
+                self.send(text_data=json.dumps({
+            '_message': 'Django Twitter Consumer Replying To : ws://127.0.0.1:8000/getCount/',
+            '_tweets_count':0,
+        }))
+        
+        self.send(text_data=json.dumps({
+            '_message': 'Django Twitter Consumer Replying To : ws://127.0.0.1:8000/getCount/',
+            '_tweets_count':tweets_count,
+        }))
+
+
+
+
+
+
+
 class Rescan_Twitter_Profile_Target(WebsocketConsumer):
 
 
