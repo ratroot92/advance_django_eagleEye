@@ -42,8 +42,8 @@ INSTALLED_APPS = [
     'dashboard',
     'django_countries',
     #app seperated  'twitter',
-    'django_celery_results',
-    'djcelery',
+    # 'django_celery_results',
+    # 'djcelery',
     'channels',
     'geopy',
     'twitter_manual_crawler',
@@ -112,14 +112,14 @@ ASGI_APPLICATION = 'd_auth.routing.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'eagle_eye',
-        'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'djongo',
+#         'NAME': 'eagle_eye',
+#         'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
 
-    }
-}
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

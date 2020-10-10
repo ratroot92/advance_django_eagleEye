@@ -1,0 +1,3 @@
+ pip3 install celery>=3.1.15 django-celery django_countries geopy django==2.2.7 mysqlclient numpy pandas django-celery-results channels djongo
+
+
