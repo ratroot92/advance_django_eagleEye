@@ -16,7 +16,7 @@ import subprocess
 import asyncio
 
 
-def login(request):
+def Login(request):
        form = AuthenticationForm()
        if(request.method == 'POST'):
            form = AuthenticationForm()
@@ -35,7 +35,7 @@ def login(request):
                return redirect('/home')
            form = AuthenticationForm()
            
-       return render(request, 'auth/login.html', {'title': 'Login', 'form': form})
+       return render(request, 'Auth_App/Login.html', {'title': 'Login', 'form': form})
 
 
 def register(request):

@@ -29,7 +29,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+#APPLICATION_GLOBALS
+MONGO_DB = '192.168.18.20'
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard',
     'django_countries',
+    'Auth_App',
     #app seperated  'twitter',
     # 'django_celery_results',
     # 'djcelery',
@@ -71,7 +73,7 @@ ROOT_URLCONF = 'd_auth.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ os.path.join(BASE_DIR, 'pages')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -83,6 +85,7 @@ TEMPLATES = [
         },
     },
 ]
+
 
 WSGI_APPLICATION = 'd_auth.wsgi.application'
 ASGI_APPLICATION = 'd_auth.routing.application'
