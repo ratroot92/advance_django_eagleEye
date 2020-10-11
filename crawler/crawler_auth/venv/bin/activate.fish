@@ -36,7 +36,7 @@ end
 # Unset irrelevant variables.
 deactivate nondestructive
 
-set -gx VIRTUAL_ENV "/home/maliksblr92/Desktop/development/fyp/django_custom_auth/eagle_eye/crawler/crawler_auth/venv"
+set -gx VIRTUAL_ENV "/home/maliksblr92/Desktop/development/fyp/django_custom_auth/d_auth/crawler/crawler_auth/venv"
 
 set -gx _OLD_VIRTUAL_PATH $PATH
 set -gx PATH "$VIRTUAL_ENV/bin" $PATH

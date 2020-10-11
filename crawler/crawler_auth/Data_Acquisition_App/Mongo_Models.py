@@ -4,9 +4,12 @@ from django.conf import settings
 
 MONGO_DB_IP = settings.MONGO_DB
 
-
-connect('Eagle_eye', host='127.0.0.1', port=27017)
 import datetime
+import os
+disconnect('default')
+#CONNECT TO MONGO DB
+connect(db='Eagle_Eye',host=MONGO_DB_IP, port=27017)
+
 """ """
 class bcolors:
     HEADER = '\033[95m'
@@ -38,43 +41,39 @@ PERIODIC_INTERVALS = (
 
 class Twitter_Target_Document(Document):
     target_platform       =StringField(verbose_name="Target_Platform", max_length=255,default="twitter")
-    target_type           =StringField(verbose_name="Target_Type",default="tweets",)
+    target_type           =StringField(verbose_name="Target_Type",default="tweets")
     target_username       =StringField(verbose_name="Target_Username",primary_key=True)
-    target_scheduling     =StringField(verbose_name="Target_Scheduling",choices=PERIODIC_INTERVALS)
+    target_scheduling     =IntField(verbose_name="Target_Scheduling",choices=PERIODIC_INTERVALS,default=0)
     scanning_status       =StringField(verbose_name="Scanning_Status",default="pending")
-    # tweets              = fields.ListField(
-    #                                         fields.EmbeddedDocumentField('Tweet'),
-    #                                         default=[],
-    #                                         blank=True,
-    #                                          )
     created_at            =DateField(default=datetime.datetime.now, editable=False,)
     updated_at            =DateField(default=datetime.datetime.now, editable=True,)
    
     """ Create / Insert """
-    def Create_Twitter_Target(self,target_platform,target_type,target_username,twitter_scheduling,scanning_status):
-        self.target_platform=target_platform
-        self.target_type=target_type
-        self.target_username=target_username
+    def Create_Twitter_Target(self,target_platform,target_type,target_username,twitter_scheduling):
+        self.target_platform=str(target_platform)
+        self.target_type=str(target_type)
+        self.target_username=str(target_username)
         self.twitter_scheduling=twitter_scheduling
-        self.scanning_status=scanning_status
-        try:
-            if(self.save):
-                print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Success ,{bcolors.ENDC}")
-                return True
+        self.save()
+        # try:
+        #     if(self.save):
+        #         print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Success ,{bcolors.ENDC}")
+        #         # return True
                    
-            else:
-                print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Failed ,{bcolors.ENDC}")
-                return False
-        except Exception as e:
-          print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Exception ,{bcolors.ENDC}")
-          print(e)
-          return False
+        #     else:
+        #         print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Failed ,{bcolors.ENDC}")
+        #         # return False
+        # except Exception as e:
+        #   print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Exception ,{bcolors.ENDC}")
+        #   print(e)
+        #   return False
 
     """ returns all twitter targets """
     @staticmethod
     def Get_All_Twitter_Targets():
         try:
-            Twitter_Target_Document.objects.all()
+            Targets=Twitter_Target_Document.objects.all()
+            return Targets
         except Exception as e:
             print("Get_All_Twitter_Targets --failed")
             print(e) 

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
-
+from mongoengine import connect
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     # 'easy_pdf',
     # 'djcelery',
     # 'kombu.transport.django',
-     'djangotoolbox',
+
 
 ]
 
@@ -95,16 +95,16 @@ ASGI_APPLICATION = 'd_auth.routing.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'eagle_eye',
+#         'NAME': 'd_auth',
 #             # 'NAME': 'd_auth',
 #         'USER': 'admin',
 #         # 'PASSWORD': 'asd',
@@ -115,15 +115,15 @@ ASGI_APPLICATION = 'd_auth.routing.application'
 #         #  'charset':'utf8',
 #     }
 # }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'eagle_eye',
-        'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
-
-    }
-}
+try:
+    connect(
+        db="Eagle_Eye",
+        host="127.0.0.1:27017",
+        port=27017
+    )
+    print("MongoDb connection success")
+except Exception as e:
+    print("MongoDb connection failed")
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators

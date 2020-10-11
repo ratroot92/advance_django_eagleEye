@@ -27,7 +27,7 @@ def getTweets(_username):
     c.Store_object = True
     # c.Limit =20
     c.Hide_output = True
-    # c.Database = "eagle_eye"
+    # c.Database = "d_auth"
     # nest_asyncio.apply()
 
 

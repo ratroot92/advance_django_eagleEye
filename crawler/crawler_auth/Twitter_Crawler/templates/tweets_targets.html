@@ -252,13 +252,13 @@
               <td class="text-white table_columns">{{i.tweets_count}}</td>
             <td class="text-white table_columns">{{i.created_at}}</td>
             <!-- <td class="text-white table_columns">{{i.updated_at}}</td> -->
-            <td class="text-white table_columns"><a  href="{% url 'viewTweets' username=i.twitter_username %}"><i class="fas fa-eye fa-2x"></a></i></td>
+            <td class="text-white table_columns"><a  href=""><i class="fas fa-eye fa-2x"></a></i></td>
 
             <td class="text-white table_columns"><button type="button" class="btn btn-sm btn-primary scanBtn" data-id="{{i.twitter_username}}" id="scanBtn">re_Scan </button></td>
 
 
             <td class="text-white table_columns"><button type="button" class="btn btn-sm btn-success getCount" data-id="{{i.twitter_username}}" id="scanBtn">getCount </button>
-              <a type="button" class="btn btn-sm btn-danger getCount"href="{% url 'delete_tweets_targets' username=i.twitter_username %}" id="deleteBtn">delete </a></td>
+              <a type="button" class="btn btn-sm btn-danger getCount"href="" id="deleteBtn">delete </a></td>
 
 
           </tr>

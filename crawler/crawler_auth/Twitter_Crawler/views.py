@@ -9,7 +9,6 @@ import twint
 import nest_asyncio
 import asyncio
 from .models import Users,Tweets
-import djongo
 import json
 from Data_Acquisition_App.Mongo_Models import *
 from django.views.generic import TemplateView,View
@@ -58,7 +57,10 @@ def gettweets(request,_username):
 
 class Tweets_Targets(View):
     def get(self,request,*args,**kwargs):
-        return render(request,'tweets_targets.html',{'PERIODIC_INTERVALS':PERIODIC_INTERVALS,})
+         Obj=Twitter_Target_Document()
+         tweets_targets=Obj.Get_All_Twitter_Targets()
+         print(tweets_targets)
+         return render(request,'tweets_targets.html',{'PERIODIC_INTERVALS':PERIODIC_INTERVALS,'tweets_targets':tweets_targets})
     def post(self,request,*args,**kwargs):
         target_platform=request.POST.get('target_platform')
         target_type=request.POST.get('target_type')
@@ -68,7 +70,7 @@ class Tweets_Targets(View):
         print(f"{bcolors.WARNING}{target_platform},{target_type},{target_username},{target_scheduling},{bcolors.ENDC}")
         try:
             Obj=Twitter_Target_Document()
-            Query=Obj.Create_Twitter_Target(self,target_platform,target_type,target_username,target_scheduling)
+            Query=Obj.Create_Twitter_Target(target_platform,target_type,target_username,target_scheduling)
             if(Query):
                 return redirect('/tw/twitter')
             else:
