@@ -111,7 +111,7 @@ class Rescan_Twitter_Profile_Target(WebsocketConsumer):
         }))
 
 
-class CELERY_NOTIFICATIONS_TWITTER_MANUAl_CRAWLER(WebsocketConsumer):
+class CELERY_NOTIFICATIONS_Twitter_Crawler(WebsocketConsumer):
     def connect(self):
         self.room_name = 'event'
         self.room_group_name = self.room_name+"_sharif"

@@ -6,7 +6,7 @@
 
 
 
-const chatSocket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/twitter_manual_crawler/')
+const chatSocket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/Twitter_Crawler/')
 console.log(chatSocket)
 chatSocket.onclose=function(e){
  console.log("closing websocket ")

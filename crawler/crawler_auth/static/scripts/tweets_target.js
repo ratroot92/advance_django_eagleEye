@@ -99,7 +99,7 @@ console.log("User Denied Rescanning Request")
 
 
 
-  const celery_notifier_socket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/twitter_manual_crawler/')
+  const celery_notifier_socket = new WebSocket('ws://'+ window.location.host+'/celery_notifications/Twitter_Crawler/')
    console.log(celery_notifier_socket)
 
 

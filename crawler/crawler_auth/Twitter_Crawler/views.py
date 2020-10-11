@@ -43,26 +43,17 @@ def gettweets(request,_username):
 
 def tweets_targets(request):
      form=tweets_target_form
-     tweets_targets=tweets_target_model.objects.all()
+     tweets_targets=[]
      if request.method ==  'POST':
          form=tweets_target_form(request.POST or None)
          if form.is_valid():
              form.save()
-             log=Activity_Logger(activity_name='Adding Tweets Target',
-                             activity_app='Twitter_Manual_Crawler',
-                             activity_details='Twitter Tweets Target Added With Username = '+request.POST['twitter_username'],
-                             activity_status='successfull')
-             log.save()
              messages.success(request,'Tweets Target added successfully')
              print("form saved success")
              r=getTweets.delay(request.POST['twitter_username'])
              return redirect('/tw/tweets_targets')
          else:
-             log=Activity_Logger(activity_name='Adding Twitter Tweets Target',
-                             activity_app='Twitter_Manual_Crawler',
-                             activity_details='Failed to Add Tweets Target With Username = '+request.POST['twitter_username'+'\n Target Already Exsist'],
-                             activity_status='failure')
-             log.save()
+           
              print("tweets target form not saved : error ")
              messages.error(request,'Tweets Target insertion Failed')
      return render(request,'tweets_targets.html',{'form':form,'tweets_targets':tweets_targets})
@@ -105,7 +96,7 @@ def delete_tweets_targets(request,username):
          Tweets.objects.filter(username=lower_username).all().delete()
          messages.success(request,' Twitter Tweets Target eleted successfully')
          log=Activity_Logger(activity_name='Deleting Tweets Target',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Tweets Target  With Username = '+username+' Deleted Successfully',
                              activity_status='successfull')
          log.save()
@@ -125,7 +116,7 @@ def profiles_targets(request):
         if form.is_valid():
             form.save()
             log=Activity_Logger(activity_name='Adding Twitter Profile Target',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile  Target Added With Username = '+request.POST['twitter_username'],
                              activity_status='successfull')
             log.save()
@@ -139,7 +130,7 @@ def profiles_targets(request):
                 print("Profile Target Insertion Failed  : error ")
                 messages.error(request,'profiles Target insertion Failed')
                 log=Activity_Logger(activity_name='Adding Twitter Profile Target',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Failed to Add Twitter Profile Target With Username = '+request.POST['twitter_username'+'\n Target Already Exsist'],
                              activity_status='failure')
                 log.save()
@@ -155,7 +146,7 @@ def delete_profiles_targets(request,username):
          profiles_target_model.objects.get(twitter_username=username).delete()
          messages.success(request,'Profile Target deleted successfully')
          log=Activity_Logger(activity_name='Deleting Twitter Profile Target',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile  Target  With Username = '+username+' Deleted Successfully',
                              activity_status='successfull')
          log.save()
@@ -171,7 +162,7 @@ def viewProfile_Following_locations(request,username):
           messages.success(request,'Target Has no Followings ! Operation Failed  ')
           return redirect('/tw/profiles_targets')
      log=Activity_Logger(activity_name='Viewing Followings Locations',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile Target  With Username = '+username+' Followings Locations were Viewed',
                              activity_status='successfull')
      log.save()
@@ -186,7 +177,7 @@ def viewProfile_Followers_locations(request,username):
           messages.success(request,'Target Has no Followers ! Operation Failed  ')
           return redirect('/tw/profiles_targets')
      log=Activity_Logger(activity_name='Viewing Followers Locations',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile Target  With Username = '+username+' Followers Locations were Viewed',
                              activity_status='successfull')
      log.save()
@@ -199,7 +190,7 @@ def viewProfile_Followers_tree(request,username):
           messages.success(request,'Target Has no Followers ! Operation Failed  ')
           return redirect('/tw/profiles_targets')
     log=Activity_Logger(activity_name='Viewing Followers Tree',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile Target  With Username = '+username+' Followers Tree was Viewed',
                              activity_status='successfull')
     log.save()
@@ -213,7 +204,7 @@ def viewProfile_Following_tree(request,username):
           messages.success(request,'Target Has no Followings ! Operation Failed  ')
           return redirect('/tw/profiles_targets')
     log=Activity_Logger(activity_name='Viewing Followings Tree',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile Target  With Username = '+username+' Followings Tree was Viewed',
                              activity_status='successfull')
     log.save()
@@ -225,7 +216,7 @@ def viewProfile_Full_profile(request,username):
     followers_list=Followers.objects.filter(follower_id_fk=profile_target.followers_fkey).order_by('-join_date')
     following_list=Followings.objects.filter(following_id_fk=profile_target.followers_fkey).order_by('-join_date')
     log=Activity_Logger(activity_name='Viewing Complete Profile',
-                             activity_app='Twitter_Manual_Crawler',
+                             activity_app='Twitter_Crawler',
                              activity_details='Twitter Profile Target  With Username = '+username+' Complete Profile was Viewed',
                              activity_status='successfull')
     log.save()
@@ -274,7 +265,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Phrase Only Search --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Phrase = "+phrase+" \n Tweet Type = "+tweet_type+" \n Limit = "+limit+"",
                              activity_status='successfull')
                 log.save()
@@ -300,7 +291,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Phrase Search With Username --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Phrase = "+phrase+" \n Tweet Type = "+tweet_type+" \n Limit = "+limit+" \n Username = "+username+"",
                              activity_status='successfull')
                 log.save()
@@ -338,7 +329,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Phrase Location Search  --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Phrase = "+phrase+" \n Tweet Type = "+tweet_type+" \n Limit = "+limit+" \n Location = "+location+" \n Radius = "+rad+"Km",
                              activity_status='successfull')
                 log.save()
@@ -376,7 +367,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Location Search  --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Tweet Type = "+tweet_type+" \n Limit = "+limit+" '\n Location = "+location+" \n Radius = "+rad+"Km",
                              activity_status='successfull')
                 log.save()
@@ -411,7 +402,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Geo Location Search  --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Tweet Type = "+tweet_type+" \n Limit = "+limit+" \n Latitude = "+lat+" \n Longitude= "+lon+" \n Radius = "+rad+"Km",
                              activity_status='successfull')
                 log.save()
@@ -441,7 +432,7 @@ def rapid_search(request):
                 return redirect('/tw/rapid_search')
             else:
                 log=Activity_Logger(activity_name='Geo Location Search  --Tweets' ,
-                             activity_app='Twitter_Manual_Crawler | Rapid Tweets  Search',
+                             activity_app='Twitter_Crawler | Rapid Tweets  Search',
                              activity_details="Phrase = "+phrase+" \n Tweet Type = "+tweet_type+" \n Limit = "+limit+" \n Latitude = "+lat+" \n Longitude= "+lon+" \n Radius = "+rad+"Km",
                              activity_status='successfull')
                 log.save()

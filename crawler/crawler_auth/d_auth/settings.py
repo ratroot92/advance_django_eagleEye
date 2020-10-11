@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     # 'djcelery',
     'channels',
     'geopy',
-    'twitter_manual_crawler',
+    'Twitter_Crawler',
     # 'easy_pdf',
     # 'djcelery',
     # 'kombu.transport.django',
@@ -189,7 +189,7 @@ CACHES = {
     }
 }
 # app seperated CELERY_IMPORTS = ['twitter.tasks']
-CELERY_IMPORTS = ['twitter_manual_crawler.tasks']
+CELERY_IMPORTS = ['Twitter_Crawler.tasks']
 
 CHANNEL_LAYERS = {
     "default": {
