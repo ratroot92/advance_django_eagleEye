@@ -20,7 +20,7 @@ urlpatterns = [
 
     path('',include('Auth_App.urls')),
     path('admin/', admin.site.urls),
-    path('dashboard', include("dashboard.urls")),
+    path('app/', include("App_Dashboard.urls")),
     # path('twitter', include("twitter.urls")),
     path('tw', include("twitter_manual_crawler.urls")),
 ]

@@ -25,14 +25,14 @@ def Login(request):
            user =authenticate(username=username,password=password);
            if user is None:
                 messages.add_message(request,messages.INFO,'Username or  Password is not valid ')
-                return redirect('/login')
+                return redirect('/')
            else:
                authorize(request,user)
-               return redirect('/home')
+               return redirect('/app/dashboard')
            
        else:
            if(request.user.is_authenticated):
-               return redirect('/home')
+               return redirect('/app/dashboard')
            form = AuthenticationForm()
            
        return render(request, 'Auth_App/Login.html', {'title': 'Login', 'form': form})
@@ -45,7 +45,7 @@ def register(request):
             if form.is_valid():
                 form.save()
                 messages.add_message(request,messages.SUCCESS,'User successfully registered')
-                return redirect('/login')
+                return redirect('/')
        return render(request, 'auth/register.html', {'title': 'Registration', 'form': form})
 
 
@@ -54,7 +54,7 @@ def home(request):
         trends=twitterTrends()
         world_trends=twitterTrendsWorldwide()
         return render(request,'home.html',{'trends':trends,'world_trends':world_trends})
-    return redirect('/login')
+    return redirect('/')
 
 def logout(request):
       if(request.user.is_authenticated):
@@ -63,7 +63,7 @@ def logout(request):
         messages.add_message(request,messages.SUCCESS,'User has been successfully logged out  ')
       else:
           messages.add_message(request,messages.INFO,'Login first')
-      return redirect('/login')
+      return redirect('/')
           
           
           

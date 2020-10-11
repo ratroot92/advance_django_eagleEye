@@ -4,7 +4,7 @@ from . import views
 
 
 urlpatterns = [
-    path('/', views.dashboard,name='dashboard'),
+     path('dashboard/', views.App_Dashboard.as_view(),name='app_dashboard'),
      path('/addfacebooktarget/', views.addfacebooktarget,name='addfacebooktarget'),
    
     

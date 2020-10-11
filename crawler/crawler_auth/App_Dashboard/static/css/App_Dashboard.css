@@ -1,0 +1,9 @@
+.logo-img{
+    height: 50px;
+    width: 50px;
+    background-color: white;
+    border-radius: 3px;
+    padding: 0px;
+    margin-right: 10px;
+    border:1px solid salmon;
+}

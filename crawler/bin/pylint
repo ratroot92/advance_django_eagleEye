@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/media/hadooop/FE921BE8921BA3E5/ahmed data/official repo osint screens/templating/bin/python3.6" "$0" "$@"
+'''exec' /home/maliksblr92/Desktop/development/fyp/django_custom_auth/eagle_eye_before_django_celery_install/eagle_eye/crawler/bin/python3.6 "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
