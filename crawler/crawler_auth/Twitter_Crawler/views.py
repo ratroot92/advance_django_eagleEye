@@ -11,7 +11,7 @@ import asyncio
 from .models import Users,Tweets
 import djongo
 import json
-from Data_Acquisition_App.models import *
+from Data_Acquisition_App.Mongo_Models import *
 from django.views.generic import TemplateView,View
 # task imports
 from .tasks import getTweets

@@ -95,12 +95,12 @@ ASGI_APPLICATION = 'd_auth.routing.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -115,24 +115,15 @@ DATABASES = {
 #         #  'charset':'utf8',
 #     }
 # }
-# DATABASES = {
-#    'default' : {
-#       'ENGINE' : 'django_mongodb_engine',
-#       'NAME' : 'Eagle_Eye',
-#       'HOST': '127.0.0.1:27017',
-#     #   'PORT':'27017',
-#     #   'USER':'',
-#     #   'PASSWORD':'',
-#    }
-# }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'djongo',
-#         'NAME': 'eagle_eye',
-#         'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
 
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'djongo',
+        'NAME': 'eagle_eye',
+        'HOST': '127.0.0.1:27017',   # Or an IP Address that your DB is hosted on
+
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -205,7 +196,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [("127.0.0.1", 6379)],
              "capacity": 1500,  # default 100
             "expiry": 10,  # default 60
         },
