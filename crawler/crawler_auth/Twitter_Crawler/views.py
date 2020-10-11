@@ -11,7 +11,8 @@ import asyncio
 from .models import Users,Tweets
 import djongo
 import json
-
+from Data_Acquisition_App.models import *
+from django.views.generic import TemplateView,View
 # task imports
 from .tasks import getTweets
 from .tasks import getAllFollowers
@@ -34,12 +35,49 @@ from geopy import Nominatim
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from .tasks import asd
+
+""" """
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+
 def gettweets(request,_username):
     Tweets.objects.filter(username=_username)
     return render (request,'tweets.html')
 
 
 
+
+class Tweets_Targets(View):
+    def get(self,request,*args,**kwargs):
+        return render(request,'tweets_targets.html',{'PERIODIC_INTERVALS':PERIODIC_INTERVALS,})
+    def post(self,request,*args,**kwargs):
+        target_platform=request.POST.get('target_platform')
+        target_type=request.POST.get('target_type')
+        target_username=request.POST.get('target_username')
+        target_scheduling=request.POST.get('target_scheduling')
+        print(f"{bcolors.WARNING}Twitter Target --form values ,{bcolors.ENDC}")
+        print(f"{bcolors.WARNING}{target_platform},{target_type},{target_username},{target_scheduling},{bcolors.ENDC}")
+        try:
+            Obj=Twitter_Target_Document()
+            Query=Obj.Create_Twitter_Target(self,target_platform,target_type,target_username,target_scheduling)
+            if(Query):
+                return redirect('/tw/twitter')
+            else:
+                return redirect('/tw/twitter')
+        except Exception as e:
+            print(e)
+            return redirect('/tw/twitter')
+       
+       
 
 def tweets_targets(request):
      form=tweets_target_form
@@ -56,7 +94,7 @@ def tweets_targets(request):
            
              print("tweets target form not saved : error ")
              messages.error(request,'Tweets Target insertion Failed')
-     return render(request,'tweets_targets.html',{'form':form,'tweets_targets':tweets_targets})
+     return render(request,'tweets_targets.html',{'form':form,'PERIODIC_INTERVALS':PERIODIC_INTERVALS,'tweets_targets':tweets_targets})
 
 
 

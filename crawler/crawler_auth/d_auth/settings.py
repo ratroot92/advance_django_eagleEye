@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 #APPLICATION_GLOBALS
-MONGO_DB = '192.168.18.20'
+MONGO_DB = '127.0.0.1'
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # 'easy_pdf',
     # 'djcelery',
     # 'kombu.transport.django',
+     'djangotoolbox',
 
 ]
 
@@ -114,7 +115,16 @@ DATABASES = {
 #         #  'charset':'utf8',
 #     }
 # }
-
+# DATABASES = {
+#    'default' : {
+#       'ENGINE' : 'django_mongodb_engine',
+#       'NAME' : 'Eagle_Eye',
+#       'HOST': '127.0.0.1:27017',
+#     #   'PORT':'27017',
+#     #   'USER':'',
+#     #   'PASSWORD':'',
+#    }
+# }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'djongo',

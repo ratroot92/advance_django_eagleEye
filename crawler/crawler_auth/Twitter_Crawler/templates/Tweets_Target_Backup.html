@@ -3,10 +3,6 @@
 {% extends 'base.html'%}
 {% load static %}
 
-{% block Css_Scripts %}
-<link rel="stylesheet" href="{% static 'css/tweets_targets.css'%}" type="text/css" />
-{% endblock %}
-
 {% block targets_scripts%}
 
 <!-- <script src="{% static '/assets/js/core/jquery.min.js' %} "></script>
@@ -74,8 +70,9 @@
 
 }
 .form_container{
-
-  background-color: black;
+  border-radius: 10px;
+  padding: 20px;;
+  background-color: transparent;
 }
 .table_columns{
   font-size: 12px;;
@@ -114,102 +111,88 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-2"></div>
-    <div class="col-md-8  ">
-      <form action="{% url 'Twitter_Crawler:tweets_targets' %}" method="POST">
+    <div class="col-md-8 form_container border d-flex flex-row justify-content-center align-items-center">
+      <form action="/tw/tweets_targets/" method="POST">
         {% csrf_token %}
-       
-        <!-- row start -->
-          <div class="row mt-3">
-            <div class="col-md-2">
-              <label class="label-custom">Target Platform</label>
-            </div>
-            <div class="col-md-6">
-          <input type="text" name="target_platform" id="target_platform" value="Twitter" readonly class="form-control form-control-custom" required />
-            </div>
-            <div class="col-md-4 ">
-              <small class="text-info g-flex-strat-center-row"> Twitter,Facebook,Linkedin</small>
-            </div>
-            <div class="col-md-2"></div>
-            <div class="col-md-6" id="err_target_platform">
-           <!-- publish error here  -->
-            </div> 
-          </div>
-       <!-- row end -->
+
+        <div class="form-group">
+
+          <div class="form-group">
+            <label class="text-white font-weight-bold border text-center pt-2" style=" border-radius:5px;width: 200px;"> {{form.target_platform.label_tag}} </label>
+              {{form.target_platform}}
+           </div>
+           <div class="d-flex flex-row  m-0 p-0">
+            <div class="w-50 m-0 p-0">
+
+             </div>
+            <div class="w-50 m-0 p-0">
+              {% if form.target_platform.errors %}
+              {% for target_platform in form.target_platform.errors %}
+              <div class="p-0 m-0 text-warning font-weight-bold  "style="font-size :12px;">{{target_platform | escape}}</div>
+              {% endfor %}
+              {% endif %}
+             </div>
+           </div>
 
 
 
-        <!-- row start -->
-        <div class="row mt-3">
-          <div class="col-md-2">
-            <label class="label-custom">Target Type</label>
+          <div class="form-group ">
+            <label class="text-white font-weight-bold border text-center pt-2" style=" border-radius:5px;width: 200px;"> {{form.target_type.label_tag}} </label>
+              {{form.target_type}}
+           </div>
+           <div class="d-flex flex-row  m-0 p-0">
+            <div class="w-50 m-0 p-0">
+
+             </div>
+            <div class="w-50 m-0 p-0">
+              {% if form.target_type.errors %}
+              {% for target_type in form.target_type.errors %}
+              <div class="p-0 m-0 text-warning font-weight-bold  "style="font-size :12px;">{{target_type | escape}}</div>
+              {% endfor %}
+              {% endif %}
+             </div>
+           </div>
+
+          <div class="form-group">
+           <label class="text-white font-weight-bold border text-center pt-2" style=" border-radius:5px;width: 200px;"> {{form.twitter_username.label_tag}} </label>
+             {{form.twitter_username}}
           </div>
-          <div class="col-md-6">
-        <input type="text" name="target_type" id="target_type"  value="Tweets" readonly   class="form-control form-control-custom" required />
-          </div>
-          <div class="col-md-4 ">
-            <small class="text-info g-flex-strat-center-row"> Tweets,Profile,Followers</small>
-          </div>
-          <div class="col-md-2"></div>
-          <div class="col-md-6" id="err_target_type">
-         <!-- publish error here  -->
-          </div> 
+          <div class="d-flex flex-row  m-0 p-0">
+            <div class="w-50 m-0 p-0">
+
+             </div>
+            <div class="w-50 m-0 p-0">
+              {% if form.twitter_username.errors %}
+              {% for twitter_username in form.twitter_username.errors %}
+              <div class="p-0 m-0 text-warning font-weight-bold  "style="font-size :12px;">{{twitter_username | escape}}</div>
+              {% endfor %}
+              {% endif %}
+             </div>
+           </div>
+
+
+          <div class="form-group">
+            <label class="text-white font-weight-bold border text-center pt-2" style=" border-radius:5px;width: 200px;"> {{form.target_scheduling.label_tag}} </label>
+              {{form.target_scheduling}}
+           </div>
+
+           <div class="d-flex flex-row  m-0 p-0">
+            <div class="w-50 m-0 p-0">
+
+             </div>
+            <div class="w-50 m-0 p-0">
+              {% if form.target_scheduling.errors %}
+              {% for target_scheduling in form.target_scheduling.errors %}
+              <div class="p-0 m-0 text-warning font-weight-bold  "style="font-size :12px;">{{target_scheduling   | escape}}</div>
+              {% endfor %}
+              {% endif %}
+             </div>
+           </div>
+
+
+
+
         </div>
-     <!-- row end -->
-
-
-        <!-- row start -->
-        <div class="row mt-3">
-          <div class="col-md-2">
-            <label class="label-custom">Target Username</label>
-          </div>
-          <div class="col-md-6">
-        <input type="text" name="target_username" id="target_username"  class="form-control form-control-custom" required />
-          </div>
-          <div class="col-md-4 ">
-            <small class="text-info g-flex-strat-center-row"> Must be valid Username</small>
-          </div>
-          <div class="col-md-2"></div>
-          <div class="col-md-6" id="err_target_username">
-         <!-- publish error here  -->
-          </div> 
-        </div>
-     <!-- row end -->
-
-
-
-     <!-- row start -->
-     <div class="row mt-3">
-      <div class="col-md-2">
-        <label class="label-custom">Target Username</label>
-      </div>
-      <div class="col-md-6">
-    <select type="text" name="target_scheduling" id="target_scheduling"  class="form-control form-control-custom" required >
-      <option value="">Select Target Scheduling </option>
-      {% for chioce in PERIODIC_INTERVALS %}
-      <option value="{{chioce.0}}">{{chioce.1}} </option>
-      {% endfor %}
-     
-    </select>
-      </div>
-      <div class="col-md-4 ">
-        <small class="text-info g-flex-strat-center-row"> </small>
-      </div>
-      <div class="col-md-2"></div>
-      <div class="col-md-6" id="err_target_scheduling">
-     <!-- publish error here  -->
-      </div> 
-    </div>
- <!-- row end -->
-
-
-
- 
-       
-
-
-
-
-       
         <div class="form-group text-center">
           <input type="submit" class="btn btn-success" value="submit" />
         </div>

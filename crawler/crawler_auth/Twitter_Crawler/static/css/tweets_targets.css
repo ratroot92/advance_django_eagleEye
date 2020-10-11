@@ -1,0 +1,17 @@
+.form-control-custom{
+/* width: 400px!important; */
+height: 30px;
+border-radius: 0px!important;
+
+}
+.label-custom{
+    height: 30px;
+    width: 150px;
+    border-radius: 0px!important;
+    background-color: rgb(143, 186, 214);
+    text-align: left;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;;
+}

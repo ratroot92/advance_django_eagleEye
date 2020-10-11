@@ -1,0 +1,13 @@
+.g-flex-center-center-row{
+    display: flex;
+    justify-content: center!important;
+    align-items:center!important;
+    flex-direction: row!important;
+}
+
+.g-flex-start-center-row{
+    display: flex;
+    justify-content: start!important;
+    align-items:center!important;
+    flex-direction: row!important;
+}
