@@ -42,31 +42,26 @@ PERIODIC_INTERVALS = (
 class Twitter_Target_Document(Document):
     target_platform       =StringField(verbose_name="Target_Platform", max_length=255,default="twitter")
     target_type           =StringField(verbose_name="Target_Type",default="tweets")
-    target_username       =StringField(verbose_name="Target_Username",primary_key=True)
+    target_username       =StringField(verbose_name="Target_Username")
     target_scheduling     =IntField(verbose_name="Target_Scheduling",choices=PERIODIC_INTERVALS,default=0)
     scanning_status       =StringField(verbose_name="Scanning_Status",default="pending")
     created_at            =DateField(default=datetime.datetime.now, editable=False,)
     updated_at            =DateField(default=datetime.datetime.now, editable=True,)
    
     """ Create / Insert """
-    def Create_Twitter_Target(self,target_platform,target_type,target_username,twitter_scheduling):
+    def Create_Twitter_Target(self,target_platform,target_type,target_username,target_scheduling):
         self.target_platform=str(target_platform)
         self.target_type=str(target_type)
         self.target_username=str(target_username)
-        self.twitter_scheduling=twitter_scheduling
-        self.save()
-        # try:
-        #     if(self.save):
-        #         print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Success ,{bcolors.ENDC}")
-        #         # return True
-                   
-        #     else:
-        #         print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Failed ,{bcolors.ENDC}")
-        #         # return False
-        # except Exception as e:
-        #   print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Exception ,{bcolors.ENDC}")
-        #   print(e)
-        #   return False
+        self.target_scheduling=int(target_scheduling)
+        try:
+           self.save()
+           print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Success ,{bcolors.ENDC}")
+           return True
+        except Exception as e:
+          print(f"{bcolors.WARNING}Twitter Target Document  --Create_Twitter_Target  --Exception ,{bcolors.ENDC}")
+          print(e)
+          return False
 
     """ returns all twitter targets """
     @staticmethod
@@ -77,6 +72,14 @@ class Twitter_Target_Document(Document):
         except Exception as e:
             print("Get_All_Twitter_Targets --failed")
             print(e) 
-
+    @staticmethod
+    def UserExist(target_username):
+        targetExist=Twitter_Target_Document.objects.filter(target_username=target_username)
+        if(targetExist):
+            print(f"{bcolors.WARNING}Twitter Target Document  --UserExist  --Target Already Exist ,{bcolors.ENDC}")
+            return True
+        else:
+            print(f"{bcolors.WARNING}Twitter Target Document  --UserExist  --Target Not Exiist ,{bcolors.ENDC}")
+            return False
 
     """ returns all twitter targets """

@@ -70,13 +70,21 @@ class Tweets_Targets(View):
         print(f"{bcolors.WARNING}{target_platform},{target_type},{target_username},{target_scheduling},{bcolors.ENDC}")
         try:
             Obj=Twitter_Target_Document()
-            Query=Obj.Create_Twitter_Target(target_platform,target_type,target_username,target_scheduling)
-            if(Query):
-                return redirect('/tw/twitter')
+            targetExist=Obj.UserExist(target_username)
+            if not targetExist:
+                Query=Obj.Create_Twitter_Target(target_platform,target_type,target_username,target_scheduling)
+                if(Query):
+                    messages.success(request, 'Target created successfully.')
+                    return redirect('/tw/twitter')
+                else:
+                    messages.error(request, 'Operation failed .')
+                    return redirect('/tw/twitter')
             else:
+                messages.error(request, 'Target already exist .')
                 return redirect('/tw/twitter')
         except Exception as e:
             print(e)
+            messages.error(request, 'Operation failed .')
             return redirect('/tw/twitter')
        
        

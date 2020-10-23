@@ -1,0 +1,15 @@
+goto /etc/mongodb.conf and bind ip 
+bind_ip = 0.0.0.0
+#port = 27017
+
+type 
+service mongodb restart
+
+open robo3t in host and
+type 
+localhost or 127.0.0.1 
+port 27017
+
+enjoy
+
+
