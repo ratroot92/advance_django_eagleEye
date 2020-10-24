@@ -83,3 +83,23 @@ class Twitter_Target_Document(Document):
             return False
 
     """ returns all twitter targets """
+
+
+class Top_World_Trends(Document):
+    hashtag     =StringField(verbose_name="Hashtag", max_length=255)
+    count       =StringField(verbose_name="Count", max_length=255)
+    link        =StringField(verbose_name="Link", max_length=255)
+    created_at  =DateField(default=datetime.datetime.now, editable=False,)
+    updated_at  =DateField(default=datetime.datetime.now, editable=True,)
+    def Create(self,hashtag,count,link):
+        self.hashtag=str(hashtag)
+        self.count=int(count)
+        self.link=str(link)
+        try:
+           self.save()
+           print(f"{bcolors.WARNING}Top_World_Trends  --Create  --Success ,{bcolors.ENDC}")
+           return True
+        except Exception as e:
+          print(f"{bcolors.WARNING}Top_World_Trends  --Create  --Exception ,{bcolors.ENDC}")
+          print(e)
+          return False

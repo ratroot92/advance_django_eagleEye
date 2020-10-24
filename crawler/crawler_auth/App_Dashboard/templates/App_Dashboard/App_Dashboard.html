@@ -1,202 +1,324 @@
 {% extends './Base.html'%}
-  {% load static %}
-  
-    {% block css %}
+{% load static %}
 
-    <style>
-      .my-custom-scrollbar {
-      position: relative;
-      height: 400px;
-      overflow: auto;
-      }
-      .table-wrapper-scroll-y {
-      display: block;
-      }
-          </style>
+{% block css %}
+
+<style>
+  .my-custom-scrollbar {
+    position: relative;
+    height: 400px;
+    overflow: auto;
+  }
+
+  .table-wrapper-scroll-y {
+    display: block;
+  }
+
+  .trendLink {
+    text-decoration: none !important;
+    color: black;
+    ;
+  }
+
+  .trendLink:hover {
+    font-weight: bold;
+    ;
+    color: green;
+    font-size: 14px;
+  }
+
+  tr {
+    font-size: 14px;
+    font-weight: bold;
+    ;
+  }
+
+  td {
+    font-size: 12px;
+    ;
+  }
+  #indianCitySelectBox{
+    width: 120px!important;
+    border-radius: 0px!important;
+  }
+</style>
 
 
 {% endblock %}
 {% block content %}
-   <!-- NAVBAR START -->
+<!-- NAVBAR START -->
 
-   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-      <img src="{% static '/images/logo.png' %}" class="logo-img" />
-      <a class="navbar-brand" href="#">Eagle Eye</a>
-      <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-        <li class="nav-item active">
-          <a class="nav-link" href="{% url 'Twitter_Crawler:tweets_targets' %}">Twitter Crawler <span class="sr-only">(current)</span></a>
-        </li>
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Rapid Search</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Image Reverse</a>
-        </li>
-       
-      </ul>
-     
-    </div>
-  </nav>
-   <!-- NAVBAR END  -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+    aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <img src="{% static '/images/logo.png' %}" class="logo-img" />
+    <a class="navbar-brand" target="_blank" href="#">Eagle Eye</a>
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item active">
+        <a class="nav-link" target="_blank" href="{% url 'Twitter_Crawler:tweets_targets' %}">Twitter Crawler <span
+            class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" target="_blank" href="#">Rapid Search</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" target="_blank" href="#">Image Reverse</a>
+      </li>
 
-  <!--DASHBOARD BODY START --->
+    </ul>
+
+  </div>
+</nav>
+<!-- NAVBAR END  -->
+
+<!--DASHBOARD BODY START --->
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
       <!-- TOP WORLD TRENDS -->
       <div class="card">
         <div class="card-header">
-          <span class="font-weight-bold">World top Trends</span>
+          <span class="font-weight-bold font-25">World top Trends</span>
 
-          <button type="button"  class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="0" id="0">update  <i class="fas fa-spinner fa-pulse" id="worldTrendSpinner"></i></button>
+          <button type="button" class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="0"
+            id="0"><i class="fas fa-spinner fa-pulse" id="worldTrendSpinner"></i>update </button>
         </div>
         <div class="card-body m-0 p-0 ">
           <div class="table-wrapper-scroll-y my-custom-scrollbar">
-          <table class="table table-bordered table-striped mb-0" >
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Hashtag</th>
-                <th scope="col">Count</th>
-               
-              </tr>
-            </thead>
-            <tbody id="wrapperWorldTrends">
-              {% for Trends in Top_World_Trends %}
-             
-              <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td> <a href="{{Trends.href}}">{{Trends.name}}</a></td>
-                <td>{{Trends.count}}</td>
-              
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+            <table class="table table-bordered table-striped mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hashtag</th>
+                  <th scope="col">Count</th>
+
+                </tr>
+              </thead>
+              <tbody id="wrapperWorldTrends">
+                {% for Trends in Top_World_Trends %}
+
+                <tr>
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td> <a class="trendLink" target="_blank" href="{{Trends.href}}">{{Trends.name}}</a></td>
+                  <td>{{Trends.count}}</td>
+
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
         <div class="card-footer">
           <div class="row">
-            <div class="col-md-4">
-            <span class="text-info font-weight-bold" >Last udpated</span>  <span class="text-muted" id="syncWorldTrends"></span>
+            <div class="col-md-6">
+              <span class="text-info font-weight-bold font-12">Last udpated</span> <span class="text-dark font-12"
+                id="syncWorldTrends"></span>
             </div>
           </div>
         </div>
       </div>
-       <!-- TOP WORLD TRENDS -->
+      <!-- TOP WORLD TRENDS -->
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
       <!-- TOP WORLD TRENDS -->
       <div class="card">
         <div class="card-header">
-          <span class="font-weight-bold">Pakistan Top Trends</span>
-          <button type="button"  class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="1" id="">update</button>
+          <span class="font-weight-bold font-25">Pakistan Top Trends</span>
+          <button type="button" class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="1"
+            id=""> <i class="fas fa-spinner fa-pulse" id="pakistanTrendSpinner"></i> update</button>
         </div>
         <div class="card-body m-0 p-0 ">
           <div class="table-wrapper-scroll-y my-custom-scrollbar">
-          <table class="table table-bordered table-striped mb-0">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Hashtag</th>
-                <th scope="col">Count</th>
-               
-              </tr>
-            </thead>
-            <tbody  id="wrapperPakistanTrends">
-              {% for Trends in Pakistan_Top_Trends %}
-             
-              <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td> <a href="{{Trends.href}}">{{Trends.name}}</a></td>
-                <td>{{Trends.count}}</td>
-              
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
+            <table class="table table-bordered table-striped mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hashtag</th>
+                  <th scope="col">Count</th>
+
+                </tr>
+              </thead>
+              <tbody id="wrapperPakistanTrends">
+                {% for Trends in Pakistan_Top_Trends %}
+
+                <tr>
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td> <a class="trendLink" target="_blank" href="{{Trends.href}}">{{Trends.name}}</a></td>
+                  <td>{{Trends.count}}</td>
+
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="text-info font-weight-bold font-12">Last udpated</span> <span class="text-dark font-12"
+            id="syncPakistanTrends"></span>
         </div>
       </div>
-        <div class="card-footer"></div>
+      <!-- TOP WORLD TRENDS -->
+    </div>
+
+
+
+    <div class="col-md-4">
+      <!-- TOP WORLD TRENDS -->
+      <div class="card">
+        <div class="card-header d-flex flex-row justify-content-between align-items-center">
+          <span class="font-weight-bold font-25">India Top Trends</span>
+          <!-- <button type="button" class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="1"
+            id=""> <i class="fas fa-spinner fa-pulse" id="pakistanTrendSpinner"></i> update</button> -->
+            <span><select name="indianCitySelectBox" id="indianCitySelectBox" class="form-control form-control-sm" required="required">
+              <option value="">Select City</option>
+              <option value="ahmedabad">Ahmedabad</option>
+              <option value="amritsar">Amritsar</option>
+              <option value="banglore">Banglore</option>
+              <option value="bhopal">Bhopal</option>
+              <option value="chennai">Chennai</option>
+              <option value="delhi">Delhi</option>
+              <option value="hyderabad">Hyderabad</option>
+              <option value="indore">Indore</option>
+              <option value="jaipur">Jaipur</option>
+              <option value="kanpur">Kanpur</option>
+              <option value="kolkata">Kolkata</option>
+              <option value="lucknow">Lucknow</option>
+              <option value="mumbai">Mumbai</option>
+              <option value="nagpur">Nagpur</option>
+              <option value="patna">Patna</option>
+              <option value="pune">Pune</option>
+              <option value="rajkot">Rajkot</option>
+              <option value="ranchi">Ranchi</option>
+              <option value="srinagr">Srinagr</option>
+              <option value="surat">Surat</option>
+              <option value="thane">Thane</option>
+            </select></span>
+           
+        </div>
+        <div class="card-body m-0 p-0 ">
+          <div class="table-wrapper-scroll-y my-custom-scrollbar">
+            <table class="table table-bordered table-striped mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Hashtag</th>
+                  <th scope="col">Count</th>
+
+                </tr>
+              </thead>
+              <tbody id="wrapperPakistanTrends">
+                {% for Trends in Pakistan_Top_Trends %}
+
+                <tr>
+                  <th scope="row">{{forloop.counter}}</th>
+                  <td> <a class="trendLink" target="_blank" href="{{Trends.href}}">{{Trends.name}}</a></td>
+                  <td>{{Trends.count}}</td>
+
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="text-info font-weight-bold font-12">Last udpated</span> <span class="text-dark font-12"
+            id="syncPakistanTrends"></span>
+        </div>
       </div>
-       <!-- TOP WORLD TRENDS -->
+      <!-- TOP WORLD TRENDS -->
     </div>
   </div>
 </div>
 <!-- DASHBOARD BODY END  -->
 {% endblock %}
-   {% block js %}
-  <script>
-    $(document).ready(function(){
-      $('#worldTrendSpinner').hide();
-      $('#syncWorldTrends').empty().append(getCurrentTime())
-      console.log("%c Jquery ready ! ","color:green;font-size:16px;font-weight:bold");
-      const chatSocket = new WebSocket('ws://'+ window.location.host+'/topTrends/')
-      console.log(chatSocket)
+{% block js %}
+<script>
+  $(document).ready(function () {
+    //Initial Renderings hide Show 
+    $('#worldTrendSpinner').hide();
+    $('#pakistanTrendSpinner').hide();
+    $('#syncWorldTrends').empty().append(getCurrentTime())
+    $('#syncPakistanTrends').empty().append(getCurrentTime())
+    //Initial Renderings hide Show
+    console.log("%c Jquery ready ! ", "color:green;font-size:16px;font-weight:bold");
+    const chatSocket = new WebSocket('ws://' + window.location.host + '/topTrends/')
+    console.log(chatSocket)
 
 
 
 
-      chatSocket.onmessage = function(e) {
-            const data = JSON.parse(e.data);
-            console.log("%c"+data["_request"],"color:green;font-size:16px;font-weight:bold");
-            let topTrends=data["_data"];
-            let opCode=data["_data"];
-            let containerId=opCode==0 ? 'wrapperWorldTrends' : 'wrapperPakistanTrends';
-            populateTrends(topTrends,containerId)
-            $('#syncWorldTrends').empty().append(getCurrentTime())
-            
-         
-      }
+    chatSocket.onmessage = function (e) {
+      const data = JSON.parse(e.data);
+      console.log("%c" + data["_request"], "color:green;font-size:16px;font-weight:bold");
+      let topTrends = data["_data"];
+      let opCode = data["_data"];
+      let containerId = opCode == 0 ? 'wrapperWorldTrends' : 'wrapperPakistanTrends';
+      let toastMessage = opCode == 0 ? 'Top World  Twitter Trends  Updated' : 'Top Pakistan Twitter Trends  Updated';
+      let syncTime=opCode == 0 ? 'syncWorldTrends' : 'syncPakistanTrends';
+      let spinnerId=opCode == 0 ? "worldTrendSpinner" :"pakistanTrendSpinner";
+      $(`#${spinnerId}`).show();
+      populateTrends(topTrends, containerId,toastMessage,spinnerId)
+      
+      $(`${syncTime}`).empty().append(getCurrentTime())
 
 
-chatSocket.onclose=function(e){
- console.log("%c"+"closing websocket ")
-//  location.reload(true);
-}
-      // let updateTrendsBtn=
-      $('.updateTrendsBtn').on('click',function(){
-        $('#worldTrendSpinner').show();
-        let btnId=$(this).attr('id');
-        console.log(`Update trends button Id  == ${btnId}`);
-        if(btnId==0){
-          chatSocket.send(JSON.stringify({
-            'opCode': btnId
-            }));
-        }
-      })
+    }
+
+
+    chatSocket.onclose = function (e) {
+      console.log("%c" + "closing websocket ")
+      //  location.reload(true);
+    }
+    // let updateTrendsBtn=
+    $('.updateTrendsBtn').on('click', function () {
+      let btnId = $(this).attr('data-id');   
+      chatSocket.send(JSON.stringify({
+          'opCode': btnId
+        }));
+     
     })
+  })
 
 
 
-  function populateTrends(trends,containerId){
-    let html='';
+  function populateTrends(trends, containerId,toastMessage,spinnerId) {
+    let html = '';
     $(`#${containerId}`).empty()
-    trends.forEach(function(val,key){
-      html+=`<tr><th scope="row">${key}</th><td> <a href="${val["href"]}">${val["name"]}</a></td><td>${val["count"]}</td></tr>`;
+    trends.forEach(function (val, key) {
+      html += `<tr><th scope="row">${key}</th><td> <a  class="trendLink" target="_blank" href="${val["href"]}">${val["name"]}</a></td><td>${val["count"]}</td></tr>`;
     })
     $(`#${containerId}`).append(html)
-    let message ="Top World Hashtags updated";
-    publishToastMessage(message,"success");
-    $('#worldTrendSpinner').hide();
+    publishToastMessage(toastMessage, "success");
+    $(`${spinnerId}`).hide();
   }
 
 
- 
+
     // var now = moment().startOf('seconds').fromNow();
-   
- 
 
 
 
- 
 
- 
-  </script>
-  {% endblock%}
- 
+
+
+
+
+</script>
+
+
+<script>
+  
+  $('#indianCitySelectBox').on('change',function(){
+    let cityName=$(this).val()
+    console.log(cityName)
+    if(cityName !== 'undefined' && cityName !== '' ){
+      let chatSocket = new WebSocket('ws://' + window.location.host + '/topTrends/location/'+cityName)
+      console.log(chatSocket)
+    }
+  })
+</script>
+{% endblock%}

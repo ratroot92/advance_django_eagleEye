@@ -169,8 +169,8 @@ STATICFILES_DIRS = [
 
 
 
-BROKER_URL = 'amqp://localhost'
-CELERY_RESULT_BACKEND = 'amqp://localhost'
+BROKER_URL = 'amqp://127.0.0.1'
+CELERY_RESULT_BACKEND = 'amqp://127.0.0.1'
 # Celery Data Format
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'

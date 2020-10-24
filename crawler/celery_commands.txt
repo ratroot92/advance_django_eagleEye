@@ -1,5 +1,5 @@
 full debugging and start application 
-celery -A twitter worker --loglevel=info --loglevel=DEBUG
+celery -A Twitter_Crawler worker --loglevel=info --loglevel=DEBUG
 
 
 

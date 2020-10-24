@@ -1,10 +1,8 @@
 function publishToastMessage(message,type)
 {
-      console.log("%cToaster Ready !", "color:green;font-size:16px;font-weight:bold;")
-      console.log(message)
+      console.log("%cToaster Ran !", "color:green;font-size:16px;font-weight:bold;")
       // Command: toastr["{{ message.tags }}"]("{{ message }} .")
         Command: toastr[`${type}`](`${message} .`)
-
       toastr.options = {
           "closeButton": true,
           "debug": false,
@@ -26,13 +24,14 @@ function publishToastMessage(message,type)
 
 
 function getCurrentTime(){
-    var d = new Date("2011-04-20T09:30:51.01");
-    let hours=d.getHours(); // => 9
-    let hour= hours > 9 ? `${hours}`: `0${hours}`  ;
-    let minutes=d.getMinutes(); // =>  30
-    let minute=minutes > 9 ? `${minutes}`: `0${minutes}`  ;
-    let seconds=d.getSeconds(); // => 51
-    let second=seconds > 9 ? `${seconds}`: `0${seconds}`  ;
-    return `${hour}:${minute}:${second}`;
+  let date =new Date()
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ' ' + ampm;
+  return strTime;
 
 }
