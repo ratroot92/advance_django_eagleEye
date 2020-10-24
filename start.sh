@@ -16,4 +16,9 @@ echo -e "${CYAN} Starting\t Mongo\t DB\t Service ${RESET}"
 service mongodb start
 echo -e "${CYAN} Starting\t Redis\t Server\t For\t Django\t Channels\t   ${RESET}"
 service redis-server start
+echo -e "${CYAN} Starting\t Supervisor\t For\t Task\t Schedling\t Via\t Celery\t   ${RESET}"
+service supervisor start
+echo -e "${CYAN} Starting\t RabbitMQ\t For\t Broker\t For \t Celery\t   ${RESET}"
+service  rabbitmq-server start
+
 echo -e "${GREEN} Ready\t To\t GO\t !!!!! ${RESET}"

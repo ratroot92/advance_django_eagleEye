@@ -1,0 +1,71 @@
+unlink /var/run/supervisor.sock
+if HTTP port is in use run above command
+
+***
+service supervisor status
+***
+service supervisor start
+***
+supervisorctl  start
+supervisorctl  reread
+supervisorctl  reload
+supervisorctl  stop all 
+supervisorctl  start all
+***
+
+
+
+
+*** Start Twitter_Crawler ***
+supervisorctl start all  
+supervisorctl start Twitter_Crawler
+
+*** View Supervisord  Logs  ***
+tail -f supervisord.log
+
+
+*** View Twitter_Crawler Logs  ***
+tail -f /var/log/celery/Twitter_Crawler.log
+
+*** CONF FILES  LOCATION ***
+/etc/supervisor/conf.d/Twitter_Crawler.conf
+/etc/supervisor/conf.d/Twitter_Crawler_Beat.conf
+
+
+
+
+*** Twitter_Crawler.conf ***
+***************************************************************************************************
+[program:Twitter_Crawler]
+command=/usr/local/bin/celery -A Twitter_Crawler worker --loglevel=info --loglevel=DEBUG
+directory=/var/www/Eagle_Eye/crawler/crawler_auth
+user=root
+;numprocs=1
+stdout_logfile=/var/log/celery/Twitter_Crawler.log
+stderr_logfile=/var/log/celery/Twitter_Crawler.log
+autostart=true
+autorestart=true
+startsecs=10
+stopwaitsecs = 600
+killasgroup=true
+priority=998
+***************************************************************************************************
+
+
+
+*** Twitter_Crawler_Beat.conf ***
+***************************************************************************************************
+[program:Twitter_Crawler_Beat]
+command=/usr/local/bin/celery -A Twitter_Crawler beat   --loglevel=info --loglevel=DEBUG
+directory=/var/www/Eagle_Eye/crawler/crawler_auth
+user=root
+;numprocs=1
+stdout_logfile=/var/log/celery/Twitter_Crawler_Beat.log
+stderr_logfile=/var/log/celery/Twitter_Crawler_Beat.log
+autostart=true
+autorestart=true
+startsecs=10
+stopwaitsecs = 600
+killasgroup=true
+priority=998
+***************************************************************************************************
