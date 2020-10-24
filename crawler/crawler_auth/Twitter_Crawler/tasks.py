@@ -13,6 +13,8 @@ from .models import Activity_Logger
 import subprocess
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from Data_Acquisition_App.Trends_24 import Twitter_Trends
+from Data_Acquisition_App.Mongo_Models import Top_World_Trends
 @shared_task
 def getTweets(_username):
     log=Activity_Logger(activity_name='Tweets Scanning | Celert Tasks' ,
@@ -657,7 +659,16 @@ def asd():
                 )
 
 
-
+@shared_task
+def updateTopWorldTrends():
+    try:
+        Obj= Twitter_Trends()
+        Model= Top_World_Trends()
+        topTrends=Obj.World_Top_Trends()
+        Model.Create(topTrends)
+        print("################################")
+    except Exception as e:
+        print(e)
 
 
 

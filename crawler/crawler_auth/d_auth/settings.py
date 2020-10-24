@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 from mongoengine import connect
-
+from celery.schedules import crontab
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -201,4 +201,19 @@ CHANNEL_LAYERS = {
             "expiry": 10,  # default 60
         },
     },
+}
+
+# CELERYBEAT_SCHEDULE = {
+#     'context': {
+#         'tasks': 'tasks.updateTopWorldTrends',
+#         'schedule':  crontab(),
+#     }
+# }
+CELERY_BEAT_SCHEDULE = {
+    # Executes every Friday at 4pm
+    'send-notification-on-friday-afternoon': { 
+         'task': 'Twitter_Crawler.tasks.updateTopWorldTrends', 
+        #  'schedule': crontab(hour=16, day_of_week=5),
+         'schedule': crontab(),
+        },          
 }
