@@ -30,7 +30,7 @@ def asd(_username):
 #    c.Limit = 20
     c.Store_object = True
     c.Hide_output = False
-    c.Database = "eagle_eye"
+    c.Database = "d_auth"
    # nest_asyncio.apply()
     twint.run.Search(c)
     t = Twitter_Target.objects.get(twitter_username=_username)
@@ -117,7 +117,7 @@ def twitterProfileScan_Followers(_username):
     c.Username = _username
     c.User_full = True
     c.Store_object = True
-    c.Database = "eagle_eye"  
+    c.Database = "d_auth"  
     twint.run.Followers(c)  
     # twint.run.Following(c)
     #t = Twitter_Target_Profile.objects.get(twitter_username=_username)
@@ -133,7 +133,7 @@ def twitterProfileScan_Following(_username):
     c.Username = _username
     c.User_full = True
     c.Store_object = True
-    c.Database = "eagle_eye"  
+    c.Database = "d_auth"  
     twint.run.Following(c)
     t = Twitter_Target_Profile.objects.get(twitter_username=_username)
     t.scanning_status = 'completed' 

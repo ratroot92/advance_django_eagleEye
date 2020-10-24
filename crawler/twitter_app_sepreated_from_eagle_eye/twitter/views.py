@@ -168,7 +168,7 @@ def addTwitterTarget_Profile(request):
              _username=request.POST['twitter_username']
              c = twint.Config()
              c.Username =_username
-             c.Database ="eagle_eye"
+             c.Database ="d_auth"
              twint.run.Lookup(c)
              status=Users.objects.filter(username=_username).exists()
              print(username,status)
