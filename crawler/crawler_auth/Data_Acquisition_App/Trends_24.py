@@ -1,13 +1,28 @@
 from bs4 import BeautifulSoup
 import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
 
 class Twitter_Trends():
         
     def World_Top_Trends(self):
         url='https://trends24.in/';
-        page = requests.get(url);
+        topTrends={};
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        try:
+            page = session.get(url);
+        except Exception as e:
+            print(e)
+            print("World_Top_Trends -- Failed ")
+            return topTrends
         status_code=page.status_code;
-        dic={};
+        
         hashtag_name=[];
         hashtag_href=[];
         hashtag_count=[];
@@ -25,23 +40,36 @@ class Twitter_Trends():
             
             
                 
-        dic = []
+        topTrends = []
         for item in zip(hashtag_name, hashtag_count, hashtag_href):
         
-            dic.append({
+            topTrends.append({
                 'name':item[0],
                 'count':item[1],
                 'href':item[2]})
             
-        return dic
+        return topTrends
+        
+        
 
 
               
     def Pakistan_Top_Trends(self):
         url='https://trends24.in/pakistan/';
-        page = requests.get(url);
+        topTrends={};
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+        try:
+             page = session.get(url);
+        except Exception as e:
+            print(e)
+            print("Pakistan_Top_Trends -- Failed ")
+            return topTrends
         status_code=page.status_code;
-        dic={};
+       
         hashtag_name=[];
         hashtag_href=[];
         hashtag_count=[];
@@ -59,12 +87,12 @@ class Twitter_Trends():
             
             
                 
-        dic = []
+        topTrends = []
         for item in zip(hashtag_name, hashtag_count, hashtag_href):
         
-            dic.append({
+            topTrends.append({
                 'name':item[0],
                 'count':item[1],
                 'href':item[2]})
             
-        return dic
+        return topTrends
