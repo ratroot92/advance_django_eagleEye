@@ -9,6 +9,16 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static '/css/App_Dashboard.css'%}"/>
     <title>Eagle-Eye | App </title>
+    <style>
+.my-custom-scrollbar {
+position: relative;
+height: 400px;
+overflow: auto;
+}
+.table-wrapper-scroll-y {
+display: block;
+}
+    </style>
   </head>
   <body>
    <!-- NAVBAR START -->
@@ -41,14 +51,77 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-6">
+      <!-- TOP WORLD TRENDS -->
       <div class="card">
         <div class="card-header">
           <span class="font-weight-bold">World top Trends</span>
-          <button type="button"  class=" btn btn-sm btn-success float-right font-weight-bold">update</button>
+          <button type="button"  class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="0" id="0">update</button>
         </div>
-        <div class="card-body"></div>
+        <div class="card-body m-0 p-0 ">
+          <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-bordered table-striped mb-0" >
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Hashtag</th>
+                <th scope="col">Count</th>
+               
+              </tr>
+            </thead>
+            <tbody id="wrapperWorldTrends">
+              {% for Trends in Top_World_Trends %}
+             
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td> <a href="{{Trends.href}}">{{Trends.name}}</a></td>
+                <td>{{Trends.count}}</td>
+              
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
         <div class="card-footer"></div>
       </div>
+       <!-- TOP WORLD TRENDS -->
+    </div>
+
+    <div class="col-md-6">
+      <!-- TOP WORLD TRENDS -->
+      <div class="card">
+        <div class="card-header">
+          <span class="font-weight-bold">Pakistan Top Trends</span>
+          <button type="button"  class=" btn btn-sm btn-success float-right font-weight-bold updateTrendsBtn" data-id="1" id="">update</button>
+        </div>
+        <div class="card-body m-0 p-0 ">
+          <div class="table-wrapper-scroll-y my-custom-scrollbar">
+          <table class="table table-bordered table-striped mb-0">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Hashtag</th>
+                <th scope="col">Count</th>
+               
+              </tr>
+            </thead>
+            <tbody  id="wrapperPakistanTrends">
+              {% for Trends in Pakistan_Top_Trends %}
+             
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td> <a href="{{Trends.href}}">{{Trends.name}}</a></td>
+                <td>{{Trends.count}}</td>
+              
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+        <div class="card-footer"></div>
+      </div>
+       <!-- TOP WORLD TRENDS -->
     </div>
   </div>
 </div>
@@ -58,5 +131,55 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+  
+  <script>
+    $(document).ready(function(){
+      console.log("%c Jquery ready ! ","color:green;font-size:16px;font-weight:bold");
+      const chatSocket = new WebSocket('ws://'+ window.location.host+'/topTrends/')
+      console.log(chatSocket)
+
+
+
+
+      chatSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            console.log("%c"+data["_request"],"color:green;font-size:16px;font-weight:bold");
+            let topTrends=data["_data"];
+            let opCode=data["_data"];
+            let containerId=opCode==0 ? 'wrapperWorldTrends' : 'wrapperPakistanTrends';
+            populateTrends(topTrends,containerId)
+            
+         
+      }
+
+
+chatSocket.onclose=function(e){
+ console.log("%c"+"closing websocket ")
+//  location.reload(true);
+}
+      // let updateTrendsBtn=
+      $('.updateTrendsBtn').on('click',function(){
+        let btnId=$(this).attr('id');
+        console.log(`Update trends button Id  == ${btnId}`);
+        if(btnId==0){
+          chatSocket.send(JSON.stringify({
+            'opCode': btnId
+            }));
+        }
+      })
+    })
+
+
+
+  function populateTrends(trends,containerId){
+    let html='';
+    $(`#${containerId}`).empty()
+    trends.forEach(function(val,key){
+      html+=`<tr><th scope="row">${key}</th><td> <a href="${val["href"]}">${val["name"]}</a></td><td>${val["count"]}</td></tr>`;
+    })
+    $(`#${containerId}`).append(html)
+    console.log("%cpopulateTrends --success","color:green;font-size:16px;font-weight:bold")
+  }
+  </script>
   </body>
 </html>
