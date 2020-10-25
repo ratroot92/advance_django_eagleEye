@@ -248,7 +248,19 @@
     const topTrendsSocket = new WebSocket('ws://' + window.location.host + '/topTrends/')
     const scheduleSocket = new WebSocket('ws://' + window.location.host + '/scheduleUpdate/')
     console.log(scheduleSocket)
-    scheduleSocket.onmessage = function (e) {console.log("***-scheduleSocket(onmessage)-***")}
+    scheduleSocket.onmessage = function (e) {console.log("***-scheduleSocket(onmessage)-***")
+    let responseData=JSON.parse(e.data)
+    let topTrends=responseData['_data']
+    let opCode=responseData['opCode']
+    let containerId = opCode == 0 ? 'wrapperWorldTrends' : 'wrapperPakistanTrends';
+    let toastMessage = opCode == 0 ? 'Top World  Twitter Trends  Updated --Scheduled' : 'Top Pakistan Twitter Trends  Updated --Scheduled';
+    let syncTime=opCode == 0 ? 'syncWorldTrends' : 'syncPakistanTrends';
+    let spinnerId=opCode == 0 ? "worldTrendSpinner" :"pakistanTrendSpinner";
+    console.log(topTrends)
+    populateTrends(topTrends, containerId,toastMessage,spinnerId)
+    if(opCode == 1 )  {console.log("%c World Top Trends Updated **Celery Shceduler**  ! ", "color:green;font-size:16px;font-weight:bold");}
+   
+  }
     scheduleSocket.onclose = function (e) {console.log("***-scheduleSocket(onclose)-***")}
 
 
@@ -300,6 +312,15 @@
   }
 
 
+  function populateTrendsByCelerySchedulingTasks(trends, containerId,toastMessage){
+    let html = '';
+    $(`#${containerId}`).empty()
+    trends.forEach(function (val, key) {
+      html += `<tr><th scope="row">${key}</th><td> <a  class="trendLink" target="_blank" href="${val["href"]}">${val["name"]}</a></td><td>${val["count"]}</td></tr>`;
+    })
+    $(`#${containerId}`).append(html)
+    publishToastMessage(toastMessage, "success");
+}
 
     // var now = moment().startOf('seconds').fromNow();
 

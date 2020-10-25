@@ -99,3 +99,26 @@ class Top_World_Trends(Document):
           print(f"{bcolors.WARNING}Top_World_Trends  --Create  --Exception ,{bcolors.ENDC}")
           print(e)
           return False
+
+class Countries_Top_Trends_Document(Document):
+    country_name=StringField(verbose_name="Country_Name", max_length=255,default="")
+    city_name=StringField(verbose_name="City_Name", max_length=255,default="")
+    trends      =ListField(default=[])
+    created_at  =DateField(default=datetime.datetime.now, editable=False,)
+    updated_at  =DateField(default=datetime.datetime.now, editable=True,)
+    def Create(self,country_name,city_name,trends):
+        self.city_name=city_name
+        self.country_name=country_name
+        self.trends=trends
+        try:
+           self.save()
+           print(f"{bcolors.WARNING}Top_World_Trends  --Create Countries_Top_Trends_Document --Success ,{bcolors.ENDC}")
+           return True
+        except Exception as e:
+          print(f"{bcolors.WARNING}Top_World_Trends  --Create Countries_Top_Trends_Document --Exception ,{bcolors.ENDC}")
+          print(e)
+          return False
+    @staticmethod
+    def getPakistanTrends():
+        topTrends=Countries_Top_Trends_Document.objects.filter(country_name="pakistan")
+        return topTrends

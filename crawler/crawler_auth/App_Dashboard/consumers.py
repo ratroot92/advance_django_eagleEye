@@ -47,15 +47,32 @@ class Top_Trends_By_Location(WebsocketConsumer):
         def receive(self,message=None, bytes_data=None):
             print("***-scheduleUpdateTopTrends(receive)-***")
             data = json.loads(message)
+            data=data['data']
+            requestType=data['type']
             async_to_sync(self.channel_layer.group_send)(
             self.room_group_name,{
-                "type": 'updateTopTrends',
+            "type": ''+requestType,
+            'data': data,
             }
         )
-        """---"""
-        def updateTopTrends(self,data):
-            print("updateTopTrends***-updateTopTrends()-***")
+        """--opCode == 0 == Wrold Top Trends --"""
+        """--opCode == 1 == Pakistan Top Trends --"""
+        def updateTopWorldTrends(self,event):
+            topTrends=event['data']
             self.send(text_data=json.dumps({
-            '_request': 'Django Twitter Consumer Replying To : ws://127.0.0.1:8001/topTrends/',
-                '_status_code': 0,
+            '_request': 'Reply From  ***--Shecule Task updateTopWorldTrends--***',
+            '_status_code': 0,
+            '_data': topTrends,
+             'opCode': 0,
+          
+            }))
+
+        def updateTopPakistanTrends(self,event):
+            topTrends=event['data']
+            self.send(text_data=json.dumps({
+            '_request': 'Reply From  ***--Shecule Task updateTopPakistanTrends--***',
+            '_status_code': 0,
+            '_data': topTrends,
+             'opCode': 1,
+          
             }))

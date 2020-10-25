@@ -211,8 +211,13 @@ CHANNEL_LAYERS = {
 # }
 CELERY_BEAT_SCHEDULE = {
     # Executes every Friday at 4pm
-    'send-notification-on-friday-afternoon': { 
+    'updateTopWorldTrends': { 
          'task': 'Twitter_Crawler.tasks.updateTopWorldTrends', 
+        #  'schedule': crontab(hour=16, day_of_week=5),
+         'schedule': crontab(),
+        },    
+         'updateTopPakistanTrends': { 
+         'task': 'Twitter_Crawler.tasks.updateTopPakistanTrends', 
         #  'schedule': crontab(hour=16, day_of_week=5),
          'schedule': crontab(),
         },          

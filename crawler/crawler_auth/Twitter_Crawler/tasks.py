@@ -14,7 +14,7 @@ import subprocess
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from Data_Acquisition_App.Trends_24 import Twitter_Trends
-from Data_Acquisition_App.Mongo_Models import Top_World_Trends
+from Data_Acquisition_App.Mongo_Models import Top_World_Trends,Countries_Top_Trends_Document
 @shared_task
 def getTweets(_username):
     log=Activity_Logger(activity_name='Tweets Scanning | Celert Tasks' ,
@@ -662,37 +662,62 @@ def asd():
 @shared_task
 def updateTopWorldTrends():
     try:
+        asyncio.set_event_loop(asyncio.new_event_loop())
         Obj= Twitter_Trends()
         Model= Top_World_Trends()
         topTrends=Obj.World_Top_Trends()
-        Model.Create(topTrends)
+        """if trends already exist then only update otherwise insert """
+        trendsExists=Top_World_Trends.objects.all()
+        if (trendsExists.count() > 0):
+            updateLastModel=Top_World_Trends.objects.first()
+            updateLastModel.update(trends = topTrends)
+            print("Celery Beat -- Top World Trends --Last Model Updated")
+        else:
+            print("Celery Beat -- Top World Trends --New Model Created")
+            Model.Create(topTrends)
         channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
+        status=async_to_sync(channel_layer.group_send)(
         'scheduleUpdateTopTrends',
-        {'type': 'updateTopTrends',})
-        print("################################")
+        {'type': 'updateTopWorldTrends',
+         'data':topTrends})
+        print("updateTopWorldTrends(Scheduled Task)  --Success")
+    
+        
     except Exception as e:
+        print("updateTopWorldTrends(Scheduled Task) --Exception")
         print(e)
 
 
 
+@shared_task
+def updateTopPakistanTrends():
+    try:
+        asyncio.set_event_loop(asyncio.new_event_loop())
+        Obj= Twitter_Trends()
+        Model= Countries_Top_Trends_Document()
+        topTrends=Obj.Pakistan_Top_Trends()
+        """if trends already exist then only update otherwise insert """
+        trendsExists=Countries_Top_Trends_Document.objects.filter(country_name="pakistan")
+        if (trendsExists.count()):
+            trendsExists[0].update(trends = topTrends)
+            print("Celery Beat -- Top Pakistan Trends --Last Model Updated")
+        else:
+            print("Celery Beat -- Top Pakistan Trends --New Model Created")
+            Model.Create("pakistan","all",topTrends)
+        channel_layer = get_channel_layer()
+        status=async_to_sync(channel_layer.group_send)(
+        'scheduleUpdateTopTrends',
+        {'type': 'updateTopPakistanTrends',
+         'data':topTrends})
+        print("updateTopPakistanTrends(Scheduled Task)  --Success")
+    
+        
+    except Exception as e:
+        print("updateTopPakistanTrends(Scheduled Task) --Exception")
+        print(e)
 
 
 
-
-# channel_layer = get_channel_layer()
-#         async_to_sync(channel_layer.group_send)(
-#         'scheduleUpdateTopTrends',
-#         {'type': 'updateTopTrends',})
-#         """if trends already exist then only update otherwise insert """
-#         # trendsExists=Top_World_Trends.objects.all()
-#         # if (trendsExists.count() > 0):
-#         #     updateLastModel=Top_World_Trends.objects.first()
-#         #     updateLastModel.update(trends = topTrends)
-#         #     print("Celery Beat -- Top World Trends --Last Model Updated")
-#         # else:
-#         print("Celery Beat -- Top World Trends --New Model Created")
-#         Model.Create(topTrends)
 
 
 

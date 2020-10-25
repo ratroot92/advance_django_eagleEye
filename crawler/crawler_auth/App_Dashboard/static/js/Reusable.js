@@ -35,3 +35,8 @@ function getCurrentTime(){
   return strTime;
 
 }
+
+
+populateTrendsbyCelery(opCode,topTrends){
+  
+}
