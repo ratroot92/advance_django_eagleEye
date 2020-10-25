@@ -245,13 +245,16 @@
     $('#syncPakistanTrends').empty().append(getCurrentTime())
     //Initial Renderings hide Show
     console.log("%c Jquery ready ! ", "color:green;font-size:16px;font-weight:bold");
-    const chatSocket = new WebSocket('ws://' + window.location.host + '/topTrends/')
-    console.log(chatSocket)
+    const topTrendsSocket = new WebSocket('ws://' + window.location.host + '/topTrends/')
+    const scheduleSocket = new WebSocket('ws://' + window.location.host + '/scheduleUpdate/')
+    console.log(scheduleSocket)
+    scheduleSocket.onmessage = function (e) {console.log("***-scheduleSocket(onmessage)-***")}
+    scheduleSocket.onclose = function (e) {console.log("***-scheduleSocket(onclose)-***")}
 
 
 
 
-    chatSocket.onmessage = function (e) {
+    topTrendsSocket.onmessage = function (e) {
       const data = JSON.parse(e.data);
       console.log("%c" + data["_request"], "color:green;font-size:16px;font-weight:bold");
       let topTrends = data["_data"];
@@ -269,14 +272,14 @@
     }
 
 
-    chatSocket.onclose = function (e) {
+    topTrendsSocket.onclose = function (e) {
       console.log("%c" + "closing websocket ")
       //  location.reload(true);
     }
     // let updateTrendsBtn=
     $('.updateTrendsBtn').on('click', function () {
       let btnId = $(this).attr('data-id');   
-      chatSocket.send(JSON.stringify({
+      topTrendsSocket.send(JSON.stringify({
           'opCode': btnId
         }));
      
@@ -316,8 +319,8 @@
     let cityName=$(this).val()
     console.log(cityName)
     if(cityName !== 'undefined' && cityName !== '' ){
-      let chatSocket = new WebSocket('ws://' + window.location.host + '/topTrends/location/'+cityName)
-      console.log(chatSocket)
+      let topTrendsSocket = new WebSocket('ws://' + window.location.host + '/topTrends/location/'+cityName)
+      console.log(topTrendsSocket)
     }
   })
 </script>

@@ -666,12 +666,33 @@ def updateTopWorldTrends():
         Model= Top_World_Trends()
         topTrends=Obj.World_Top_Trends()
         Model.Create(topTrends)
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+        'scheduleUpdateTopTrends',
+        {'type': 'updateTopTrends',})
         print("################################")
     except Exception as e:
         print(e)
 
 
 
+
+
+
+
+# channel_layer = get_channel_layer()
+#         async_to_sync(channel_layer.group_send)(
+#         'scheduleUpdateTopTrends',
+#         {'type': 'updateTopTrends',})
+#         """if trends already exist then only update otherwise insert """
+#         # trendsExists=Top_World_Trends.objects.all()
+#         # if (trendsExists.count() > 0):
+#         #     updateLastModel=Top_World_Trends.objects.first()
+#         #     updateLastModel.update(trends = topTrends)
+#         #     print("Celery Beat -- Top World Trends --Last Model Updated")
+#         # else:
+#         print("Celery Beat -- Top World Trends --New Model Created")
+#         Model.Create(topTrends)
 
 
 

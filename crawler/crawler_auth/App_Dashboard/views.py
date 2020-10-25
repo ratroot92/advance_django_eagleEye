@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView,View
 from Data_Acquisition_App.Trends_24 import Twitter_Trends
+
 """initalize Class objects """
 
 # Create your views here.
