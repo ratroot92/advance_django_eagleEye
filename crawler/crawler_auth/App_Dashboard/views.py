@@ -9,7 +9,7 @@ class App_Dashboard(View):
     def get(self,request,*args,**kwargs):
         topWorldTrends=Top_World_Trends.objects.first()
         topPakistanTrends=Countries_Top_Trends_Document.objects.filter(country_name="pakistan")
-        return render(request,'App_Dashboard/App_Dashboard.html',{'Top_World_Trends':topWorldTrends,'Pakistan_Top_Trends':topPakistanTrends})
+        return render(request,'App_Dashboard/App_Dashboard.html',{'Top_World_Trends':topWorldTrends,'Pakistan_Top_Trends':topPakistanTrends[0]})
 
 def addfacebooktarget(request):
     return render(request,'App_Dashboard/addtargets/facebook_target.html')

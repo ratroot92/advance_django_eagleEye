@@ -7,7 +7,8 @@ urlpatterns = [
 
     #tweets_targets_urls
     path('twitter/',views.Tweets_Targets.as_view(),name='tweets_targets'),
-    path('viewTweets/?P(?P<username>[0-9]+)\\/$/',views.viewTweets,name='viewTweets'),
+    path('viewTweets/<str:username>',views.viewTweets,name='viewTweets'),
+    path('viewTweetsJson/<str:username>',views.viewTweetsJson,name='viewTweetsJson'),
     path('delete_tweets_targets/?P(?P<username>[0-9]+)\\/$/',views.delete_tweets_targets,name='delete_tweets_targets'),
     path('savetweets/',views.savetweets,name='gettweets'),
 

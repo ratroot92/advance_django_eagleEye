@@ -15,9 +15,13 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 from Data_Acquisition_App.Trends_24 import Twitter_Trends
 from Data_Acquisition_App.Mongo_Models import Top_World_Trends,Countries_Top_Trends_Document
+"""
+#Imports from Mongo_Models
+"""
+from Data_Acquisition_App.Mongo_Models import Twitter_Target_Document
 @shared_task
 def getTweets(_username):
-    log=Activity_Logger(activity_name='Tweets Scanning | Celert Tasks' ,
+    log=Activity_Logger(     activity_name='Tweets Scanning | Celert Tasks' ,
                              activity_app='Twitter_Crawler ',
                              activity_details='Scanning Tweets of   Username = '+_username+' Started',
                              activity_status='successfull')
@@ -182,8 +186,9 @@ def getTweets(_username):
       geo.append(tweet.geo)
       source.append(tweet.source)
       reply_to.append(tweet.reply_to)
-
-    print("printing list ")
+#-----------------------------------------------------------#
+#                   Converting to list                      
+#-----------------------------------------------------------#
     dic = []
     for item in zip(id,id_str,conversation_id,datetime,
                 datestamp,timestamp,user_id,user_id_str,username
@@ -227,82 +232,93 @@ def getTweets(_username):
             'source':item[30],
             'reply_to':item[31],
                 })
+#-----------------------------------------------------------#
+#       Appending Tweets List To DB Target Modal 
+#       Mongo_Model = Twitter_Target_Document()
+#       StaticFunction = nsertTargetTweets(_username,dic)
+#                   Returns [True,False]                     
+#-----------------------------------------------------------#
+    Db_Obj=Twitter_Target_Document()
+    getModal=Db_Obj.InsertTargetTweets(_username,dic)
+    # if(getModal):
+#-----------------------------------------------------------#
+#       Appending Tweets List To DB Target Modal                      
+#-----------------------------------------------------------#
+    # Tweets.objects.filter(username=_username.lower()).all().delete()
+    # print(_username+": All Previous Tweets Deleted For User : "+_username)
+    # for i in dic:
+    #     lower_case_username=_username.lower()
+    #     count=Tweets.objects.filter(username=lower_case_username).count()
+    #     channel_layer = get_channel_layer()
+    #     async_to_sync(channel_layer.group_send)(
+    #         'event_sharif',
+    #             {
+    #         'type': 'tweets_insertion',
+    #         'message': count+1,
+    #         'username': _username,
+    #         'info': 'tweets_insertion',
+    #             }
+    #             )
+    #     print(count)
+    #     tweet=Tweets(
+    #         id =i['id'],
+    #         id_str = i['id_str'],
+    #         conversation_id = i['conversation_id'],
+    #         datetime=i['datetime'],
+    #         datestamp=i['datestamp'],
+    #         timestamp=i['timestamp'],
+    #         user_id=i['user_id'],
+    #         user_id_str=i['user_id_str'],
+    #         username=i['username'],
+    #         name=i['name'],
+    #         place=i['place'],
+    #         timezone=i['timezone'],
+    #         # img={};
+    #         mentions=i['mentions'],
+    #         urls=i['urls'],
+    #         photos=i['photos'],
+    #         video=i['video'],
+    #         text=i['text'],
+    #         hashtags=i['hashtags'],
+    #         cashtags=i['cashtags'],
+    #         replies_count=i['replies_count'],
+    #         likes_count=i['likes_count'],
+    #         retweets_count=i['retweets_count'],
+    #         link=i['link'],
+    #         user_rt_id=i['user_rt_id'],
+    #         retweet=i['retweet'],
+    #         retweet_id=i['retweet_id'],
+    #         retweet_date=i['retweet_date'],
+    #         quote_url=i['quote_url'],
+    #         near=i['near'],
+    #         geo=i['geo'],
+    #         source=i['source'],
+    #         reply_to=i['reply_to'],
+    #             )
+    #     tweet.save()
 
-    Tweets.objects.filter(username=_username.lower()).all().delete()
-    print(_username+": All Previous Tweets Deleted For User : "+_username)
-    for i in dic:
-        lower_case_username=_username.lower()
-        count=Tweets.objects.filter(username=lower_case_username).count()
-        channel_layer = get_channel_layer()
-        async_to_sync(channel_layer.group_send)(
-            'event_sharif',
-                {
-            'type': 'tweets_insertion',
-            'message': count+1,
-            'username': _username,
-            'info': 'tweets_insertion',
-                }
-                )
-        print(count)
-        tweet=Tweets(
-            id =i['id'],
-            id_str = i['id_str'],
-            conversation_id = i['conversation_id'],
-            datetime=i['datetime'],
-            datestamp=i['datestamp'],
-            timestamp=i['timestamp'],
-            user_id=i['user_id'],
-            user_id_str=i['user_id_str'],
-            username=i['username'],
-            name=i['name'],
-            place=i['place'],
-            timezone=i['timezone'],
-            # img={};
-            mentions=i['mentions'],
-            urls=i['urls'],
-            photos=i['photos'],
-            video=i['video'],
-            text=i['text'],
-            hashtags=i['hashtags'],
-            cashtags=i['cashtags'],
-            replies_count=i['replies_count'],
-            likes_count=i['likes_count'],
-            retweets_count=i['retweets_count'],
-            link=i['link'],
-            user_rt_id=i['user_rt_id'],
-            retweet=i['retweet'],
-            retweet_id=i['retweet_id'],
-            retweet_date=i['retweet_date'],
-            quote_url=i['quote_url'],
-            near=i['near'],
-            geo=i['geo'],
-            source=i['source'],
-            reply_to=i['reply_to'],
-                )
-        tweet.save()
-
-    lower_case_username=_username.lower()
-    tweets_counts=Tweets.objects.filter(username=lower_case_username).count()
-    t=tweets_target_model.objects.get(twitter_username=_username)
-    t.scanning_status = 'completed'
-    t.tweets_count=tweets_counts
-    t.save()
-    info_message='Followers List Scanning For Twitter Username \"'+_username+ '\" Completed'
-    channel_layer = get_channel_layer()
-    async_to_sync(channel_layer.group_send)(
-            'event_sharif',
-                {
-            'type': 'tweets_insertion_socket_close',
-            'message': info_message,
-            'username': _username,
-            'info': 'tweets_insertion_socket_close',
-                }
-                )
-    log=Activity_Logger(activity_name='Tweets Scanning  | Celert Tasks' ,
-                             activity_app='Twitter_Crawler ',
-                             activity_details='Scanning Tweets of   Username = '+_username+' Completed',
-                             activity_status='successfull')
-    log.save()
+    # lower_case_username=_username.lower()
+    # tweets_counts=Tweets.objects.filter(username=lower_case_username).count()
+    # t=tweets_target_model.objects.get(twitter_username=_username)
+    # t.scanning_status = 'completed'
+    # t.tweets_count=tweets_counts
+    # t.save()
+    # info_message='Followers List Scanning For Twitter Username \"'+_username+ '\" Completed'
+    # channel_layer = get_channel_layer()
+    # async_to_sync(channel_layer.group_send)(
+    #         'event_sharif',
+    #             {
+    #         'type': 'tweets_insertion_socket_close',
+    #         'message': info_message,
+    #         'username': _username,
+    #         'info': 'tweets_insertion_socket_close',
+    #             }
+    #             )
+    # log=Activity_Logger(activity_name='Tweets Scanning  | Celert Tasks' ,
+    #                          activity_app='Twitter_Crawler ',
+    #                          activity_details='Scanning Tweets of   Username = '+_username+' Completed',
+    #                          activity_status='successfull')
+    # log.save()
 
 
 @shared_task

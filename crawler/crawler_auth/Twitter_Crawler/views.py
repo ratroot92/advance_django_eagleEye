@@ -74,13 +74,15 @@ class Tweets_Targets(View):
             if not targetExist:
                 Query=Obj.Create_Twitter_Target(target_platform,target_type,target_username,target_scheduling)
                 if(Query):
+                    celery_task_sent=getTweets.delay(target_username)
                     messages.success(request, 'Target created successfully.')
                     return redirect('/tw/twitter')
                 else:
                     messages.error(request, 'Operation failed .')
+                  
                     return redirect('/tw/twitter')
             else:
-                messages.error(request, 'Target already exist .')
+                messages.error(request, 'Target already exist ')
                 return redirect('/tw/twitter')
         except Exception as e:
             print(e)
@@ -112,30 +114,57 @@ def tweets_targets(request):
 
 
 
-
-
+def viewTweetsJson(request,username):
+    print(f"{bcolors.WARNING}Twitter_Crawler  -- viewTweetsJson(request,username)   ,{bcolors.ENDC}")
+    lower_username=username.lower()
+    targetExist=Twitter_Target_Document.objects.filter(target_username=lower_username).first()
+    if(targetExist.tweets_count < 1):
+        messages.error(request,'No tweets found ')
+        return redirect('/tw/tweets_targets')
+    else:       
+        return render(request,'Tweets_Json_Viewer.html',{'tweets':targetExist.tweets})
+        #return render(request,'Tweets_Json_Viewer.html',{'tweets':json.dumps(targetExist.tweets)})
 
 
 def viewTweets(request,username):
+    print(f"{bcolors.WARNING}Twitter_Crawler  -- viewTweets(request,username)   ,{bcolors.ENDC}")
     lower_username=username.lower()
-    print(lower_username)
-    tweets_list=Tweets.objects.filter(username=lower_username).order_by('-datestamp')
-    length=len(tweets_list)
-    print(length)
-    print(type(length))
-    if(len(tweets_list)<=0):
-         messages.error(request,'No tweets found ')
-         return redirect('/tw/tweets_targets')
-    l=(len(tweets_list)//2)
-    paginator=Paginator(tweets_list,l)
-    page=request.GET.get('page')
-    try:
-        tweets=paginator.page(page)
-    except PageNotAnInteger:
-        tweets=paginator.page(1)
-    except EmptyPage:
-        tweets=paginator.page(paginator.num_pages)
+    targetExist=Twitter_Target_Document.objects.filter(target_username=lower_username).first()
+    if(targetExist.tweets_count < 1):
+        messages.error(request,'No tweets found ')
+        return redirect('/tw/tweets_targets')
+    else:      
+        l=(len(targetExist.tweets)//2)
+        paginator=Paginator(targetExist.tweets,l)
+        page=request.GET.get('page')
+        try:
+            tweets=paginator.page(page)
+        except PageNotAnInteger:
+            tweets=paginator.page(1)
+        except EmptyPage:
+            tweets=paginator.page(paginator.num_pages)
     return render(request,'view_tweets.html',{'tweets':tweets})
+   
+# def viewTweets(request,username):
+#      print(f"{bcolors.WARNING}Twitter_Crawler  -- viewTweets(request,username)   ,{bcolors.ENDC}")
+#     lower_username=username.lower()
+#     tweets_list=Tweets.objects.filter(username=lower_username).order_by('-datestamp')
+#     length=len(tweets_list)
+#     print(length)
+#     print(type(length))
+#     if(len(tweets_list)<=0):
+#          messages.error(request,'No tweets found ')
+#          return redirect('/tw/tweets_targets')
+#     l=(len(tweets_list)//2)
+#     paginator=Paginator(tweets_list,l)
+#     page=request.GET.get('page')
+#     try:
+#         tweets=paginator.page(page)
+#     except PageNotAnInteger:
+#         tweets=paginator.page(1)
+#     except EmptyPage:
+#         tweets=paginator.page(paginator.num_pages)
+#     return render(request,'view_tweets.html',{'tweets':tweets})
 
 
 def delete_tweets_targets(request,username):

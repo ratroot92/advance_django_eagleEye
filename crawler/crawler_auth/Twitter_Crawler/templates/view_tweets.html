@@ -23,21 +23,122 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
+    /*Toggler CSS*/
+    .switch {
+  position: relative;
+  display: inline-block;
+  width: 90px;
+  height: 34px;
+}
+
+.switch input {display:none;}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ca2222;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2ab934;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(55px);
+  -ms-transform: translateX(55px);
+  transform: translateX(55px);
+}
+
+/*------ ADDED CSS ---------*/
+.on
+{
+  display: none;
+
+}
+.off{
+    margin-left: 15px!important;
+}
+
+.on, .off
+{
+  color: white;
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  font-size: 10px!important;
+  font-weight: bold!important;
+
+  font-family: Verdana, sans-serif;
+}
+
+input:checked+ .slider .on
+{display: block;}
+
+input:checked + .slider .off
+{display: none;}
+
+/*--------- END --------*/
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;}
+
+    /*Toggler CSS End */
 
     </style>
 <div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4 offset-md-8">
+            <label class="switch float-right">
+                <input type="checkbox" id="togBtn">
+                <div class="slider round">
+                 <!--ADDED HTML -->
+                 <span class="on"  >JSON</span>
+                 <span class="off">TWEETS</span>
+                 <!--END-->
+                </div>
+               </label>
+        </div>
+    </div>
     <div class="row bg-dark p-1 ">
         <div class="col-md-10 text-white d-flex flex-row justify-content-around align-items-center ">
            <span class="badge badge-warning"> Tweets on Page : {{ tweets|length }}</span>
            <span class="badge badge-warning"> Target Profile : {{ tweets.0.username }}</span>
-           <span class="badge badge-danger float-right"><a class="nav-link text-decoration-none text-white" >gneratePDF</a></span>
+           <span class="badge badge-danger float-right"><a class="nav-link text-decoration-none text-white" >Generate PDF</a></span>
         </div>
         <div class="col-md-2">
             <span class="badge badge-danger float-right"><a class="nav-link text-decoration-none text-white" href="/twitter/addTwitterTarget">View All_targets</a></span>
         </div>
     </div>
     <div class="row m-1">
-        {% for i in tweets %}
+        {% for Tweets_Object in tweets %}
         <div class="col-md-4 mt-2  border bg-white" style="border-radius:10px;">
             <div class="row p-2">
                 <div class="col-md-2 m-0 p-0 d-flex flex-column justify-content-center align-items-center"
@@ -52,13 +153,13 @@
                     <div class="row">
                         <div class="col-md-12 d-flex flex-row justify-content-around align-items-center">
                             <b class="text-danger border m-0 p-0 col-md-4 " style="font-size:10px;">
-                                {{i.name}}
+                                {{Tweets_Object.name}}
                             </b>
                             <span class="text-danger border m-0 p-0 col-md-4 " style="font-size:12px;">
-                                @{{i.username}}.
+                                @{{Tweets_Object.username}}.
                             </span>
                             <span class="text-danger border m-0 p-0 col-md-4 " style="font-size:10px;">
-                                {{i.datestamp}} {{i.timestamp}}
+                                {{Tweets_Object.datestamp}} {{Tweets_Object.timestamp}}
                             </span>
                         </div>
 
@@ -69,20 +170,21 @@
         <div class="row">
             <div class="col-md-12 text-dark font-weight-bold " style="font-size:14px;height:150px;overflow:auto;">
 
-                {{i.text}}
+                {{Tweets_Object.text}}
             </div>
-
-            {% if i.photos != '[]' %}
+            {% if Tweets_Object.photos|length  > 0   %}
             <div class="col-md-12 text-dark text-center " style="font-size:12px;height:250px;overflow:auto;">
-                <img src="{{i.photos|cut:'['|cut:']'|cut:'\''}}" style="height:200px;width:300px;" class="img-thumbnail" />
+                <img src="{{Tweets_Object.photos|cut:'['|cut:']'|cut:'\''}}" style="height:200px;width:300px;" class="img-thumbnail" />
 
             </div>
 
-           {% else %}
-           <div class="col-md-12 text-dark text-center " style="font-size:12px;height:200px;overflow:auto;">
-            <img src="/static/images/no_img_placeholder.png" style="height:200px;width:300px;" class="img-thumbnail" />
-
-         </div>
+          
+           
+            {% else %}
+            <div class="col-md-12 text-dark text-center " style="font-size:12px;height:200px;overflow:auto;">
+                <img src="data:image/png;base64,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" style="height:200px;width:300px;" class="img-thumbnail" />
+    
+             </div>
             {% endif %}
 
 
@@ -94,28 +196,28 @@
                     <i class=" text-danger fas fa-comment">
                     </i>
                     <span style="font-size: 9px;;">
-                        {{i.mentions|cut:'['|cut:']'|cut:'\'' }}
+                        {{Tweets_Object.mentions|cut:'['|cut:']'|cut:'\'' }}
                     </span>
                 </div>
                 <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
                     <i aria-hidden="true" class=" text-danger fa fa-retweet">
                     </i>
                     <span style="font-size: 12px;;">
-                        {{i.replies_count}}
+                        {{Tweets_Object.replies_count}}
                     </span>
                 </div>
                 <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
                     <i class=" text-danger fas fa-heart">
                     </i>
                     <span style="font-size: 12px;;">
-                        {{i.likes_count}}
+                        {{Tweets_Object.likes_count}}
                     </span>
                 </div>
                 <div class="col-md-3 text-dark  d-flex flex-row justify-content-around border m-0 p-0 align-items-center">
                     <i class=" text-danger fas fa-upload">
                     </i>
                     <span style="font-size: 12px;;">
-                        {{i.retweets_count}}
+                        {{Tweets_Object.retweets_count}}
                     </span>
                 </div>
             </div>
@@ -152,3 +254,19 @@
 
 
 {% endblock %}
+
+{% block targets_scripts %}
+<script>
+    $(document).ready(function(){
+        $('.on').on('click',function(){
+            console.log("on")
+            window.location.href ="{%url 'Twitter_Crawler:viewTweets' username=tweets.0.username %}"
+        })
+
+        $('.off').on('click',function(){
+            console.log("Move To JSON Viewer")
+            window.location.href ="{%url 'Twitter_Crawler:viewTweetsJson' username=tweets.0.username %}"
+        })
+    })
+</script>
+  {% endblock%}

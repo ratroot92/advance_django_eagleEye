@@ -21,4 +21,9 @@ service supervisor start
 echo -e "${CYAN} Starting\t RabbitMQ\t For\t Broker\t For \t Celery\t   ${RESET}"
 service  rabbitmq-server start
 
+cd crawler
+source bin/activate 
+cd crawler_auth
+python3 manage.py runserver 
+
 echo -e "${GREEN} Ready\t To\t GO\t !!!!! ${RESET}"

@@ -1,0 +1,91 @@
+
+<!doctype HTML>
+{% load static %}
+<html>
+	<head>
+		<title>jQuery JSON Viewer Plugin Demo</title>
+		<meta charset="utf-8" />
+
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="{% static 'js/jquery.json-viewer.js'%}"></script>
+		<link href="{% static 'css/jquery.json-viewer.css' %}" type="text/css" rel="stylesheet" />
+<link href="https://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
+body {
+	margin: 0;
+	font-family: sans-serif;
+}
+textarea#json-input {
+	width: 100%;
+	height: 200px;
+}
+		</style>
+
+		<script>
+$(function() {
+	$('#btn-json-viewer').click(function() {
+		try {
+			
+		
+            let a =[]
+      // console.log("{{ tweets }}")  
+      {% for i in tweets %}
+       a.push("{{i|escapejs}}")
+      {% endfor %}
+      console.log(a)
+      $('#json-renderer').json_viewer("{{i|escapejs}}");
+		}
+		catch (error) {
+			alert("Cannot eval JSON: " + error);
+		}
+	});
+
+	// Display JSON sample on load
+	$('#btn-json-viewer').click();
+});
+		</script>
+	</head>
+	<body><div id="jquery-script-menu">
+<div class="jquery-script-center">
+<ul>
+<li><a href="https://www.jqueryscript.net/other/jQuery-Plugin-For-Easily-Readable-JSON-Data-Viewer.html">Download This Plugin</a></li>
+<li><a href="https://www.jqueryscript.net/">Back To jQueryScript.Net</a></li>
+</ul>
+<div class="jquery-script-ads"><script type="text/javascript">
+google_ad_client = "ca-pub-2783044520727903";
+/* jQuery_demo */
+google_ad_slot = "2780937993";
+google_ad_width = 728;
+google_ad_height = 90;
+//-->
+</script>
+<script type="text/javascript" src="https://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script></div>
+<div class="jquery-script-clear"></div>
+</div>
+</div>
+		<h1 style="margin-top:150px;">jQuery JSON Viewer Plugin Demo</h1>
+		<textarea id="json-input" autocomplete="off">
+</textarea><button id="btn-json-viewer">json-viewer</button>
+		<pre id="json-renderer"></pre>
+	</body><script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-36251023-1']);
+  _gaq.push(['_setDomainName', 'jqueryscript.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>
+
+
+
+
+
+

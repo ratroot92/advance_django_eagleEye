@@ -98,7 +98,7 @@
                 </tr>
               </thead>
               <tbody id="wrapperWorldTrends">
-                {% for Trends in Top_World_Trends %}
+                {% for Trends in Top_World_Trends.trends %}
 
                 <tr>
                   <th scope="row">{{forloop.counter}}</th>
@@ -143,8 +143,9 @@
                 </tr>
               </thead>
               <tbody id="wrapperPakistanTrends">
-                {% for Trends in Pakistan_Top_Trends %}
-
+                
+                {% for Trends in Pakistan_Top_Trends.trends %}
+            
                 <tr>
                   <th scope="row">{{forloop.counter}}</th>
                   <td> <a class="trendLink" target="_blank" href="{{Trends.href}}">{{Trends.name}}</a></td>
@@ -259,7 +260,9 @@
     console.log(topTrends)
     populateTrends(topTrends, containerId,toastMessage,spinnerId)
     if(opCode == 1 )  {console.log("%c World Top Trends Updated **Celery Shceduler**  ! ", "color:green;font-size:16px;font-weight:bold");}
-   
+   else{
+    console.log("%c Pakistan Top Trends Updated **Celery Shceduler**  ! ", "color:green;font-size:16px;font-weight:bold");
+   }
   }
     scheduleSocket.onclose = function (e) {console.log("***-scheduleSocket(onclose)-***")}
 

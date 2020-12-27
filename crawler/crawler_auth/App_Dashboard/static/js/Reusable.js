@@ -37,6 +37,4 @@ function getCurrentTime(){
 }
 
 
-populateTrendsbyCelery(opCode,topTrends){
-  
-}
+//populateTrendsbyCelery(opCode,topTrends)

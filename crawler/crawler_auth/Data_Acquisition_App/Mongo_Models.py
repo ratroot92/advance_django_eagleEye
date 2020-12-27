@@ -45,9 +45,15 @@ class Twitter_Target_Document(Document):
     target_username       =StringField(verbose_name="Target_Username")
     target_scheduling     =IntField(verbose_name="Target_Scheduling",choices=PERIODIC_INTERVALS,default=0)
     scanning_status       =StringField(verbose_name="Scanning_Status",default="pending")
+    #field to be updated later 
+    tweets                =ListField(verbose_name="Tweets",default=[])
+    tweets_count          =IntField(verbose_name="Tweets_Count",default=0)
     created_at            =DateField(default=datetime.datetime.now, editable=False,)
     updated_at            =DateField(default=datetime.datetime.now, editable=True,)
-   
+    def __repr__(self):
+        return self.target_username
+    def __str__(self):
+        return self.target_username
     """ Create / Insert """
     def Create_Twitter_Target(self,target_platform,target_type,target_username,target_scheduling):
         self.target_platform=str(target_platform)
@@ -82,7 +88,32 @@ class Twitter_Target_Document(Document):
             print(f"{bcolors.WARNING}Twitter Target Document  --UserExist  --Target Not Exiist ,{bcolors.ENDC}")
             return False
 
-    """ returns all twitter targets """
+    @staticmethod
+    def FindTarget(target_username):
+        targetExist=Twitter_Target_Document.objects.filter(target_username=target_username).first()
+        if(targetExist):
+            print(f"{bcolors.WARNING}Twitter Target Document  --FindTarget  --Success ,{bcolors.ENDC}")
+            return targetExist
+        else:
+            print(f"{bcolors.WARNING}Twitter Target Document  --FindTarget  --Failed ,{bcolors.ENDC}")
+            return False
+
+    @staticmethod
+    def InsertTargetTweets(target_username,tweets_list):
+        targetExist=Twitter_Target_Document.objects.filter(target_username=target_username).first()
+        if(targetExist):
+            #this will first empty the tweets_list on db  and save new tweets 
+            targetExist.update(add_to_set__tweets=[])
+            targetExist.update(add_to_set__tweets=tweets_list)
+           #print(int(len(tweets_list)))
+            targetExist.update(tweets_count=int(len(tweets_list))).save()
+            print(f"{bcolors.WARNING}Twitter Target Document  --InsertTargetTweets  --Success ,{bcolors.ENDC}")
+            return True
+        else:
+            print(f"{bcolors.WARNING}Twitter Target Document  --InsertTargetTweets  --Failed ,{bcolors.ENDC}")
+            return False
+
+
 
 
 class Top_World_Trends(Document):
