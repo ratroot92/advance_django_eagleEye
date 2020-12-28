@@ -105,8 +105,10 @@ class Twitter_Target_Document(Document):
             #this will first empty the tweets_list on db  and save new tweets 
             targetExist.update(add_to_set__tweets=[])
             targetExist.update(add_to_set__tweets=tweets_list)
-           #print(int(len(tweets_list)))
-            targetExist.update(tweets_count=int(len(tweets_list))).save()
+           #print(int(len(tweets_list)))scanning_status="completed"
+            targetExist.update(scanning_status="completed",tweets_count=len(tweets_list))
+            # targetExist.tweets_count+=int(len(tweets_list))
+            targetExist.save()
             print(f"{bcolors.WARNING}Twitter Target Document  --InsertTargetTweets  --Success ,{bcolors.ENDC}")
             return True
         else:

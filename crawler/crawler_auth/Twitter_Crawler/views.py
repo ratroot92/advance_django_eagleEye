@@ -57,16 +57,16 @@ def gettweets(request,_username):
 
 class Tweets_Targets(View):
     def get(self,request,*args,**kwargs):
+         print(f"{bcolors.WARNING}Twitter Target -- GET  ,{bcolors.ENDC}")
          Obj=Twitter_Target_Document()
          tweets_targets=Obj.Get_All_Twitter_Targets()
-         print(tweets_targets)
          return render(request,'tweets_targets.html',{'PERIODIC_INTERVALS':PERIODIC_INTERVALS,'tweets_targets':tweets_targets})
     def post(self,request,*args,**kwargs):
         target_platform=request.POST.get('target_platform')
         target_type=request.POST.get('target_type')
         target_username=request.POST.get('target_username')
         target_scheduling=request.POST.get('target_scheduling')
-        print(f"{bcolors.WARNING}Twitter Target --form values ,{bcolors.ENDC}")
+        print(f"{bcolors.WARNING}Twitter Target -- POST ,{bcolors.ENDC}")
         print(f"{bcolors.WARNING}{target_platform},{target_type},{target_username},{target_scheduling},{bcolors.ENDC}")
         try:
             Obj=Twitter_Target_Document()
@@ -89,7 +89,27 @@ class Tweets_Targets(View):
             messages.error(request, 'Operation failed .')
             return redirect('/tw/twitter')
        
-       
+class Delete_Tweet_Target(View):
+    def get(self,request,*args,**kwargs):
+            print(f"{bcolors.WARNING}Delete_Tweet_Target -- GET  ,{bcolors.ENDC}")
+            username=kwargs.get('username',None)
+            try:
+                targetExist=Twitter_Target_Document.objects.filter(target_username=username).first()
+                if  targetExist:
+                    targetExist.delete()
+                    messages.success(request, 'Twitter Target Deleted Successfully   ')
+                    return redirect('/tw/twitter')
+                else:
+                    messages.error(request, 'Failed to Delete Target  ')
+                    return redirect('/tw/twitter')
+            except Exception as e:
+                print(e)
+                messages.error(request, 'Operation failed .')
+                return redirect('/tw/twitter')
+        
+
+    def post(self,request,*args,**kwargs):
+        pass
 
 def tweets_targets(request):
      form=tweets_target_form

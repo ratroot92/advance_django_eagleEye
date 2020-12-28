@@ -260,7 +260,7 @@ input:checked + .slider .off
     $(document).ready(function(){
         $('.on').on('click',function(){
             console.log("on")
-            window.location.href ="{%url 'Twitter_Crawler:viewTweets' username=tweets.0.username %}"
+            window.location.href ="{%url 'Twitter_Crawler:viewTweetsJson' username=tweets.0.username %}"
         })
 
         $('.off').on('click',function(){
