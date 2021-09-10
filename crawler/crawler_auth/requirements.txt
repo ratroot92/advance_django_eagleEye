@@ -76,7 +76,7 @@ service-identity==18.1.0
 setuptools==39.0.1
 six==1.11.0
 soupsieve==2.0.1
-sqlparse==0.4.1
+sqlparse==0.4.2
 twint==2.1.20
 Twisted==20.3.0
 txaio==20.4.1
