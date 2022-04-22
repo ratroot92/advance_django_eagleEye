@@ -62,7 +62,7 @@ pygobject==3.26.1
 PyHamcrest==2.0.2
 pymongo==3.11.0
 pyOpenSSL==19.1.0
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 PySocks==1.7.1
 python-dateutil==2.8.1
 python-socks==1.1.0
