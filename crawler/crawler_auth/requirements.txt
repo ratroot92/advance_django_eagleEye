@@ -85,7 +85,7 @@ typing-extensions==3.7.4.3
 urllib3==1.25.10
 vine==1.3.0
 webencodings==0.5.1
-wheel==0.30.0
+wheel==0.38.1
 xhtml2pdf==0.2.4
 yarl==1.6.0
 zipp==3.3.0
